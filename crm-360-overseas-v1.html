@@ -1,0 +1,501 @@
+1|<!DOCTYPE html>
+2|<html lang="en">
+3|<head>
+4|<meta charset="UTF-8">
+5|<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+6|<title>客户 360° 全景视图 · CRM — RapidDirect</title>
+7|<style>
+8|*{margin:0;padding:0;box-sizing:border-box;}
+9|:root{
+10|  --brand:#EA5540;--brand-dark:#d14330;--brand-light:#fef0ee;
+11|  --primary:#4f6ef7;--primary-dark:#3b52cc;--primary-light:#eef1fe;
+12|  --success:#22c55e;--success-light:#f0fdf4;
+13|  --warning:#f59e0b;--warning-light:#fffbeb;
+14|  --danger:#ef4444;--danger-light:#fef2f2;
+15|  --purple:#8b5cf6;--purple-light:#f5f3ff;
+16|  --teal:#14b8a6;--teal-light:#f0fdfa;
+17|  --bg:#f8f9fc;--card-bg:#fff;--text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+18|  --border:#e2e8f0;--border-light:#f1f5f9;
+19|  --shadow-sm:0 1px 3px rgba(0,0,0,.04);--shadow:0 4px 12px rgba(0,0,0,.06);
+20|  --radius:12px;--radius-sm:8px;--radius-xs:6px;--tran:all .25s ease;
+21|}
+22|body{font-family:"PingFang SC","Microsoft YaHei","SF Pro Display",-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:13px;-webkit-font-smoothing:antialiased;}
+23|
+24|/* Top Bar */
+25|.top-bar{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15);flex-wrap:wrap;gap:10px;}
+26|.top-bar h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+27|.top-bar .badge{font-size:10px;background:var(--brand);padding:2px 8px;border-radius:10px;font-weight:600;}
+28|.top-bar-right{display:flex;align-items:center;gap:12px;}
+29|
+30|.lang-switch{display:flex;border-radius:var(--radius-xs);overflow:hidden;border:1px solid rgba(255,255,255,.25);}
+31|.lang-switch button{border:none;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,.6);transition:var(--tran);font-family:inherit;}
+32|.lang-switch button.active{background:var(--brand);color:#fff;}
+33|
+34|/* Identity Bar */
+35|.identity-bar{background:var(--card-bg);margin:14px 20px 0;border-radius:var(--radius);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border-light);box-shadow:var(--shadow-sm);flex-wrap:wrap;gap:14px;}
+36|.id-left{display:flex;align-items:center;gap:16px;}
+37|.avatar{width:48px;height:48px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;}
+38|.id-info h2{font-size:20px;font-weight:700;}
+39|.id-meta{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+40|.id-right{display:flex;gap:28px;flex-wrap:wrap;}
+41|.stat-mini{text-align:center;}
+42|.stat-mini .num{font-size:20px;font-weight:800;color:var(--text);}
+43|.stat-mini .lbl{font-size:10px;color:var(--text3);margin-top:2px;}
+44|
+45|/* Quick Actions */
+46|.quick-actions{display:flex;gap:8px;padding:10px 20px;flex-wrap:wrap;max-width:1400px;margin:0 auto;}
+47|.qa-btn{padding:6px 14px;border-radius:var(--radius-xs);font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card-bg);color:var(--text2);transition:var(--tran);font-family:inherit;display:inline-flex;align-items:center;gap:5px;}
+48|.qa-btn:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-light);transform:translateY(-1px);box-shadow:var(--shadow-sm);}
+49|.qa-btn.accent{background:var(--brand);color:#fff;border-color:var(--brand);}
+50|.qa-btn.accent:hover{background:var(--brand-dark);}
+51|
+52|/* Tags */
+53|.t{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.2px;}
+54|.t-brand{background:var(--brand-light);color:var(--brand);}
+55|.t-g{background:#dcfce7;color:#15803d;}
+56|.t-b{background:#dbeafe;color:#1d4ed8;}
+57|.t-o{background:#fef3c7;color:#b45309;}
+58|.t-r{background:#fee2e2;color:#dc2626;}
+59|.t-p{background:#ede9fe;color:#7c3aed;}
+60|.t-gr{background:#f1f5f9;color:#475569;}
+61|.t-te{background:#ccfbf1;color:#0f766e;}
+62|.lbl-tag{padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;color:#fff;display:inline-flex;align-items:center;}
+63|
+64|/* Alerts */
+65|.alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:11px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+66|.alert-info{background:var(--primary-light);color:var(--primary-dark);border-left:3px solid var(--primary);}
+67|.alert-warn{background:var(--warning-light);color:#b45309;border-left:3px solid var(--warning);}
+68|.alert-danger{background:var(--danger-light);color:#991b1b;border-left:3px solid var(--danger);}
+69|.alert-success{background:var(--success-light);color:#15803d;border-left:3px solid var(--success);}
+70|
+71|/* Tab Nav */
+72|.tab-nav{display:flex;gap:2px;padding:10px 20px;background:var(--card-bg);border-bottom:2px solid var(--border-light);overflow-x:auto;}
+73|.tab-btn{padding:10px 16px;border:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;font-size:12px;font-weight:600;background:transparent;color:var(--text2);transition:var(--tran);white-space:nowrap;position:relative;font-family:inherit;}
+74|.tab-btn:hover{color:var(--brand);background:var(--brand-light);}
+75|.tab-btn.on{color:var(--brand);background:var(--brand-light);}
+76|.tab-btn.on::after{content:'';position:absolute;bottom:-12px;left:0;right:0;height:3px;background:var(--brand);border-radius:2px 2px 0 0;}
+77|
+78|.pg{display:none;padding:16px 20px;max-width:1400px;margin:0 auto;}
+79|.pg.on{display:block;}
+80|
+81|/* Cards */
+82|.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:14px;border:1px solid var(--border-light);}
+83|.card-h{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#fff,#fafbfc);}
+84|.card-h h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+85|.card-b{padding:14px 16px;}
+86|
+87|/* Grids */
+88|.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+89|.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+90|.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+91|.g-left{display:grid;grid-template-columns:340px 1fr;gap:14px;}
+92|@media(max-width:1100px){.g-left{grid-template-columns:1fr;}}
+93|@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+94|
+95|/* Info Rows */
+96|.info-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-light);font-size:12px;}
+97|.info-row:last-child{border-bottom:none;}
+98|.info-row .key{color:var(--text2);font-weight:400;min-width:100px;}
+99|.info-row .val{color:var(--text);font-weight:600;text-align:right;word-break:break-all;}
+100|
+101|/* Metric Cards */
+102|.metric-row{display:flex;gap:12px;flex-wrap:wrap;}
+103|.metric-card{flex:1;min-width:120px;background:var(--bg);border-radius:var(--radius-sm);padding:14px;text-align:center;transition:var(--tran);}
+104|.metric-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+105|.metric-card .m-num{font-size:22px;font-weight:800;color:var(--text);}
+106|.metric-card .m-unit{font-size:13px;color:var(--text2);font-weight:500;}
+107|.metric-card .m-lbl{font-size:10px;color:var(--text3);margin-top:3px;}
+108|.metric-card.accent .m-num{color:var(--brand);}
+109|.metric-card.success .m-num{color:var(--success);}
+110|.metric-card.warning .m-num{color:var(--warning);}
+111|.metric-card.primary .m-num{color:var(--primary);}
+112|.metric-card.danger .m-num{color:var(--danger);}
+113|.metric-card.purple .m-num{color:var(--purple);}
+114|
+115|/* Timeline */
+116|.timeline{position:relative;padding-left:24px;}
+117|.timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--border);}
+118|.tl-item{position:relative;padding-bottom:18px;}
+119|.tl-item:last-child{padding-bottom:0;}
+120|.tl-dot{position:absolute;left:-20px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid #fff;box-shadow:0 0 0 2px var(--border);}
+121|.tl-item.ev-opp .tl-dot{background:var(--brand);box-shadow:0 0 0 2px var(--brand-light);}
+122|.tl-item.ev-mail .tl-dot{background:var(--purple);box-shadow:0 0 0 2px var(--purple-light);}
+123|.tl-item.ev-note .tl-dot{background:var(--success);box-shadow:0 0 0 2px var(--success-light);}
+124|.tl-item.ev-ticket .tl-dot{background:var(--warning);box-shadow:0 0 0 2px var(--warning-light);}
+125|.tl-item.ev-call .tl-dot{background:var(--primary);box-shadow:0 0 0 2px var(--primary-light);}
+126|.tl-item.ev-meeting .tl-dot{background:var(--teal);box-shadow:0 0 0 2px var(--teal-light);}
+127|.tl-time{font-size:10px;color:var(--text3);margin-bottom:2px;}
+128|.tl-title{font-size:13px;font-weight:700;color:var(--text);}
+129|.tl-desc{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4;}
+130|.tl-meta{display:flex;gap:12px;margin-top:3px;font-size:10px;color:var(--text3);}
+131|
+132|/* Progress */
+133|.prog{margin:6px 0;}
+134|.prog-l{display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px;}
+135|.prog-bar{height:6px;border-radius:3px;background:var(--border-light);overflow:hidden;}
+136|.prog-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+137|.pf-brand{background:var(--brand);}.pf-s{background:var(--success);}.pf-w{background:var(--warning);}.pf-p{background:var(--purple);}.pf-d{background:var(--danger);}.pf-b{background:var(--primary);}
+138|
+139|/* Tables */
+140|.tbl{width:100%;border-collapse:collapse;font-size:11px;}
+141|.tbl th{background:var(--bg);padding:10px 12px;text-align:left;font-weight:600;color:var(--text2);border-bottom:2px solid var(--border);font-size:10px;}
+142|.tbl td{padding:10px 12px;border-bottom:1px solid var(--border-light);}
+143|.tbl tr:hover td{background:#fafbfc;}
+144|
+145|/* Status Dot */
+146|.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+147|.dot-active{background:var(--success);}
+148|.dot-warning{background:var(--warning);}
+149|.dot-danger{background:var(--danger);}
+150|.dot-restricted{background:var(--danger);animation:pulse 1.5s infinite;}
+151|@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+152|
+153|/* Score Circle */
+154|.score-circle{width:80px;height:80px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;}
+155|.score-circle .big{font-size:24px;font-weight:800;}
+156|.score-circle .small{font-size:9px;font-weight:600;}
+157|.score-A{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d;border:3px solid #22c55e;}
+158|.score-B{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:3px solid #3b82f6;}
+159|.score-C{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#b45309;border:3px solid #f59e0b;}
+160|
+161|/* Buttons */
+162|.btn{padding:7px 14px;border-radius:var(--radius-xs);font-size:11px;font-weight:600;cursor:pointer;border:none;transition:var(--tran);display:inline-flex;align-items:center;gap:5px;font-family:inherit;}
+163|.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
+164|.btn-brand{background:var(--brand);color:#fff;}.btn-brand:hover{background:var(--brand-dark);}
+165|.btn-outline{background:#fff;color:var(--text2);border:1px solid var(--border);}.btn-outline:hover{background:var(--bg);}
+166|.btn-primary{background:var(--primary);color:#fff;}.btn-primary:hover{background:var(--primary-dark);}
+167|.btn-sm{padding:4px 10px;font-size:10px;border-radius:var(--radius-xs);}
+168|
+169|/* Risk Indicator */
+170|.risk-level{display:flex;gap:8px;align-items:center;}
+171|.risk-orb{width:12px;height:12px;border-radius:50%;}
+172|.risk-R{background:var(--danger);}
+173|.risk-Y{background:var(--warning);}
+174|.risk-G{background:var(--success);}
+175|
+176|/* Chart Placeholder */
+177|.chart-area{background:var(--bg);border-radius:var(--radius-sm);padding:20px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);font-size:11px;}
+178|.chart-bars{display:flex;align-items:flex-end;gap:8px;height:100px;justify-content:center;}
+179|.chart-bar{width:28px;border-radius:4px 4px 0 0;transition:height .5s ease;position:relative;}
+180|.chart-bar .bar-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text3);white-space:nowrap;}
+181|.chart-bar .bar-val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:var(--text2);}
+182|
+183|/* Section Title */
+184|.form-section-title{font-size:12px;font-weight:700;color:var(--brand);padding:8px 0;border-bottom:2px solid var(--brand-light);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+185|
+186|/* Stage Pipeline */
+187|.pipeline{display:flex;align-items:center;gap:0;overflow-x:auto;padding:8px 0;}
+188|.pipeline .stage{text-align:center;padding:10px 16px;border-radius:var(--radius-sm);font-size:10px;font-weight:600;min-width:80px;position:relative;background:var(--bg);margin-right:4px;}
+189|.pipeline .stage .s-num{font-size:18px;font-weight:800;}
+190|.pipeline .stage .s-lbl{color:var(--text2);}
+191|.pipeline .stage.active{background:var(--brand-light);color:var(--brand);}
+192|.pipeline .stage.active .s-lbl{color:var(--brand);}
+193|.pipeline .arrow{color:var(--text3);font-size:14px;margin:0 2px;}
+194|
+195|/* AI Card */
+196|.ai-card{background:linear-gradient(135deg,#f8fafc,#eef1fe);border:1px solid var(--primary-light);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+197|.ai-card .ai-label{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+198|.ai-card .ai-content{font-size:13px;color:var(--text);line-height:1.7;}
+199|.ai-card .ai-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+200|
+201|/* Membership Card */
+202|.member-card{text-align:center;padding:14px;border-radius:var(--radius);border:2px solid var(--border-light);transition:var(--tran);}
+203|.member-card:hover{box-shadow:var(--shadow);}
+204|.member-card .tier-name{font-size:14px;font-weight:800;margin-bottom:4px;}
+205|.member-card .bonus{font-size:10px;color:var(--text2);}
+206|.member-card.bronze{border-color:#cd853f;background:linear-gradient(180deg,#fff8f0,#fff);}
+207|.member-card.silver{border-color:#c0c0c0;background:linear-gradient(180deg,#f8f9fc,#fff);}
+208|.member-card.gold{border-color:#ffd700;background:linear-gradient(180deg,#fffdf0,#fff);}
+209|
+210|/* SLA Badge */
+211|.sla-ok{color:var(--success);font-weight:600;}
+212|.sla-warn{color:var(--warning);font-weight:600;animation:pulse 1.5s infinite;}
+213|.sla-over{color:var(--danger);font-weight:600;}
+214|
+215|/* Scrollbar */
+216|::-webkit-scrollbar{width:5px;height:5px;}
+217|::-webkit-scrollbar-track{background:transparent;}
+218|::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px;}
+219|
+220|/* Highlight number */
+221|.hl-num{font-weight:800;font-size:inherit;}
+222|.hl-up{color:var(--success);}
+223|.hl-down{color:var(--danger);}
+224|</style>
+225|</head>
+226|<body>
+227|
+228|<!-- ===== TOP BAR ===== -->
+229|<div class="top-bar">
+230|  <h1>🔍 <span data-i18n="page_title">客户 360° 全景视图</span><span class="badge">v1.0</span></h1>
+231|  <div class="top-bar-right">
+232|    <div class="lang-switch">
+233|      <button id="btn-zh" class="active" onclick="setLang('zh')">中文</button>
+234|      <button id="btn-en" onclick="setLang('en')">EN</button>
+235|    </div>
+236|    <button class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.3);" data-i18n="export">📥 导出报告</button>
+237|    <button class="btn btn-brand" data-i18n="edit">✏️ 编辑信息</button>
+238|  </div>
+239|</div>
+240|
+241|<!-- ===== IDENTITY BAR ===== -->
+242|<div class="identity-bar">
+243|  <div class="id-left">
+244|    <div class="avatar">R</div>
+245|    <div class="id-info">
+246|      <h2>rapiddirect</h2>
+247|      <div class="id-meta">
+248|        <span class="t t-g">C00002</span>
+249|        <span class="t t-brand" data-i18n="customer_type_company">公司客户</span>
+250|        <span class="t t-p" data-i18n="stage_repeat">复购客户</span>
+251|        <span class="t t-o" data-i18n="health_potential">潜在客户</span>
+252|        <span class="lbl-tag" style="background:#F02D46;">#重点客户</span>
+253|        <span class="t t-gr">⭐ 3星</span>
+254|        <span class="t t-b">高潜力</span>
+255|        <span class="t t-r" style="animation:pulse 1.5s infinite;">⚠ 公海风险</span>
+256|      </div>
+257|    </div>
+258|  </div>
+259|  <div class="id-right">
+260|    <div class="stat-mini"><div class="num">68</div><div class="lbl" data-i18n="total_deals">累计成交</div></div>
+261|    <div class="stat-mini"><div class="num">$563,262</div><div class="lbl" data-i18n="total_revenue">累计金额</div></div>
+262|    <div class="stat-mini"><div class="num">5</div><div class="lbl" data-i18n="open_quotes">在报询价</div></div>
+263|    <div class="stat-mini"><div class="num" style="color:var(--danger);">3</div><div class="lbl" data-i18n="overdue_tickets">逾期工单</div></div>
+264|  </div>
+265|</div>
+266|
+267|<!-- ===== QUICK ACTIONS ===== -->
+268|<div class="quick-actions">
+269|  <button class="qa-btn accent">➕ 新建商机</button>
+270|  <button class="qa-btn">📋 创建报价</button>
+271|  <button class="qa-btn">🎫 发起工单</button>
+272|  <button class="qa-btn">👤 添加联系人</button>
+273|  <button class="qa-btn">📝 添加跟进</button>
+274|  <button class="qa-btn">📦 查看订单</button>
+275|  <button class="qa-btn">🔄 转移客户</button>
+276|  <button class="qa-btn">⭐ 加入重点</button>
+277|  <button class="qa-btn">📧 发送邮件</button>
+278|  <button class="qa-btn">📞 记录通话</button>
+279|</div>
+280|
+281|<!-- ===== ALERTS ===== -->
+282|<div style="padding:0 20px;max-width:1400px;margin:0 auto;">
+283|  <div class="alert alert-danger">🚨 <span data-i18n="alert_pool_drop">该客户预计于 2026-06-09 自动掉入公海，超30天未回复，请立即跟进！</span></div>
+284|</div>
+285|
+286|<!-- ===== TAB NAV ===== -->
+287|<div class="tab-nav">
+288|  <button class="tab-btn on" onclick="switchTab('overview',this)" data-i18n="tab_overview">📊 全景总览</button>
+289|  <button class="tab-btn" onclick="switchTab('analytics',this)" data-i18n="tab_analytics">📈 经营分析</button>
+290|  <button class="tab-btn" onclick="switchTab('sales',this)" data-i18n="tab_sales">🎯 商机 & 销售</button>
+291|  <button class="tab-btn" onclick="switchTab('orders',this)" data-i18n="tab_orders">📦 订单 & 履约</button>
+292|  <button class="tab-btn" onclick="switchTab('service',this)" data-i18n="tab_service">🛠️ 服务 & 工单</button>
+293|  <button class="tab-btn" onclick="switchTab('contacts',this)" data-i18n="tab_contacts">👥 联系人</button>
+294|  <button class="tab-btn" onclick="switchTab('membership',this)" data-i18n="tab_membership">👑 会员 & 营销</button>
+295|  <button class="tab-btn" onclick="switchTab('ai',this)" data-i18n="tab_ai">🤖 AI 分析</button>
+296|</div>
+297|
+298|<!-- ==================== TAB 1: 全景总览 ==================== -->
+299|<div id="overview" class="pg on">
+300|  <!-- 左右分栏 -->
+301|  <div class="g-left">
+302|    <!-- 左栏 -->
+303|    <div>
+304|      <!-- 基本信息 -->
+305|      <div class="card">
+306|        <div class="card-h"><h4>📋 <span data-i18n="basic_info">基本信息</span></h4></div>
+307|        <div class="card-b">
+308|          <div class="info-row"><span class="key" data-i18n="field_customer_code">客户编号</span><span class="val">C00002</span></div>
+309|          <div class="info-row"><span class="key" data-i18n="field_customer_name">客户名称</span><span class="val">rapiddirect</span></div>
+310|          <div class="info-row"><span class="key" data-i18n="field_company">公司名称</span><span class="val">rapiddirect</span></div>
+311|          <div class="info-row"><span class="key" data-i18n="field_attribute">客户类型</span><span class="val"><span class="t t-brand">公司客户</span></span></div>
+312|          <div class="info-row"><span class="key" data-i18n="field_industry">行业</span><span class="val">制造业 / 精密零件</span></div>
+313|          <div class="info-row"><span class="key" data-i18n="field_source">来源渠道</span><span class="val">Info询盘</span></div>
+314|          <div class="info-row"><span class="key" data-i18n="field_stage">客户状态</span><span class="val"><span class="t t-g">复购客户</span></span></div>
+315|          <div class="info-row"><span class="key" data-i18n="field_created">建档时间</span><span class="val">2019-07-09</span></div>
+316|          <div class="info-row"><span class="key" data-i18n="field_country">国家/地区</span><span class="val">🇺🇸 United States</span></div>
+317|          <div class="info-row"><span class="key" data-i18n="field_timezone">时区</span><span class="val">—</span></div>
+318|        </div>
+319|      </div>
+320|
+321|      <!-- 归属与标签 -->
+322|      <div class="card">
+323|        <div class="card-h"><h4>👥 <span data-i18n="ownership">归属与标签</span></h4></div>
+324|        <div class="card-b">
+325|          <div class="info-row"><span class="key" data-i18n="field_follow_sale">当前负责人</span><span class="val">Admin</span></div>
+326|          <div class="info-row"><span class="key" data-i18n="field_ori_sale">原始销售</span><span class="val">evelyn</span></div>
+327|          <div class="info-row"><span class="key" data-i18n="field_handover">转交至</span><span class="val">zea (BD)</span></div>
+328|          <div class="info-row"><span class="key" data-i18n="field_handover_expire">转交到期</span><span class="val">2027-04-22</span></div>
+329|          <div style="margin-top:10px;">
+330|            <div class="form-section-title">🏷️ 客户标签</div>
+331|            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+332|              <span class="lbl-tag" style="background:#F02D46;">#重点客户</span>
+333|              <span class="t t-p">高潜力</span>
+334|              <span class="t t-b">复购客户</span>
+335|              <span class="t t-g">VIP会员</span>
+336|              <span class="t t-o">价格敏感</span>
+337|              <span class="t t-gr">CNC需求</span>
+338|            </div>
+339|          </div>
+340|        </div>
+341|      </div>
+342|
+343|      <!-- 联系人摘要 -->
+344|      <div class="card">
+345|        <div class="card-h"><h4>👤 <span data-i18n="contact_summary">联系人摘要</span></h4></div>
+346|        <div class="card-b">
+347|          <div class="info-row"><span class="key">Y SEVEN</span><span class="val"><span class="t t-g">主联系人</span></span></div>
+348|          <div class="info-row"><span class="key" data-i18n="field_email">邮箱</span><span class="val">yuansiwen@rapiddirect.com</span></div>
+349|          <div class="info-row"><span class="key">jun</span><span class="val"><span class="t t-gr">次要联系人</span></span></div>
+350|          <div class="info-row"><span class="key" data-i18n="field_email">邮箱</span><span class="val">jun@rapiddirect.com</span></div>
+351|          <div class="info-row"><span class="key" data-i18n="field_last_contact">最近联系</span><span class="val">2026-06-05</span></div>
+352|        </div>
+353|      </div>
+354|    </div>
+355|
+356|    <!-- 右栏 -->
+357|    <div>
+358|      <!-- AI 客户画像 -->
+359|      <div class="ai-card">
+360|        <div class="ai-label">🤖 AI <span data-i18n="ai_summary">客户智能总结</span></div>
+361|        <div class="ai-content" data-i18n="ai_summary_text">
+362|          该客户为美国制造业客户，过去 12 个月累计下单金额 $563,262，以 CNC 与精密零件需求为主，采购周期约 30-45 天。客户活跃度较高，但最近 30 天报价成功率下降至 60%，近 60 天未成交新单。建议重点跟进价格与交付周期，及时发送报价并安排电话跟进。
+363|        </div>
+364|        <div class="ai-actions">
+365|          <button class="btn btn-primary btn-sm">📋 查看完整画像</button>
+366|          <button class="btn btn-outline btn-sm">📧 AI 生成跟进邮件</button>
+367|          <button class="btn btn-outline btn-sm">📞 建议电话跟进</button>
+368|        </div>
+369|      </div>
+370|
+371|      <!-- 核心经营指标  -->
+372|      <div class="card">
+373|        <div class="card-h"><h4>📊 <span data-i18n="core_kpis">核心经营指标</span></h4></div>
+374|        <div class="card-b">
+375|          <div class="g4" style="margin-bottom:12px;">
+376|            <div class="metric-card accent"><div class="m-num">$563,262</div><div class="m-lbl" data-i18n="stat_total_rev">累计订单金额</div></div>
+377|            <div class="metric-card success"><div class="m-num">$85,000</div><div class="m-lbl" data-i18n="stat_year_rev">年度订单金额</div></div>
+378|            <div class="metric-card primary"><div class="m-num">68</div><div class="m-lbl" data-i18n="stat_total_orders">累计订单数</div></div>
+379|            <div class="metric-card purple"><div class="m-num">$8,283</div><div class="m-lbl" data-i18n="stat_avg_order">平均订单金额</div></div>
+380|          </div>
+381|          <div class="g4">
+382|            <div class="metric-card"><div class="m-num">15.2%</div><div class="m-lbl" data-i18n="stat_profit">累计利润率</div></div>
+383|            <div class="metric-card"><div class="m-num">~45天</div><div class="m-lbl" data-i18n="stat_cycle">平均复购周期</div></div>
+384|            <div class="metric-card success"><div class="m-num">72%</div><div class="m-lbl" data-i18n="stat_quote_rate">报价成功率</div></div>
+385|            <div class="metric-card primary"><div class="m-num">38%</div><div class="m-lbl" data-i18n="stat_opp_rate">商机转化率</div></div>
+386|          </div>
+387|        </div>
+388|      </div>
+389|
+390|      <!-- 风险预警 + 活跃度 -->
+391|      <div class="g2">
+392|        <div class="card">
+393|          <div class="card-h"><h4>⚠️ <span data-i18n="risk_warnings">风险预警</span></h4><span class="risk-level"><span class="risk-orb risk-Y" title="Yellow"></span> <span class="t t-o">中风险</span></span></div>
+394|          <div class="card-b">
+395|            <div class="info-row"><span class="key" data-i18n="risk_30d_noreply">超30天未回复</span><span class="val"><span class="t t-r">⚠ 触发</span></span></div>
+396|            <div class="info-row"><span class="key" data-i18n="risk_60d_noorder">超60天未下单</span><span class="val"><span class="t t-o">⚠ 接近</span></span></div>
+397|            <div class="info-row"><span class="key" data-i18n="risk_quote_fail">报价连续失败</span><span class="val"><span class="t t-g">正常</span></span></div>
+398|            <div class="info-row"><span class="key" data-i18n="risk_ticket_freq">工单投诉频繁</span><span class="val"><span class="t t-g">正常</span></span></div>
+399|            <div class="info-row"><span class="key" data-i18n="risk_profit_down">利润率持续下降</span><span class="val"><span class="t t-o">⚠ 关注</span></span></div>
+400|            <div class="info-row"><span class="key" data-i18n="risk_activity_down">客户活跃度下降</span><span class="val"><span class="t t-r">⚠ 触发</span></span></div>
+401|          </div>
+402|        </div>
+403|
+404|        <div class="card">
+405|          <div class="card-h"><h4>📈 <span data-i18n="activity_score">客户活跃度</span></h4></div>
+406|          <div class="card-b">
+407|            <div class="prog"><div class="prog-l"><span data-i18n="act_reply">回复率</span><span>78%</span></div><div class="prog-bar"><div class="prog-fill pf-s" style="width:78%;"></div></div></div>
+408|            <div class="prog"><div class="prog-l"><span data-i18n="act_order_freq">下单频率</span><span>1.2次/月</span></div><div class="prog-bar"><div class="prog-fill pf-brand" style="width:60%;"></div></div></div>
+409|            <div class="prog"><div class="prog-l"><span data-i18n="act_quote_open">报价打开率</span><span>85%</span></div><div class="prog-bar"><div class="prog-fill pf-b" style="width:85%;"></div></div></div>
+410|            <div class="prog"><div class="prog-l"><span data-i18n="act_web_visit">官网访问</span><span>低频</span></div><div class="prog-bar"><div class="prog-fill pf-w" style="width:30%;"></div></div></div>
+411|          </div>
+412|        </div>
+413|      </div>
+414|
+415|      <!-- 最近成交趋势 -->
+416|      <div class="card">
+417|        <div class="card-h"><h4>📉 <span data-i18n="recent_trend">最近12个月采购趋势</span></h4></div>
+418|        <div class="card-b">
+419|          <div class="chart-area">
+420|            <div class="chart-bars">
+421|              <div class="chart-bar" style="height:60px;background:var(--brand);"><span class="bar-val">$12K</span><span class="bar-label">7月</span></div>
+422|              <div class="chart-bar" style="height:45px;background:var(--brand);"><span class="bar-val">$9K</span><span class="bar-label">8月</span></div>
+423|              <div class="chart-bar" style="height:70px;background:var(--brand);"><span class="bar-val">$14K</span><span class="bar-label">9月</span></div>
+424|              <div class="chart-bar" style="height:30px;background:var(--warning);"><span class="bar-val">$6K</span><span class="bar-label">10月</span></div>
+425|              <div class="chart-bar" style="height:80px;background:var(--brand);"><span class="bar-val">$16K</span><span class="bar-label">11月</span></div>
+426|              <div class="chart-bar" style="height:40px;background:var(--warning);"><span class="bar-val">$8K</span><span class="bar-label">12月</span></div>
+427|              <div class="chart-bar" style="height:50px;background:var(--brand);"><span class="bar-val">$10K</span><span class="bar-label">1月</span></div>
+428|              <div class="chart-bar" style="height:55px;background:var(--brand);"><span class="bar-val">$11K</span><span class="bar-label">2月</span></div>
+429|              <div class="chart-bar" style="height:35px;background:var(--warning);"><span class="bar-val">$7K</span><span class="bar-label">3月</span></div>
+430|              <div class="chart-bar" style="height:90px;background:var(--brand);"><span class="bar-val">$18K</span><span class="bar-label">4月</span></div>
+431|              <div class="chart-bar" style="height:25px;background:var(--danger);"><span class="bar-val">$5K</span><span class="bar-label">5月</span></div>
+432|              <div class="chart-bar" style="height:15px;background:var(--danger);"><span class="bar-val">$3K</span><span class="bar-label">6月</span></div>
+433|            </div>
+434|            <div style="margin-top:24px;font-size:10px;color:var(--text2);"><span style="color:var(--brand);">● 正常</span> <span style="color:var(--warning);margin-left:12px;">● 偏低</span> <span style="color:var(--danger);margin-left:12px;">● 异常低</span> <span style="margin-left:12px;">趋势：<span class="hl-down">↓ 近2月明显下滑</span></span></div>
+435|          </div>
+436|        </div>
+437|      </div>
+438|    </div>
+439|  </div>
+440|</div>
+441|
+442|<!-- ==================== TAB 2: 经营分析 ==================== -->
+443|<div id="analytics" class="pg">
+444|  <!-- 核心指标 -->
+445|  <div class="card">
+446|    <div class="card-h"><h4>📊 <span data-i18n="core_kpis">核心经营指标</span></h4></div>
+447|    <div class="card-b">
+448|      <div class="g4">
+449|        <div class="metric-card accent"><div class="m-num">$563,262</div><div class="m-lbl" data-i18n="stat_total_rev">累计订单金额</div></div>
+450|        <div class="metric-card success"><div class="m-num">$85,000</div><div class="m-lbl" data-i18n="stat_year_rev">年度订单金额</div></div>
+451|        <div class="metric-card primary"><div class="m-num">68</div><div class="m-lbl" data-i18n="stat_total_orders">累计订单数</div></div>
+452|        <div class="metric-card purple"><div class="m-num">$8,283</div><div class="m-lbl" data-i18n="stat_avg_order">平均订单金额</div></div>
+453|        <div class="metric-card"><div class="m-num">15.2%</div><div class="m-lbl" data-i18n="stat_profit">累计利润率</div></div>
+454|        <div class="metric-card"><div class="m-num">~45天</div><div class="m-lbl" data-i18n="stat_cycle">平均复购周期</div></div>
+455|        <div class="metric-card success"><div class="m-num">72%</div><div class="m-lbl" data-i18n="stat_quote_rate">报价成功率</div></div>
+456|        <div class="metric-card primary"><div class="m-num">38%</div><div class="m-lbl" data-i18n="stat_opp_rate">商机转化率</div></div>
+457|      </div>
+458|    </div>
+459|  </div>
+460|
+461|  <!-- LTV -->
+462|  <div class="g2">
+463|    <div class="card">
+464|      <div class="card-h"><h4>💰 <span data-i18n="ltv_analysis">客户生命周期价值 (LTV)</span></h4></div>
+465|      <div class="card-b">
+466|        <div class="g3">
+467|          <div class="metric-card accent"><div class="m-num">$563K</div><div class="m-lbl" data-i18n="ltv_total">累计 LTV</div></div>
+468|          <div class="metric-card success"><div class="m-num">$85K/年</div><div class="m-lbl" data-i18n="ltv_annual">年均贡献</div></div>
+469|          <div class="metric-card primary"><div class="m-num">6.6年</div><div class="m-lbl" data-i18n="ltv_years">合作年限</div></div>
+470|        </div>
+471|        <div style="margin-top:12px;">
+472|          <div class="prog"><div class="prog-l"><span data-i18n="ltv_trend">LTV 增长趋势</span><span>↑ +12% YoY</span></div><div class="prog-bar"><div class="prog-fill pf-s" style="width:75%;"></div></div></div>
+473|        </div>
+474|      </div>
+475|    </div>
+476|
+477|    <div class="card">
+478|      <div class="card-h"><h4>🔄 <span data-i18n="sample_to_mass">样品转量产转化</span></h4></div>
+479|      <div class="card-b">
+480|        <div style="text-align:center;padding:16px 0;">
+481|          <div class="score-circle score-A" style="margin:0 auto;">
+482|            <span class="big">65%</span>
+483|            <span class="small" data-i18n="conversion_rate">转化率</span>
+484|          </div>
+485|        </div>
+486|        <div class="info-row"><span class="key" data-i18n="sample_orders">样品订单</span><span class="val">23</span></div>
+487|        <div class="info-row"><span class="key" data-i18n="mass_orders">量产订单</span><span class="val">15</span></div>
+488|        <div class="info-row"><span class="key" data-i18n="avg_convert_days">平均转化周期</span><span class="val">28 天</span></div>
+489|      </div>
+490|    </div>
+491|  </div>
+492|
+493|  <!-- 采购趋势 + 品类分布 -->
+494|  <div class="g2">
+495|    <div class="card">
+496|      <div class="card-h"><h4>📉 <span data-i18n="monthly_trend">月度采购金额趋势</span></h4></div>
+497|      <div class="card-b">
+498|        <div class="chart-area">
+499|          <div class="chart-bars">
+500|            <div class="chart-bar" style="height:60px;background:var(--brand);"><span class="bar-val">$12K</span><span class="bar-label">7月</span></div>
+501|
