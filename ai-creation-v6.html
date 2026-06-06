@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 造物实验室 — 重新定义产品开发</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   DESIGN SYSTEM — V6 "Prism"
+   Deep indigo + electric blue + warm amber accents
+   ===================================================== */
+:root {
+  /* Primary accent */
+  --accent-1: #4f6ef7;
+  --accent-2: #7b5cf0;
+  --accent-3: #a78bfa;
+  --accent-gradient: linear-gradient(135deg, #4f6ef7 0%, #7b5cf0 50%, #a78bfa 100%);
+  --accent-glow: rgba(79,110,247,0.15);
+  --accent-glass: rgba(79,110,247,0.06);
+
+  /* Warm accent */
+  --warm: #f59e0b;
+  --warm-light: #fbbf24;
+  --warm-glass: rgba(245,158,11,0.08);
+
+  /* Teal accent */
+  --teal: #00c9a7;
+  --teal-glass: rgba(0,201,167,0.08);
+
+  /* Backgrounds */
+  --bg-page: #f8f9fc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f3f9;
+  --bg-dark: #0b0d14;
+  --bg-dark-surface: #151823;
+
+  /* Text */
+  --text-primary: #141824;
+  --text-body: #4b5062;
+  --text-muted: #9195a5;
+  --text-soft: #b7bac7;
+  --text-on-dark: #e2e4eb;
+  --text-on-dark-muted: #9397a8;
+
+  /* Borders */
+  --border-subtle: #e8ebf3;
+  --border-default: #dde1ed;
+  --border-strong: #c9cdd9;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.05), 0 2px 6px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.09), 0 6px 20px rgba(0,0,0,0.05);
+
+  /* Spacing */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 72px;
+  --space-3xl: 100px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-cn: 'Noto Sans SC', 'PingFang SC', system-ui, -apple-system, sans-serif;
+
+  /* Dashboard */
+  --dbg-bg: linear-gradient(160deg, #f4f6fd 0%, #fef3f7 100%);
+  --dbg-card: #ffffff;
+  --dbg-border: rgba(79,110,247,0.12);
+}
+
+[lang="zh-CN"] body,
+[lang="zh-CN"] h1, [lang="zh-CN"] h2, [lang="zh-CN"] h3,
+[lang="zh-CN"] .nav-brand,
+[lang="zh-CN"] .section-badge,
+[lang="zh-CN"] .btn {
+  font-family: var(--font-cn);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.section-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent-1); margin-bottom: var(--space-sm);
+  padding: 6px 16px;
+  background: var(--accent-glass);
+  border: 1px solid rgba(79,110,247,0.1);
+  border-radius: 100px;
+}
+.section-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-1);
+  box-shadow: 0 0 8px rgba(79,110,247,0.4);
+}
+
+.section-title {
+  font-size: clamp(32px, 4.5vw, 48px); font-weight: 800;
+  line-height: 1.1; letter-spacing: -0.025em;
+  color: var(--text-primary); margin-bottom: var(--space-sm);
+}
+.section-desc {
+  font-size: 17px; color: var(--text-body); line-height: 1.7;
+  max-width: 540px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 26px; font-size: 14px; font-weight: 600;
+  border-radius: 12px; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none; border: none; white-space: nowrap;
+  position: relative; overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.12);
+  opacity: 0; transition: opacity 0.25s;
+}
+.btn:hover::after { opacity: 1; }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent-gradient); color: #fff;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(79,110,247,0.25);
+}
+
+.btn-outline {
+  background: transparent; color: var(--text-primary);
+  border: 1.5px solid var(--border-default);
+}
+.btn-outline:hover {
+  border-color: var(--accent-1); color: var(--accent-1);
+  background: var(--accent-glass);
+}
+
+.btn-ghost {
+  background: transparent; color: var(--text-body);
+}
+.btn-ghost:hover { color: var(--accent-1); background: var(--accent-glass); }
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-xl);
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.nav.scrolled {
+  box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.94);
+}
+
+.nav-brand {
+  font-size: 18px; font-weight: 800; color: var(--text-primary);
+  text-decoration: none; display: flex; align-items: center; gap: 10px;
+}
+.nav-logo {
+  width: 32px; height: 32px; flex-shrink: 0;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-links a {
+  color: var(--text-body); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: color 0.2s; position: relative;
+  padding: 4px 0;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -2px; left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%; height: 2px; background: var(--accent-1);
+  border-radius: 2px;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover::after { transform: translateX(-50%) scaleX(0.7); }
+
+.nav-actions {
+  display: flex; align-items: center; gap: var(--space-sm);
+}
+
+/* Lang toggle */
+.lang-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 7px 14px; border-radius: 20px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer; font-size: 12px; font-weight: 600;
+  color: var(--text-muted); transition: all 0.2s;
+}
+.lang-toggle:hover {
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+.lang-toggle .icon { font-size: 14px; }
+.lang-toggle .label { font-size: 11px; }
+
+/* Hamburger */
+.nav-hamburger {
+  display: none; background: none; border: none;
+  cursor: pointer; padding: 8px; z-index: 110;
+}
+.nav-hamburger span {
+  display: block; width: 20px; height: 2px;
+  background: var(--text-primary); margin: 4px 0;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+.nav-hamburger.active span:nth-child(2) { opacity: 0; }
+.nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* Mobile menu */
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 99;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 28px; padding: 80px 20px 40px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 20px; font-weight: 700; color: var(--text-primary);
+  text-decoration: none; transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--accent-1); }
+.mobile-menu .btn { margin-top: 16px; }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .nav-actions .btn-primary.pre-login { display: none; }
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding-top: 64px; padding-bottom: var(--space-2xl);
+  background: var(--bg-page);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(79,110,247,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; right: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,201,167,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-inner {
+  width: 100%; position: relative; z-index: 1;
+  text-align: center;
+}
+.hero-content {
+  max-width: 780px; margin: 0 auto var(--space-2xl);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  color: var(--accent-1); margin-bottom: var(--space-lg);
+  padding: 8px 20px;
+  background: var(--accent-glass);
+  border: 1px solid rgba(79,110,247,0.12);
+  border-radius: 100px;
+}
+.hero-badge .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent-1);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79,110,247,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(79,110,247,0); }
+}
+
+.hero-title {
+  font-size: clamp(36px, 5.5vw, 56px); font-weight: 900;
+  line-height: 1.06; letter-spacing: -0.035em;
+  color: var(--text-primary); margin-bottom: var(--space-md);
+}
+.hero-title .highlight {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 18px; color: var(--text-body);
+  line-height: 1.7; max-width: 620px;
+  margin: 0 auto var(--space-xl);
+}
+.hero-actions {
+  display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap;
+}
+.hero-actions .btn-primary {
+  padding: 15px 32px; font-size: 15px;
+  border-radius: 14px;
+}
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 60px; justify-content: center;
+  margin-bottom: var(--space-xl); flex-wrap: wrap;
+}
+.hero-stat {
+  text-align: center;
+}
+.hero-stat-value {
+  font-size: 36px; font-weight: 900;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 12px; color: var(--text-muted);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; margin-top: 6px;
+}
+
+/* ===== INDUSTRY PANEL ===== */
+.industry-section {
+  padding: 0 0 var(--space-3xl);
+}
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  max-width: 1000px; margin: 0 auto;
+}
+.ind-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex; align-items: center; gap: var(--space-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none; color: inherit;
+  position: relative; overflow: hidden;
+}
+.ind-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(79,110,247,0.02), rgba(123,92,240,0.03));
+  opacity: 0; transition: opacity 0.3s;
+}
+.ind-card:hover {
+  border-color: var(--accent-1);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.ind-card:hover::before { opacity: 1; }
+
+.ind-icon {
+  width: 52px; height: 52px; border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  transition: background 0.3s;
+}
+.ind-card:hover .ind-icon { background: var(--accent-glass); }
+.ind-icon svg { width: 30px; height: 30px; }
+
+.ind-info { position: relative; z-index: 1; flex: 1; min-width: 0; }
+.ind-name {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.ind-desc {
+  font-size: 11px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ===== FEATURES ===== */
+.features {
+  padding: var(--space-3xl) 0;
+  background: var(--bg-subtle);
+  position: relative;
+}
+.features::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-default), transparent);
+}
+.features-header {
+  text-align: center; margin-bottom: var(--space-2xl);
+}
+.features-header .section-desc { margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  max-width: 1000px; margin: 0 auto;
+}
+.feat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative; overflow: hidden;
+}
+.feat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent-gradient);
+  transform: scaleX(0); transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.feat-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.feat-card:hover::before { transform: scaleX(1); }
+
+.feat-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--accent-glass);
+  margin: 0 auto var(--space-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; transition: transform 0.3s;
+}
+.feat-card:hover .feat-icon { transform: scale(1.1); }
+.feat-icon svg { width: 26px; height: 26px; }
+.feat-title {
+  font-size: 17px; font-weight: 700; margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+.feat-desc {
+  font-size: 14px; color: var(--text-body); line-height: 1.55;
+}
+
+/* ===== SHOWCASE ===== */
+.showcase {
+  padding: var(--space-3xl) 0;
+  background: var(--bg-page);
+}
+.showcase-header {
+  text-align: center; margin-bottom: var(--space-2xl);
+}
+.showcase-header .section-desc { margin: 0 auto; }
+
+.show-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  max-width: 1000px; margin: 0 auto;
+}
+.show-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+.show-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.show-visual {
+  height: 200px;
+  background: linear-gradient(135deg, var(--bg-subtle) 0%, #eef1f9 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.show-visual-inner {
+  width: 120px; height: 120px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #e4e7f2, #d5d9e5);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s;
+}
+.show-card:hover .show-visual-inner { transform: scale(1.05); }
+.show-visual-inner svg { width: 56px; height: 56px; opacity: 0.4; transition: opacity 0.3s; }
+.show-card:hover .show-visual-inner svg { opacity: 0.6; }
+
+.show-visual .tag {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 4px 10px;
+  border-radius: 6px; background: rgba(255,255,255,0.85);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+}
+.show-info { padding: var(--space-md); }
+.show-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.show-meta {
+  font-size: 12px; color: var(--text-muted);
+  display: flex; justify-content: space-between;
+}
+
+/* ===== TESTIMONIAL STRIP ===== */
+.testimonial-strip {
+  padding: var(--space-xl) 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+.testi-track {
+  display: flex; gap: var(--space-lg);
+  animation: scroll-left 40s linear infinite;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.testi-item {
+  display: flex; align-items: center; gap: var(--space-sm);
+  white-space: nowrap; flex-shrink: 0;
+}
+.testi-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.testi-text { font-size: 13px; color: var(--text-body); font-weight: 500; }
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: var(--space-3xl) 0;
+  background: var(--bg-dark);
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(79,110,247,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(0,201,167,0.04) 0%, transparent 50%);
+  animation: ctaPulse 8s ease-in-out infinite;
+}
+@keyframes ctaPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.cta-section > * { position: relative; }
+.cta-section .section-title { color: #fff; }
+.cta-section .section-desc { color: var(--text-on-dark-muted); margin: 0 auto var(--space-lg); }
+.cta-section .section-badge { background: rgba(255,255,255,0.06); color: #a5adf8; border-color: rgba(255,255,255,0.08); }
+
+.cta-actions {
+  display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap;
+}
+.btn-white-outline {
+  background: transparent; color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.btn-white-outline:hover {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--bg-dark);
+  color: var(--text-on-dark-muted);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: var(--space-xl) 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-lg);
+}
+.footer-brand {
+  font-size: 18px; font-weight: 800; color: var(--text-on-dark);
+  margin-bottom: var(--space-sm);
+  display: flex; align-items: center; gap: 10px;
+}
+.footer-brand .nav-logo { width: 26px; height: 26px; }
+.footer-desc {
+  font-size: 13px; color: var(--text-on-dark-muted);
+  max-width: 260px; line-height: 1.6;
+}
+.footer-col-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-on-dark);
+  margin-bottom: var(--space-sm);
+}
+.footer-col a {
+  display: block; font-size: 13px; color: var(--text-on-dark-muted);
+  text-decoration: none; margin-bottom: 8px;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--accent-1); }
+
+.footer-bottom {
+  margin-top: var(--space-lg); padding-top: var(--space-md);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #5d606e;
+}
+
+/* ===== POST-LOGIN STATES ===== */
+body.logged-in .post-login { display: block; }
+body.logged-in .pre-login { display: none; }
+body.logged-in .nav-links.pre-login-links { display: none; }
+body.logged-in .post-login-links { display: flex; }
+body.logged-in .nav {
+  background: rgba(255,255,255,0.88);
+}
+
+.post-login { display: none; }
+.post-login-links { display: none; }
+body.logged-in .nav-actions .post-login {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.db-nav-btn {
+  display: inline-flex; align-items: center;
+  padding: 7px 18px; border-radius: 10px;
+  background: var(--accent-gradient);
+  color: #fff; font-size: 13px; font-weight: 600;
+  text-decoration: none; transition: all 0.2s;
+  font-family: var(--font);
+}
+.db-nav-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+.db-nav-link {
+  font-size: 13px; font-weight: 500; color: var(--text-body);
+  text-decoration: none; transition: color 0.2s;
+}
+.db-nav-link:hover { color: var(--accent-1); }
+
+/* ===== DASHBOARD ===== */
+.db-hero {
+  padding: calc(64px + var(--space-2xl)) 0 var(--space-2xl);
+  min-height: 100vh;
+  background: var(--dbg-bg);
+  position: relative;
+}
+.db-hero::before {
+  content: ''; position: absolute; top: -10%; left: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(79,110,247,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.db-hero::after {
+  content: ''; position: absolute; bottom: -5%; right: -5%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(123,92,240,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.db-heading {
+  text-align: center; position: relative; z-index: 1;
+  padding: 0 var(--space-md); margin-bottom: var(--space-xl);
+}
+.db-heading h1 {
+  font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+  line-height: 1.15; letter-spacing: -0.02em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.db-heading p {
+  font-size: 15px; color: var(--text-muted);
+  max-width: 440px; margin: 0 auto;
+}
+
+/* Dashboard grid */
+.db-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 960px; margin: 0 auto;
+  padding: 0 var(--space-md);
+  position: relative; z-index: 1;
+  align-items: stretch;
+}
+
+.db-panel {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 2px;
+  background: linear-gradient(145deg, rgba(79,110,247,0.25), rgba(123,92,240,0.2), rgba(0,201,167,0.15));
+  box-shadow: var(--shadow-md);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.db-panel:hover {
+  box-shadow: 0 12px 40px rgba(79,110,247,0.12);
+  transform: translateY(-3px);
+}
+.db-panel-inner {
+  background: var(--dbg-card);
+  border-radius: calc(var(--radius-xl) - 2px);
+  padding: 28px 28px 20px;
+  height: 100%;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.db-panel-inner::before {
+  content: ''; position: absolute; top: 0; left: 24px; right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,110,247,0.12), rgba(0,201,167,0.1), transparent);
+}
+
+.db-panel-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent-1);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.db-panel-label::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-gradient);
+}
+.db-panel-title {
+  font-size: 20px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 2px; line-height: 1.3;
+}
+.db-panel-desc {
+  font-size: 13px; color: var(--text-muted);
+  margin-bottom: 20px; line-height: 1.5;
+}
+.db-panel-body { flex: 1; display: flex; flex-direction: column; }
+
+/* Upload zone */
+.upload-zone {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 32px 20px; text-align: center;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  background: linear-gradient(180deg, #fafbfe 0%, #f5f6fb 100%);
+  position: relative; overflow: hidden;
+  min-height: 176px;
+}
+.upload-zone::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(79,110,247,0.04) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.upload-zone:hover {
+  border-color: var(--accent-2); border-style: solid;
+  background: linear-gradient(180deg, #f7f6ff 0%, #f4f3fc 100%);
+  box-shadow: inset 0 0 40px rgba(79,110,247,0.03);
+}
+.upload-zone:hover::after { opacity: 1; }
+
+.upload-zone-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(79,110,247,0.08), rgba(123,92,240,0.06));
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; transition: transform 0.3s;
+}
+.upload-zone:hover .upload-zone-icon { transform: scale(1.08); }
+.upload-zone-icon svg { width: 22px; height: 22px; }
+
+.upload-zone-text { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.upload-zone-hint { font-size: 12px; color: var(--text-muted); }
+
+.upload-zone-tags {
+  display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; justify-content: center;
+}
+.upload-zone-tag {
+  font-size: 10px; font-weight: 600; padding: 4px 10px;
+  background: #fff; border: 1px solid var(--border-subtle);
+  border-radius: 6px; color: var(--text-muted);
+  transition: all 0.2s;
+}
+.upload-zone:hover .upload-zone-tag { border-color: rgba(79,110,247,0.2); color: var(--accent-1); }
+
+/* Prompt textarea */
+.prompt-area { flex: 1; display: flex; flex-direction: column; }
+.prompt-input {
+  flex: 1; width: 100%; min-height: 176px;
+  background: linear-gradient(180deg, #fafbfe 0%, #f5f6fb 100%);
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 14px; line-height: 1.7;
+  resize: none;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.prompt-input:focus {
+  outline: none;
+  border-color: var(--accent-2);
+  background: linear-gradient(180deg, #f7f6ff 0%, #f4f3fc 100%);
+  box-shadow: 0 0 0 3px rgba(123,92,240,0.06), inset 0 0 30px rgba(79,110,247,0.02);
+}
+.prompt-input::placeholder { color: var(--text-soft); font-style: italic; }
+
+.prompt-suggestions {
+  display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+}
+.prompt-sug {
+  font-size: 12px; color: var(--text-muted);
+  background: var(--bg-subtle);
+  padding: 5px 14px; border-radius: 20px; cursor: pointer;
+  transition: all 0.25s; border: 1px solid transparent;
+  font-family: var(--font);
+}
+.prompt-sug:hover {
+  color: var(--accent-1);
+  background: var(--accent-glass);
+  border-color: rgba(79,110,247,0.15);
+}
+
+/* DB Action buttons */
+.db-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+.db-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s;
+  border: none; text-decoration: none;
+}
+.db-btn-primary {
+  background: var(--accent-gradient);
+  color: #fff; box-shadow: 0 2px 8px var(--accent-glow);
+}
+.db-btn-primary:hover { opacity: 0.93; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,110,247,0.25); }
+.db-btn-ghost {
+  background: transparent; color: var(--text-muted);
+}
+.db-btn-ghost:hover { color: var(--accent-1); }
+
+@media (max-width: 768px) {
+  .db-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ===== USER ZONE ===== */
+.user-zone {
+  padding: var(--space-3xl) 0;
+  background: var(--bg-subtle);
+}
+.uz-header { text-align: center; margin-bottom: var(--space-2xl); }
+.uz-header .section-desc { margin: 0 auto; }
+
+.uz-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+  max-width: 1000px; margin: 0 auto;
+}
+.uz-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: center;
+  transition: all 0.25s;
+  text-decoration: none; color: inherit;
+  display: block;
+}
+.uz-card:hover {
+  border-color: var(--accent-1);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.uz-icon { font-size: 32px; margin-bottom: var(--space-sm); }
+.uz-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.uz-count { font-size: 12px; color: var(--text-muted); }
+.uz-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  background: var(--accent-1); color: #fff; margin-top: 6px;
+}
+
+/* ===== STATE TOGGLE BAR ===== */
+.state-bar {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 200;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 30px; padding: 5px 6px;
+  display: flex; align-items: center; gap: 3px;
+  box-shadow: var(--shadow-lg);
+}
+.state-bar-label {
+  font-size: 11px; color: var(--text-muted);
+  padding: 0 10px; font-weight: 600;
+}
+.state-bar-btn {
+  padding: 7px 16px; border-radius: 24px; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  background: transparent; color: var(--text-muted);
+  transition: all 0.2s;
+}
+.state-bar-btn.active {
+  background: var(--accent-gradient); color: #fff;
+}
+.state-bar-btn:not(.active):hover { color: var(--text-primary); }
+
+/* ===== ANIMATIONS ===== */
+.fade-up {
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUpAnim 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes fadeUpAnim { to { opacity: 1; transform: translateY(0); } }
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* ===== ACCESSIBILITY ===== */
+:focus-visible {
+  outline: 2px solid var(--accent-1);
+  outline-offset: 2px; border-radius: 4px;
+}
+::selection {
+  background: rgba(79,110,247,0.18);
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .show-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .uz-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav { padding: 0 var(--space-md); }
+}
+@media (max-width: 640px) {
+  .industry-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .show-grid { grid-template-columns: 1fr; }
+  .uz-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 32px; }
+  .hero-stat-value { font-size: 28px; }
+}
+@media (max-width: 480px) {
+  .lang-toggle span.label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav" id="navbar">
+  <a href="#" class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="8" stroke="#4f6ef7" stroke-width="2.5" fill="none"/>
+      <path d="M10 22V12l12 5-12 5z" fill="#4f6ef7"/>
+      <circle cx="24" cy="24" r="3" fill="#7b5cf0" opacity="0.6"/>
+    </svg>
+    <span data-i18n="brand">AI 造物实验室</span>
+  </a>
+
+  <div class="nav-links pre-login-links">
+    <a href="#industries" data-i18n="nav_industries">行业方案</a>
+    <a href="#features" data-i18n="nav_features">功能</a>
+    <a href="#showcase" data-i18n="nav_showcase">案例</a>
+    <a href="#pricing" data-i18n="nav_pricing">定价</a>
+  </div>
+
+  <div class="nav-links post-login-links">
+    <a href="#dashboard" data-i18n="nav_dashboard">工作台</a>
+    <a href="#user-zone" data-i18n="nav_myzone">我的专区</a>
+    <a href="#showcase-logged" data-i18n="nav_gallery">案例库</a>
+  </div>
+
+  <div class="nav-actions">
+    <div class="lang-toggle" onclick="toggleLang()" title="切换语言 / Switch Language">
+      <span class="icon">🌐</span>
+      <span class="label" id="langLabel">EN</span>
+    </div>
+    <button class="btn btn-primary pre-login" style="padding:9px 20px;font-size:13px;border-radius:10px;" data-i18n="start_free">免费开始</button>
+    <div class="post-login">
+      <a href="#" class="db-nav-btn" data-i18n="db_nav_create">创作</a>
+      <a href="#" class="db-nav-link" data-i18n="db_nav_projects">我的项目</a>
+      <div class="user-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">张</div>
+    </div>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<!-- ========== PRE-LOGIN ========== -->
+<div class="pre-login">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="container hero-inner">
+    <div class="hero-content fade-up">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span data-i18n="hero_badge">AI-Powered Product Development</span>
+      </div>
+      <h1 class="hero-title">
+        <span data-i18n="hero_title_line1">从创意到制造，</span><br>
+        <span class="highlight" data-i18n="hero_title_line2">AI 重新定义产品开发</span>
+      </h1>
+      <p class="hero-desc" data-i18n="hero_desc">上传草图、描述想法，AI 即刻生成精准 3D 模型。对接 500+ 认证工厂，一键报价、下单、交付——全流程在一个平台完成。</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary" data-i18n="hero_cta">免费开始使用 →</a>
+        <a href="#" class="btn btn-outline" data-i18n="hero_demo">预约演示</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="hero-stats fade-up stagger-1">
+      <div class="hero-stat">
+        <div class="hero-stat-value count-50k">0</div>
+        <div class="hero-stat-label" data-i18n="stat_models">AI 生成模型</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value count-500">0</div>
+        <div class="hero-stat-label" data-i18n="stat_suppliers">合作工厂</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value count-24">--</div>
+        <div class="hero-stat-label" data-i18n="stat_delivery">最快交付</div>
+      </div>
+    </div>
+
+    <!-- Industry Grid -->
+    <div class="industry-grid fade-up stagger-2" id="industries">
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="9" y="6" width="22" height="26" rx="4" stroke="#4f6ef7" stroke-width="2"/><rect x="14" y="11" width="12" height="8" rx="2" stroke="#4f6ef7" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="#4f6ef7" opacity="0.4"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_trendy_name">潮玩手办</div><div class="ind-desc" data-i18n="ind_trendy_desc">潮玩手办 · 模型玩具</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="8" y="6" width="24" height="14" rx="3" stroke="#4f6ef7" stroke-width="2"/><rect x="14" y="10" width="12" height="6" rx="2" stroke="#4f6ef7" stroke-width="1.5"/><circle cx="20" cy="26" r="4" stroke="#7b5cf0" stroke-width="2"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_consumer_name">消费电子</div><div class="ind-desc" data-i18n="ind_consumer_desc">消费电子 · 耳机 · 穿戴设备</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="10" y="6" width="20" height="22" rx="4" stroke="#4f6ef7" stroke-width="2"/><circle cx="15" cy="14" r="3" stroke="#7b5cf0" stroke-width="2"/><circle cx="25" cy="14" r="3" stroke="#7b5cf0" stroke-width="2"/><rect x="14" y="21" width="12" height="3" rx="1.5" fill="#4f6ef7" opacity="0.3"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_robot_name">机器人</div><div class="ind-desc" data-i18n="ind_robot_desc">机器人 · 自动化设备</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="8" y="4" width="24" height="18" rx="3" stroke="#4f6ef7" stroke-width="2"/><rect x="14" y="9" width="12" height="8" rx="2" stroke="#4f6ef7" stroke-width="1.5"/><line x1="20" y1="12" x2="20" y2="16" stroke="#7b5cf0" stroke-width="2"/><circle cx="20" cy="28" r="4" stroke="#4f6ef7" stroke-width="2" fill="rgba(79,110,247,0.05)"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_medical_name">医疗器械</div><div class="ind-desc" data-i18n="ind_medical_desc">医疗器械 · 健康设备</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M20 4L6 18h4v16h8V26h4v8h8V18h4L20 4z" stroke="#4f6ef7" stroke-width="2"/><rect x="22" y="14" width="8" height="4" rx="2" stroke="#7b5cf0" stroke-width="1.5"/><circle cx="26" cy="16" r="1.5" fill="#7b5cf0"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_smarthome_name">智能家居</div><div class="ind-desc" data-i18n="ind_smarthome_desc">智能家居 · 小家电</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="6" y="14" width="28" height="12" rx="3" stroke="#4f6ef7" stroke-width="2"/><circle cx="14" cy="26" r="4" stroke="#4f6ef7" stroke-width="2"/><circle cx="26" cy="26" r="4" stroke="#4f6ef7" stroke-width="2"/><circle cx="14" cy="26" r="1.5" fill="#7b5cf0"/><circle cx="26" cy="26" r="1.5" fill="#7b5cf0"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_auto_name">汽车改装</div><div class="ind-desc" data-i18n="ind_auto_desc">汽车改装 · 定制零件</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M6 32l8-18 12 2-6 8 10-2 4-6 6-2-3 14-6-2-4-6-12-2 6 8-12 2-8-18" stroke="#4f6ef7" stroke-width="2"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_aero_name">航空航天</div><div class="ind-desc" data-i18n="ind_aero_desc">航空航天 · 无人机</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="12" stroke="#4f6ef7" stroke-width="2"/><circle cx="20" cy="20" r="4" stroke="#7b5cf0" stroke-width="2"/><circle cx="20" cy="20" r="1.5" fill="#7b5cf0"/><line x1="20" y1="8" x2="20" y2="16" stroke="#4f6ef7" stroke-width="1.5"/><line x1="20" y1="24" x2="20" y2="32" stroke="#4f6ef7" stroke-width="1.5"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_industrial_name">工业设备</div><div class="ind-desc" data-i18n="ind_industrial_desc">工业设备 · 精密零件</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#4f6ef7" stroke-width="2"/><path d="M20 6v28M6 20h28" stroke="#4f6ef7" stroke-width="1.5"/><circle cx="20" cy="20" r="3" fill="#7b5cf0" opacity="0.3"/><circle cx="12" cy="12" r="1.5" fill="#4f6ef7"/><circle cx="28" cy="12" r="1.5" fill="#4f6ef7"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_sport_name">体育教育</div><div class="ind-desc" data-i18n="ind_sport_desc">体育器材 · 教育玩具</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header fade-up">
+      <div class="section-badge" data-i18n="features_badge">Core Capabilities</div>
+      <h2 class="section-title" data-i18n="features_title">AI 驱动的全链路能力</h2>
+      <p class="section-desc" data-i18n="features_desc">从图片识别到 3D 生成，从工程验证到即时报价——产品开发从未如此高效。</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card fade-up stagger-1">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="20" height="20" rx="4" stroke="#4f6ef7" stroke-width="2"/><circle cx="9" cy="9" r="2" fill="#4f6ef7" opacity="0.5"/><path d="M9 11l5 5 6-6" stroke="#4f6ef7" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="feat-title" data-i18n="feat_img3d_title">图片转 3D</div>
+        <div class="feat-desc" data-i18n="feat_img3d_desc">上传任意角度照片或草图，AI 自动生成精准 3D 模型，支持多视角融合识别。</div>
+      </div>
+      <div class="feat-card fade-up stagger-2">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><rect x="4" y="4" width="18" height="18" rx="3" stroke="#4f6ef7" stroke-width="2"/><line x1="13" y1="7" x2="13" y2="19" stroke="#4f6ef7" stroke-width="2"/><line x1="7" y1="13" x2="19" y2="13" stroke="#4f6ef7" stroke-width="2"/><path d="M20 20l4 4" stroke="#7b5cf0" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="feat-title" data-i18n="feat_text3d_title">文字转 3D</div>
+        <div class="feat-desc" data-i18n="feat_text3d_desc">用自然语言描述产品，AI 理解意图并生成可编辑的 3D 模型。</div>
+      </div>
+      <div class="feat-card fade-up stagger-3">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="20" height="20" rx="3" stroke="#4f6ef7" stroke-width="2"/><line x1="3" y1="9" x2="23" y2="9" stroke="#4f6ef7" stroke-width="1.5"/><line x1="9" y1="3" x2="9" y2="23" stroke="#4f6ef7" stroke-width="1.5"/><rect x="10" y="10" width="12" height="12" rx="2" fill="#4f6ef7" opacity="0.1"/></svg></div>
+        <div class="feat-title" data-i18n="feat_quote_title">即时报价</div>
+        <div class="feat-desc" data-i18n="feat_quote_desc">上传图纸自动分析工艺路径，实时生成 CNC、注塑、3D 打印报价。</div>
+      </div>
+      <div class="feat-card fade-up stagger-1">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="10" stroke="#4f6ef7" stroke-width="2"/><path d="M13 7v6l4 4" stroke="#4f6ef7" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="feat-title" data-i18n="feat_dfm_title">DFM 自动检测</div>
+        <div class="feat-desc" data-i18n="feat_dfm_desc">AI 自动检测可制造性问题，在设计阶段就标注壁厚、拔模角等风险点。</div>
+      </div>
+      <div class="feat-card fade-up stagger-2">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><path d="M4 8h18v12a3 3 0 01-3 3H7a3 3 0 01-3-3V8z" stroke="#4f6ef7" stroke-width="2"/><path d="M4 8l5-5h8l5 5" stroke="#4f6ef7" stroke-width="2"/><line x1="13" y1="13" x2="13" y2="19" stroke="#4f6ef7" stroke-width="2"/></svg></div>
+        <div class="feat-title" data-i18n="feat_order_title">一键下单</div>
+        <div class="feat-desc" data-i18n="feat_order_desc">确认报价后直接下单，对接 500+ 认证工厂，全工艺链覆盖。</div>
+      </div>
+      <div class="feat-card fade-up stagger-3">
+        <div class="feat-icon"><svg viewBox="0 0 26 26" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="#4f6ef7" stroke-width="2"/><rect x="14" y="2" width="10" height="10" rx="2" stroke="#4f6ef7" stroke-width="2"/><rect x="2" y="14" width="10" height="10" rx="2" stroke="#4f6ef7" stroke-width="2"/><rect x="14" y="14" width="10" height="10" rx="2" stroke="#4f6ef7" stroke-width="2"/></svg></div>
+        <div class="feat-title" data-i18n="feat_pm_title">项目看板</div>
+        <div class="feat-desc" data-i18n="feat_pm_desc">统一管理项目、模型版本、订单和交付进度，团队无缝协作。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="showcase" id="showcase">
+  <div class="container">
+    <div class="showcase-header fade-up">
+      <div class="section-badge" data-i18n="showcase_badge">Case Studies</div>
+      <h2 class="section-title" data-i18n="showcase_title">3D 模型展示 & 案例</h2>
+      <p class="section-desc" data-i18n="showcase_desc">来自不同行业的真实作品——探索 AI 创造力的边界。</p>
+    </div>
+    <div class="show-grid">
+      <div class="show-card fade-up stagger-1">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag1">CNC</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="18" stroke="#666" stroke-width="2" stroke-dasharray="6 3"/><circle cx="28" cy="28" r="7" stroke="#4f6ef7" stroke-width="2"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title1">精密齿轮组件</div><div class="show-meta"><span data-i18n="show_cat1">工业制造</span><span data-i18n="show_time1">24h 交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-2">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag2">注塑</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="10" y="8" width="36" height="40" rx="5" stroke="#666" stroke-width="2"/><rect x="18" y="16" width="20" height="24" rx="3" stroke="#999" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title2">消费电子外壳</div><div class="show-meta"><span data-i18n="show_cat2">消费电子</span><span data-i18n="show_time2">3 天交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-3">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag3">钣金</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><path d="M10 28l12-10 12 10-12 10z" stroke="#666" stroke-width="2"/><path d="M28 28l10-10 8 8-10 10z" stroke="#999" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title3">无人机支架总成</div><div class="show-meta"><span data-i18n="show_cat3">航空航天</span><span data-i18n="show_time3">5 天交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-1">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag4">注塑</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="8" y="8" width="40" height="24" rx="4" stroke="#666" stroke-width="2"/><rect x="16" y="15" width="24" height="12" rx="2" stroke="#999" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title4">医疗器械壳体</div><div class="show-meta"><span data-i18n="show_cat4">医疗器械</span><span data-i18n="show_time4">48h 交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-2">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag5">CNC</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><path d="M14 10l4-4h18l6 6" stroke="#666" stroke-width="2"/><rect x="10" y="10" width="36" height="36" rx="3" stroke="#666" stroke-width="2"/><circle cx="22" cy="28" r="5" stroke="#4f6ef7" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title5">汽车定制连接件</div><div class="show-meta"><span data-i18n="show_cat5">汽车制造</span><span data-i18n="show_time5">3 天交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-3">
+        <div class="show-visual">
+          <div class="tag" data-i18n="show_tag6">多工艺</div>
+          <div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="10" y="16" width="14" height="28" rx="3" stroke="#666" stroke-width="2"/><rect x="32" y="16" width="14" height="28" rx="3" stroke="#666" stroke-width="2"/><rect x="22" y="12" width="12" height="36" rx="2" stroke="#999" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title6">机器人关节模组</div><div class="show-meta"><span data-i18n="show_cat6">机器人</span><span data-i18n="show_time6">7 天交付</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL STRIP -->
+<section class="testimonial-strip" id="pricing">
+  <div class="testi-track">
+    <div class="testi-item"><div class="testi-avatar">李</div><span class="testi-text">"AI 生成的 3D 模型精度超出预期，3 天就拿到了样品"</span></div>
+    <div class="testi-item"><div class="testi-avatar">王</div><span class="testi-text">"从图纸到报价只用了 2 分钟，效率提升 10 倍"</span></div>
+    <div class="testi-item"><div class="testi-avatar">陈</div><span class="testi-text">"DFM 检测帮我们提前发现了 3 个设计问题"</span></div>
+    <div class="testi-item"><div class="testi-avatar">刘</div><span class="testi-text">"一站式从设计到交付，省掉了 60% 的沟通成本"</span></div>
+    <div class="testi-item"><div class="testi-avatar">赵</div><span class="testi-text">"500+ 工厂直接对接，选厂比价太方便了"</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="testi-item"><div class="testi-avatar">李</div><span class="testi-text">"AI 生成的 3D 模型精度超出预期，3 天就拿到了样品"</span></div>
+    <div class="testi-item"><div class="testi-avatar">王</div><span class="testi-text">"从图纸到报价只用了 2 分钟，效率提升 10 倍"</span></div>
+    <div class="testi-item"><div class="testi-avatar">陈</div><span class="testi-text">"DFM 检测帮我们提前发现了 3 个设计问题"</span></div>
+    <div class="testi-item"><div class="testi-avatar">刘</div><span class="testi-text">"一站式从设计到交付，省掉了 60% 的沟通成本"</span></div>
+    <div class="testi-item"><div class="testi-avatar">赵</div><span class="testi-text">"500+ 工厂直接对接，选厂比价太方便了"</span></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-badge" data-i18n="cta_badge">Get Started</div>
+    <h2 class="section-title" data-i18n="cta_title">准备好将创意变为现实？</h2>
+    <p class="section-desc" data-i18n="cta_desc">免费注册，立即体验 AI 驱动的全链路产品开发。</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-primary" style="font-size:16px;padding:16px 36px;" data-i18n="cta_btn_primary">免费开始使用 →</a>
+      <a href="#" class="btn btn-white-outline" style="font-size:14px;padding:14px 30px;border-radius:12px;" data-i18n="cta_btn_secondary">预约演示</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <svg class="nav-logo" viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="28" height="28" rx="8" stroke="#4f6ef7" stroke-width="2.5" fill="none"/><path d="M10 22V12l12 5-12 5z" fill="#4f6ef7"/><circle cx="24" cy="24" r="3" fill="#7b5cf0" opacity="0.6"/></svg>
+          <span data-i18n="brand">AI 造物实验室</span>
+        </div>
+        <p class="footer-desc" data-i18n="footer_desc">All-in-One AI 平台，从创意到制造，一站式完成产品开发。</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col1_title">产品</div>
+        <a href="#" data-i18n="footer_col1_l1">AI 3D 建模</a><a href="#" data-i18n="footer_col1_l2">即时报价</a><a href="#" data-i18n="footer_col1_l3">制造下单</a><a href="#" data-i18n="footer_col1_l4">项目管理</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col2_title">资源</div>
+        <a href="#" data-i18n="footer_col2_l1">案例库</a><a href="#" data-i18n="footer_col2_l2">帮助中心</a><a href="#" data-i18n="footer_col2_l3">API 文档</a><a href="#" data-i18n="footer_col2_l4">博客</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col3_title">公司</div>
+        <a href="#" data-i18n="footer_col3_l1">关于我们</a><a href="#" data-i18n="footer_col3_l2">联系我们</a><a href="#" data-i18n="footer_col3_l3">隐私政策</a><a href="#" data-i18n="footer_col3_l4">服务条款</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer_copyright">© 2026 AI 造物实验室. All rights reserved.</span>
+      <span data-i18n="footer_sub">RapidDirect 旗下产品</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ========== POST-LOGIN ========== -->
+<div class="post-login">
+
+<!-- DASHBOARD -->
+<section class="db-hero" id="dashboard">
+  <div class="db-heading fade-up">
+    <h1 data-i18n="db_main_title">Design with Words</h1>
+    <p data-i18n="db_main_desc">用文字描述你的产品，AI 即刻生成 3D 模型</p>
+  </div>
+
+  <div class="db-grid">
+    <!-- LEFT: Image to 3D -->
+    <div class="db-panel fade-up">
+      <div class="db-panel-inner">
+        <div class="db-panel-label" data-i18n="db_panel1_label">Image to 3D</div>
+        <div class="db-panel-title" data-i18n="db_panel1_title">上传图片，AI 生成 3D 模型</div>
+        <div class="db-panel-desc" data-i18n="db_panel1_desc">支持任意角度照片、手绘草图、参考图片</div>
+        <div class="db-panel-body">
+          <div class="upload-zone" onclick="handleUpload()">
+            <div class="upload-zone-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <div class="upload-zone-text" data-i18n="upload_text">点击或拖拽上传图片</div>
+            <div class="upload-zone-hint" data-i18n="upload_hint">支持 JPG / PNG / WEBP，最大 20MB</div>
+            <div class="upload-zone-tags"><span class="upload-zone-tag">JPG</span><span class="upload-zone-tag">PNG</span><span class="upload-zone-tag">WEBP</span><span class="upload-zone-tag" data-i18n="upload_tag_multi">多视角</span></div>
+          </div>
+        </div>
+        <div class="db-actions">
+          <button class="db-btn db-btn-ghost" onclick="handleUpload()" data-i18n="upload_drag">拖拽上传</button>
+          <button class="db-btn db-btn-primary" onclick="handleUpload()" data-i18n="upload_btn">上传并生成 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Text to 3D -->
+    <div class="db-panel fade-up stagger-1">
+      <div class="db-panel-inner">
+        <div class="db-panel-label" data-i18n="db_panel2_label">Text to 3D</div>
+        <div class="db-panel-title" data-i18n="db_panel2_title">文字描述，AI 生成 3D 模型</div>
+        <div class="db-panel-desc" data-i18n="db_panel2_desc">用自然语言描述，AI 理解意图并生成可编辑的 3D 模型</div>
+        <div class="db-panel-body">
+          <div class="prompt-area">
+            <textarea class="prompt-input" id="promptInput" data-i18n-placeholder="prompt_placeholder" placeholder="描述你想要的 3D 模型..."></textarea>
+            <div class="prompt-suggestions">
+              <span class="prompt-sug" onclick="fillPrompt('直径 50mm 铝合金齿轮，模数 2，20 齿')" data-i18n="prompt_gear">齿轮</span>
+              <span class="prompt-sug" onclick="fillPrompt('手机外壳，圆角设计，带摄像头开孔')" data-i18n="prompt_case">手机壳</span>
+              <span class="prompt-sug" onclick="fillPrompt('无人机机臂连接件，碳纤维材质，轻量化设计')" data-i18n="prompt_drone">无人机</span>
+              <span class="prompt-sug" onclick="fillPrompt('医疗设备外壳，人体工学设计，ABS 材质')" data-i18n="prompt_med">医疗</span>
+            </div>
+          </div>
+        </div>
+        <div class="db-actions">
+          <button class="db-btn db-btn-ghost" onclick="fillPrompt('')" data-i18n="clear_btn">清空</button>
+          <button class="db-btn db-btn-primary" onclick="generate3D()" data-i18n="generate_btn">AI 生成 3D →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER ZONE -->
+<section class="user-zone" id="user-zone">
+  <div class="container">
+    <div class="uz-header fade-up">
+      <div class="section-badge" data-i18n="uz_badge">My Workspace</div>
+      <h2 class="section-title" data-i18n="uz_title">我的专区</h2>
+      <p class="section-desc" data-i18n="uz_desc">管理你的创作、订单与数据。</p>
+    </div>
+    <div class="uz-grid">
+      <a href="#" class="uz-card fade-up stagger-1"><div class="uz-icon">📁</div><div class="uz-title" data-i18n="uz_projects">我的项目</div><div class="uz-count" data-i18n="uz_projects_count">12 个进行中</div><span class="uz-badge" data-i18n="uz_projects_badge">3 新</span></a>
+      <a href="#" class="uz-card fade-up stagger-1"><div class="uz-icon">🧊</div><div class="uz-title" data-i18n="uz_models">3D 模型库</div><div class="uz-count" data-i18n="uz_models_count">47 个模型</div></a>
+      <a href="#" class="uz-card fade-up stagger-2"><div class="uz-icon">📋</div><div class="uz-title" data-i18n="uz_orders">我的订单</div><div class="uz-count" data-i18n="uz_orders_count">8 个进行中</div></a>
+      <a href="#" class="uz-card fade-up stagger-2"><div class="uz-icon">⚙️</div><div class="uz-title" data-i18n="uz_quotes">报价记录</div><div class="uz-count" data-i18n="uz_quotes_count">23 条</div><span class="uz-badge" data-i18n="uz_quotes_badge">5 待确认</span></a>
+      <a href="#" class="uz-card fade-up stagger-3"><div class="uz-icon">💬</div><div class="uz-title" data-i18n="uz_messages">消息中心</div><div class="uz-count" data-i18n="uz_messages_count">6 条未读</div><span class="uz-badge" data-i18n="uz_messages_badge">新</span></a>
+      <a href="#" class="uz-card fade-up stagger-3"><div class="uz-icon">👤</div><div class="uz-title" data-i18n="uz_settings">账户设置</div><div class="uz-count" data-i18n="uz_settings_count">企业认证</div></a>
+      <a href="#" class="uz-card fade-up stagger-3"><div class="uz-icon">📊</div><div class="uz-title" data-i18n="uz_dashboard">数据看板</div><div class="uz-count" data-i18n="uz_dashboard_count">本月 ¥12.8K</div></a>
+      <a href="#" class="uz-card fade-up stagger-3"><div class="uz-icon">🔖</div><div class="uz-title" data-i18n="uz_favorites">收藏案例</div><div class="uz-count" data-i18n="uz_favorites_count">15 个</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE (logged-in) -->
+<section class="showcase" id="showcase-logged">
+  <div class="container">
+    <div class="showcase-header fade-up">
+      <div class="section-badge" data-i18n="gallery_badge">Gallery</div>
+      <h2 class="section-title" data-i18n="gallery_title">社区案例 & 我的作品</h2>
+      <p class="section-desc" data-i18n="gallery_desc">浏览平台优秀案例，查看你生成的 3D 模型。</p>
+    </div>
+    <div class="show-grid">
+      <div class="show-card fade-up stagger-1">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag1">CNC</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="18" stroke="#666" stroke-width="2" stroke-dasharray="6 3"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title1">精密齿轮组件</div><div class="show-meta"><span data-i18n="show_cat1">工业制造</span><span data-i18n="show_time1">24h 交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-2">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag2">注塑</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="10" y="8" width="36" height="40" rx="5" stroke="#666" stroke-width="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title2">消费电子外壳</div><div class="show-meta"><span data-i18n="show_cat2">消费电子</span><span data-i18n="show_time2">3 天交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-3">
+        <div class="show-visual"><div class="tag" style="background:rgba(79,110,247,0.08);color:#4f6ef7;" data-i18n="gallery_mine">我的作品</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><path d="M14 10l4-4h18l6 6" stroke="#4f6ef7" stroke-width="2"/><rect x="10" y="10" width="36" height="36" rx="3" stroke="#4f6ef7" stroke-width="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="gallery_mine_title1">我的项目：支架 V2</div><div class="show-meta"><span style="color:#4f6ef7;" data-i18n="gallery_mine_status1">报价中</span><span data-i18n="gallery_mine_time1">3 天前更新</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-1">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag3">钣金</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><path d="M10 28l12-10 12 10-12 10z" stroke="#666" stroke-width="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title3">无人机支架总成</div><div class="show-meta"><span data-i18n="show_cat3">航空航天</span><span data-i18n="show_time3">5 天交付</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-2">
+        <div class="show-visual"><div class="tag" style="background:rgba(79,110,247,0.08);color:#4f6ef7;" data-i18n="gallery_mine">我的作品</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="8" y="8" width="40" height="24" rx="4" stroke="#4f6ef7" stroke-width="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="gallery_mine_title2">我的项目：壳体 A3</div><div class="show-meta"><span style="color:#4f6ef7;" data-i18n="gallery_mine_status2">已交付</span><span data-i18n="gallery_mine_time2">1 周前</span></div></div>
+      </div>
+      <div class="show-card fade-up stagger-3">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag6">多工艺</div><div class="show-visual-inner"><svg viewBox="0 0 56 56"><rect x="10" y="16" width="14" height="28" rx="3" stroke="#666" stroke-width="2"/><rect x="32" y="16" width="14" height="28" rx="3" stroke="#666" stroke-width="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title6">机器人关节模组</div><div class="show-meta"><span data-i18n="show_cat6">机器人</span><span data-i18n="show_time6">7 天交付</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (logged-in) -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <svg class="nav-logo" viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="28" height="28" rx="8" stroke="#4f6ef7" stroke-width="2.5" fill="none"/><path d="M10 22V12l12 5-12 5z" fill="#4f6ef7"/><circle cx="24" cy="24" r="3" fill="#7b5cf0" opacity="0.6"/></svg>
+          <span data-i18n="brand">AI 造物实验室</span>
+        </div>
+        <p class="footer-desc" data-i18n="footer_desc_logged">All-in-One AI 平台，从创意到制造，一站式完成产品开发。</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col4_title">快捷操作</div>
+        <a href="#" data-i18n="footer_col4_l1">新建项目</a><a href="#" data-i18n="footer_col4_l2">上传图纸报价</a><a href="#" data-i18n="footer_col4_l3">查看订单</a><a href="#" data-i18n="footer_col4_l4">账户设置</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col2_title">资源</div>
+        <a href="#" data-i18n="footer_col2_l1">案例库</a><a href="#" data-i18n="footer_col2_l2">帮助中心</a><a href="#" data-i18n="footer_col2_l3">API 文档</a><a href="#" data-i18n="footer_col2_l4_logged">社区</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col3_title">公司</div>
+        <a href="#" data-i18n="footer_col3_l1">关于我们</a><a href="#" data-i18n="footer_col3_l2">联系我们</a><a href="#" data-i18n="footer_col3_l3">隐私政策</a><a href="#" data-i18n="footer_col3_l4">服务条款</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer_copyright">© 2026 AI 造物实验室. All rights reserved.</span>
+      <span data-i18n="footer_sub">RapidDirect 旗下产品</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ===== STATE TOGGLE BAR ===== -->
+<div class="state-bar">
+  <span class="state-bar-label" data-i18n="preview_label">预览</span>
+  <button class="state-bar-btn active" id="btnPre" onclick="setState('pre')" data-i18n="preview_guest">未登录</button>
+  <button class="state-bar-btn" id="btnPost" onclick="setState('post')" data-i18n="preview_logged">已登录</button>
+</div>
+
+<script>
+// =====================================================
+// I18N DICTIONARY
+// =====================================================
+const i18n = {
+  'zh-CN': {
+    brand: 'AI 造物实验室',
+    nav_industries: '行业方案', nav_features: '功能', nav_showcase: '案例', nav_pricing: '定价',
+    nav_dashboard: '工作台', nav_myzone: '我的专区', nav_gallery: '案例库',
+    start_free: '免费开始', db_nav_create: '创作', db_nav_projects: '我的项目',
+
+    hero_badge: 'AI-Powered 产品开发',
+    hero_title_line1: '从创意到制造，', hero_title_line2: 'AI 重新定义产品开发',
+    hero_desc: '上传草图、描述想法，AI 即刻生成精准 3D 模型。对接 500+ 认证工厂，一键报价、下单、交付——全流程在一个平台完成。',
+    hero_cta: '免费开始使用 →', hero_demo: '预约演示',
+    stat_models: 'AI 生成模型', stat_suppliers: '合作工厂', stat_delivery: '最快交付',
+
+    ind_trendy_name: '潮玩手办', ind_trendy_desc: '潮玩手办 · 模型玩具',
+    ind_consumer_name: '消费电子', ind_consumer_desc: '消费电子 · 耳机 · 穿戴设备',
+    ind_robot_name: '机器人', ind_robot_desc: '机器人 · 自动化设备',
+    ind_medical_name: '医疗器械', ind_medical_desc: '医疗器械 · 健康设备',
+    ind_smarthome_name: '智能家居', ind_smarthome_desc: '智能家居 · 小家电',
+    ind_auto_name: '汽车改装', ind_auto_desc: '汽车改装 · 定制零件',
+    ind_aero_name: '航空航天', ind_aero_desc: '航空航天 · 无人机',
+    ind_industrial_name: '工业设备', ind_industrial_desc: '工业设备 · 精密零件',
+    ind_sport_name: '体育教育', ind_sport_desc: '体育器材 · 教育玩具',
+
+    features_badge: 'Core Capabilities',
+    features_title: 'AI 驱动的全链路能力',
+    features_desc: '从图片识别到 3D 生成，从工程验证到即时报价——产品开发从未如此高效。',
+    feat_img3d_title: '图片转 3D', feat_img3d_desc: '上传任意角度照片或草图，AI 自动生成精准 3D 模型，支持多视角融合识别。',
+    feat_text3d_title: '文字转 3D', feat_text3d_desc: '用自然语言描述产品，AI 理解意图并生成可编辑的 3D 模型。',
+    feat_quote_title: '即时报价', feat_quote_desc: '上传图纸自动分析工艺路径，实时生成 CNC、注塑、3D 打印报价。',
+    feat_dfm_title: 'DFM 自动检测', feat_dfm_desc: 'AI 自动检测可制造性问题，在设计阶段就标注壁厚、拔模角等风险点。',
+    feat_order_title: '一键下单', feat_order_desc: '确认报价后直接下单，对接 500+ 认证工厂，全工艺链覆盖。',
+    feat_pm_title: '项目看板', feat_pm_desc: '统一管理项目、模型版本、订单和交付进度，团队无缝协作。',
+
+    showcase_badge: 'Case Studies', showcase_title: '3D 模型展示 & 案例', showcase_desc: '来自不同行业的真实作品——探索 AI 创造力的边界。',
+    show_tag1: 'CNC', show_title1: '精密齿轮组件', show_cat1: '工业制造', show_time1: '24h 交付',
+    show_tag2: '注塑', show_title2: '消费电子外壳', show_cat2: '消费电子', show_time2: '3 天交付',
+    show_tag3: '钣金', show_title3: '无人机支架总成', show_cat3: '航空航天', show_time3: '5 天交付',
+    show_tag4: '注塑', show_title4: '医疗器械壳体', show_cat4: '医疗器械', show_time4: '48h 交付',
+    show_tag5: 'CNC', show_title5: '汽车定制连接件', show_cat5: '汽车制造', show_time5: '3 天交付',
+    show_tag6: '多工艺', show_title6: '机器人关节模组', show_cat6: '机器人', show_time6: '7 天交付',
+
+    cta_badge: 'Get Started', cta_title: '准备好将创意变为现实？', cta_desc: '免费注册，立即体验 AI 驱动的全链路产品开发。',
+    cta_btn_primary: '免费开始使用 →', cta_btn_secondary: '预约演示',
+
+    footer_desc: 'All-in-One AI 平台，从创意到制造，一站式完成产品开发。',
+    footer_col1_title: '产品', footer_col1_l1: 'AI 3D 建模', footer_col1_l2: '即时报价', footer_col1_l3: '制造下单', footer_col1_l4: '项目管理',
+    footer_col2_title: '资源', footer_col2_l1: '案例库', footer_col2_l2: '帮助中心', footer_col2_l3: 'API 文档', footer_col2_l4: '博客',
+    footer_col3_title: '公司', footer_col3_l1: '关于我们', footer_col3_l2: '联系我们', footer_col3_l3: '隐私政策', footer_col3_l4: '服务条款',
+    footer_copyright: '© 2026 AI 造物实验室. All rights reserved.', footer_sub: 'RapidDirect 旗下产品',
+
+    db_main_title: 'Design with Words', db_main_desc: '用文字描述你的产品，AI 即刻生成 3D 模型',
+    db_panel1_label: 'Image to 3D', db_panel1_title: '上传图片，AI 生成 3D 模型', db_panel1_desc: '支持任意角度照片、手绘草图、参考图片',
+    upload_text: '点击或拖拽上传图片', upload_hint: '支持 JPG / PNG / WEBP，最大 20MB',
+    upload_tag_multi: '多视角', upload_drag: '拖拽上传', upload_btn: '上传并生成 →',
+    db_panel2_label: 'Text to 3D', db_panel2_title: '文字描述，AI 生成 3D 模型', db_panel2_desc: '用自然语言描述，AI 理解意图并生成可编辑的 3D 模型',
+    prompt_placeholder: '描述你想要的 3D 模型...',
+    prompt_gear: '齿轮', prompt_case: '手机壳', prompt_drone: '无人机', prompt_med: '医疗',
+    clear_btn: '清空', generate_btn: 'AI 生成 3D →',
+
+    uz_badge: 'My Workspace', uz_title: '我的专区', uz_desc: '管理你的创作、订单与数据。',
+    uz_projects: '我的项目', uz_projects_count: '12 个进行中', uz_projects_badge: '3 新',
+    uz_models: '3D 模型库', uz_models_count: '47 个模型',
+    uz_orders: '我的订单', uz_orders_count: '8 个进行中',
+    uz_quotes: '报价记录', uz_quotes_count: '23 条', uz_quotes_badge: '5 待确认',
+    uz_messages: '消息中心', uz_messages_count: '6 条未读', uz_messages_badge: '新',
+    uz_settings: '账户设置', uz_settings_count: '企业认证',
+    uz_dashboard: '数据看板', uz_dashboard_count: '本月 ¥12.8K',
+    uz_favorites: '收藏案例', uz_favorites_count: '15 个',
+
+    gallery_badge: 'Gallery', gallery_title: '社区案例 & 我的作品', gallery_desc: '浏览平台优秀案例，查看你生成的 3D 模型。',
+    gallery_mine: '我的作品',
+    gallery_mine_title1: '我的项目：支架 V2', gallery_mine_status1: '报价中', gallery_mine_time1: '3 天前更新',
+    gallery_mine_title2: '我的项目：壳体 A3', gallery_mine_status2: '已交付', gallery_mine_time2: '1 周前',
+
+    footer_desc_logged: 'All-in-One AI 平台，从创意到制造，一站式完成产品开发。',
+    footer_col4_title: '快捷操作', footer_col4_l1: '新建项目', footer_col4_l2: '上传图纸报价', footer_col4_l3: '查看订单', footer_col4_l4: '账户设置',
+    footer_col2_l4_logged: '社区',
+
+    preview_label: '预览', preview_guest: '未登录', preview_logged: '已登录',
+  },
+  en: {
+    brand: 'AI Create Lab',
+    nav_industries: 'Industries', nav_features: 'Features', nav_showcase: 'Showcase', nav_pricing: 'Pricing',
+    nav_dashboard: 'Dashboard', nav_myzone: 'My Zone', nav_gallery: 'Gallery',
+    start_free: 'Start Free', db_nav_create: 'Create', db_nav_projects: 'My Projects',
+
+    hero_badge: 'AI-Powered Product Development',
+    hero_title_line1: 'From Concept to Production,', hero_title_line2: 'AI Redefines Product Development',
+    hero_desc: 'Upload sketches, describe your ideas — AI instantly generates precise 3D models. Connect with 500+ certified factories. Quote, order, deliver — all in one platform.',
+    hero_cta: 'Get Started Free →', hero_demo: 'Book a Demo',
+    stat_models: 'AI-Generated Models', stat_suppliers: 'Partner Factories', stat_delivery: 'Fastest Delivery',
+
+    ind_trendy_name: 'Trendy Toys & Figurines', ind_trendy_desc: 'Pop toys · Collectible figures',
+    ind_consumer_name: 'Consumer Electronics', ind_consumer_desc: 'Earphones · Wearables · Gadgets',
+    ind_robot_name: 'Robots', ind_robot_desc: 'Robotics · Automation equipment',
+    ind_medical_name: 'Medical Devices', ind_medical_desc: 'Medical equipment · Health devices',
+    ind_smarthome_name: 'Smart Home', ind_smarthome_desc: 'IoT devices · Home appliances',
+    ind_auto_name: 'Automotive', ind_auto_desc: 'Auto modification · Custom parts',
+    ind_aero_name: 'Aerospace', ind_aero_desc: 'Aerospace · Drones · UAVs',
+    ind_industrial_name: 'Industrial Equipment', ind_industrial_desc: 'Industrial machinery · Precision parts',
+    ind_sport_name: 'Sports & Edu Toys', ind_sport_desc: 'Sports equipment · Educational toys',
+
+    features_badge: 'Core Capabilities', features_title: 'AI-Powered Full-Stack Capabilities',
+    features_desc: 'From image recognition to 3D generation, from DFM validation to instant quoting — product development has never been this efficient.',
+    feat_img3d_title: 'Image to 3D', feat_img3d_desc: 'Upload photos or sketches from any angle. AI generates accurate 3D models with multi-view fusion.',
+    feat_text3d_title: 'Text to 3D', feat_text3d_desc: 'Describe your product in natural language. AI understands intent and generates editable 3D models.',
+    feat_quote_title: 'Instant Quotation', feat_quote_desc: 'Upload drawings, AI analyzes the manufacturing process and generates real-time quotes across CNC, injection molding, and 3D printing.',
+    feat_dfm_title: 'DFM Auto-Check', feat_dfm_desc: 'AI detects manufacturability issues — wall thickness, draft angles — catching risks at the design stage.',
+    feat_order_title: 'One-Click Order', feat_order_desc: 'Place orders directly after quote confirmation. 500+ certified factories, full process chain coverage.',
+    feat_pm_title: 'Project Dashboard', feat_pm_desc: 'Manage projects, model versions, orders, and delivery progress in one place. Seamless team collaboration.',
+
+    showcase_badge: 'Case Studies', showcase_title: '3D Models & Case Studies', showcase_desc: 'Real user creations from diverse industries — explore the boundaries of AI creativity.',
+    show_tag1: 'CNC', show_title1: 'Precision Gear Assembly', show_cat1: 'Industrial Mfg', show_time1: '24h delivery',
+    show_tag2: 'Inj. Mold', show_title2: 'Consumer Electronics Shell', show_cat2: 'Consumer Electronics', show_time2: '3 days',
+    show_tag3: 'Sheet Metal', show_title3: 'Drone Bracket Assembly', show_cat3: 'Aerospace', show_time3: '5 days',
+    show_tag4: 'Inj. Mold', show_title4: 'Medical Device Enclosure', show_cat4: 'Medical Devices', show_time4: '48h delivery',
+    show_tag5: 'CNC', show_title5: 'Custom Auto Connector', show_cat5: 'Automotive', show_time5: '3 days',
+    show_tag6: 'Multi-Process', show_title6: 'Robot Joint Module', show_cat6: 'Robotics', show_time6: '7 days',
+
+    cta_badge: 'Get Started', cta_title: 'Ready to turn ideas into reality?', cta_desc: 'Sign up free and experience AI-driven full-cycle product development.',
+    cta_btn_primary: 'Get Started Free →', cta_btn_secondary: 'Book a Demo',
+
+    footer_desc: 'All-in-One AI platform from concept to manufacturing.',
+    footer_col1_title: 'Product', footer_col1_l1: 'AI 3D Modeling', footer_col1_l2: 'Instant Quote', footer_col1_l3: 'Manufacturing', footer_col1_l4: 'Project Mgmt',
+    footer_col2_title: 'Resources', footer_col2_l1: 'Case Library', footer_col2_l2: 'Help Center', footer_col2_l3: 'API Docs', footer_col2_l4: 'Blog',
+    footer_col3_title: 'Company', footer_col3_l1: 'About Us', footer_col3_l2: 'Contact Us', footer_col3_l3: 'Privacy Policy', footer_col3_l4: 'Terms of Service',
+    footer_copyright: '© 2026 AI Create Lab. All rights reserved.', footer_sub: 'A RapidDirect Product',
+
+    db_main_title: 'Design with Words', db_main_desc: 'Describe your product, and AI brings it to life in 3D',
+    db_panel1_label: 'Image to 3D', db_panel1_title: 'Upload Image, AI Generates 3D Model', db_panel1_desc: 'Supports multi-angle photos, hand sketches, and reference images',
+    upload_text: 'Click or drag to upload', upload_hint: 'Supports JPG / PNG / WEBP, up to 20MB',
+    upload_tag_multi: 'Multi-angle', upload_drag: 'Drag & Drop', upload_btn: 'Upload & Generate →',
+    db_panel2_label: 'Text to 3D', db_panel2_title: 'Describe in Text, AI Generates 3D', db_panel2_desc: 'Describe in natural language, AI understands intent and generates editable 3D models',
+    prompt_placeholder: 'Describe the 3D model you want...',
+    prompt_gear: 'Gear', prompt_case: 'Phone Case', prompt_drone: 'Drone', prompt_med: 'Medical',
+    clear_btn: 'Clear', generate_btn: 'AI Generate 3D →',
+
+    uz_badge: 'My Workspace', uz_title: 'My Zone', uz_desc: 'Manage your creations, orders, and data.',
+    uz_projects: 'My Projects', uz_projects_count: '12 active', uz_projects_badge: '3 new',
+    uz_models: '3D Model Library', uz_models_count: '47 models',
+    uz_orders: 'My Orders', uz_orders_count: '8 active',
+    uz_quotes: 'Quotes History', uz_quotes_count: '23 entries', uz_quotes_badge: '5 pending',
+    uz_messages: 'Messages', uz_messages_count: '6 unread', uz_messages_badge: 'New',
+    uz_settings: 'Account Settings', uz_settings_count: 'Enterprise',
+    uz_dashboard: 'Analytics', uz_dashboard_count: 'This month ¥12.8K',
+    uz_favorites: 'Favorites', uz_favorites_count: '15 items',
+
+    gallery_badge: 'Gallery', gallery_title: 'Community Cases & My Work', gallery_desc: 'Browse outstanding platform cases and view your generated 3D models.',
+    gallery_mine: 'My Work',
+    gallery_mine_title1: 'My Project: Bracket V2', gallery_mine_status1: 'Quoting', gallery_mine_time1: 'Updated 3d ago',
+    gallery_mine_title2: 'My Project: Enclosure A3', gallery_mine_status2: 'Delivered', gallery_mine_time2: '1w ago',
+
+    footer_desc_logged: 'All-in-One AI platform from concept to manufacturing.',
+    footer_col4_title: 'Quick Actions', footer_col4_l1: 'New Project', footer_col4_l2: 'Upload & Quote', footer_col4_l3: 'View Orders', footer_col4_l4: 'Settings',
+    footer_col2_l4_logged: 'Community',
+
+    preview_label: 'Preview', preview_guest: 'Guest', preview_logged: 'Logged In',
+  }
+};
+
+// =====================================================
+// I18N ENGINE
+// =====================================================
+let currentLang = localStorage.getItem('ai_creation_v6_lang') || detectLang();
+
+function detectLang() {
+  const navLang = navigator.language || navigator.userLanguage;
+  return navLang.startsWith('zh') ? 'zh-CN' : 'en';
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'zh-CN' ? 'en' : 'zh-CN';
+  localStorage.setItem('ai_creation_v6_lang', currentLang);
+  applyLang(currentLang);
+  document.getElementById('langLabel').textContent = currentLang === 'zh-CN' ? 'EN' : '中';
+  document.documentElement.lang = currentLang;
+}
+
+function applyLang(lang) {
+  const dict = i18n[lang];
+  if (!dict) return;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key]) el.placeholder = dict[key];
+  });
+}
+
+// Init
+applyLang(currentLang);
+document.getElementById('langLabel').textContent = currentLang === 'zh-CN' ? 'EN' : '中';
+document.documentElement.lang = currentLang;
+
+// =====================================================
+// MOBILE MENU
+// =====================================================
+function toggleMenu() {
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  const isOpen = menu.classList.contains('open');
+
+  if (isOpen) {
+    hamburger.classList.remove('active');
+    menu.classList.remove('open');
+    document.body.style.overflow = '';
+    return;
+  }
+
+  const dict = i18n[currentLang];
+  const isLoggedIn = document.body.classList.contains('logged-in');
+  menu.innerHTML = isLoggedIn
+    ? `<a href="#dashboard" onclick="closeMenu()">${dict.nav_dashboard}</a>
+       <a href="#user-zone" onclick="closeMenu()">${dict.nav_myzone}</a>
+       <a href="#showcase-logged" onclick="closeMenu()">${dict.nav_gallery}</a>`
+    : `<a href="#hero" onclick="closeMenu()">${dict.nav_industries}</a>
+       <a href="#features" onclick="closeMenu()">${dict.nav_features}</a>
+       <a href="#showcase" onclick="closeMenu()">${dict.nav_showcase}</a>
+       <button class="btn btn-primary" onclick="closeMenu()">${dict.start_free}</button>`;
+
+  hamburger.classList.add('active');
+  menu.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('active');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// =====================================================
+// SCROLL REVEAL
+// =====================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('revealed');
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.feat-card, .show-card, .ind-card, .uz-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1)';
+  observer.observe(el);
+});
+
+const revealStyle = document.createElement('style');
+revealStyle.textContent = '.revealed { opacity: 1 !important; transform: translateY(0) !important; }';
+document.head.appendChild(revealStyle);
+
+// =====================================================
+// COUNT-UP
+// =====================================================
+function animateCount(el, target, suffix, duration) {
+  const startTime = performance.now();
+  function update(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(target * eased) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.counted) {
+      e.target.dataset.counted = '1';
+      if (e.target.classList.contains('count-50k')) animateCount(e.target, 50, 'K+', 2000);
+      if (e.target.classList.contains('count-500')) animateCount(e.target, 500, '+', 1800);
+      if (e.target.classList.contains('count-24')) {
+        e.target.textContent = '24h';
+        e.target.style.opacity = '1';
+      }
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.count-50k, .count-500, .count-24').forEach(el => countObserver.observe(el));
+
+// =====================================================
+// STATE TOGGLE
+// =====================================================
+function setState(s) {
+  const b = document.body;
+  const preBtn = document.getElementById('btnPre');
+  const postBtn = document.getElementById('btnPost');
+  if (s === 'post') {
+    b.classList.add('logged-in');
+    preBtn.classList.remove('active');
+    postBtn.classList.add('active');
+  } else {
+    b.classList.remove('logged-in');
+    postBtn.classList.remove('active');
+    preBtn.classList.add('active');
+  }
+}
+
+// =====================================================
+// INTERACTIONS
+// =====================================================
+function handleUpload() {
+  alert(currentLang === 'zh-CN'
+    ? '📤 上传功能 — 正式版将支持拖拽和多视角识别'
+    : '📤 Upload — the full version will support drag-and-drop and multi-angle recognition');
+}
+
+function fillPrompt(t) {
+  const input = document.getElementById('promptInput');
+  input.value = t;
+  input.focus();
+}
+
+function generate3D() {
+  const t = document.getElementById('promptInput').value.trim();
+  if (!t) {
+    alert(currentLang === 'zh-CN' ? '请先输入产品描述' : 'Please enter a product description first');
+    return;
+  }
+  alert('🚀 ' + (currentLang === 'zh-CN' ? 'AI 正在生成 3D 模型...\n\n' : 'AI is generating 3D model...\n\n') + t);
+}
+
+// =====================================================
+// NAV SCROLL SHADOW
+// =====================================================
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
