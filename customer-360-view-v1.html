@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>客户360全景视图</title>
+<style>
+  body {font-family: Arial, Helvetica, sans-serif; margin:0; background:#f5f7fa; color:#333;}
+  .container {display:flex; flex-direction:column; max-width:1200px; margin:auto; padding:20px;}
+  .section {background:#fff; border-radius:8px; padding:20px; margin-bottom:20px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+  .flex {display:flex; flex-wrap:wrap; gap:20px;}
+  .card {flex:1 1 200px; background:#fafafa; border:1px solid #e0e0e0; border-radius:6px; padding:15px; text-align:center;}
+  .card h3 {margin:0; font-size:1.2em; color:#555;}
+  .card p {margin:5px 0 0; font-size:1.4em; font-weight:bold; color:#111;}
+  .header {display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
+  .header .info {display:flex; flex-direction:column;}
+  .header .info h1 {margin:0; font-size:1.8em;}
+  .header .info span {color:#666;}
+  .header .actions button {margin-left:10px; padding:8px 12px; border:none; border-radius:4px; background:#1976d2; color:#fff; cursor:pointer;}
+  .risk {display:flex; align-items:center; color:#d32f2f; font-weight:bold;}
+  .risk::before {content:"⚠️"; margin-right:5px;}
+  .tag {display:inline-block; background:#e0e0e0; border-radius:4px; padding:2px 6px; margin:2px; font-size:0.85em;}
+  .timeline {border-left:2px solid #1976d2; padding-left:20px; max-height:400px; overflow-y:auto;}
+  .timeline-item {position:relative; margin-bottom:20px;}
+  .timeline-item::before {content:""; position:absolute; left:-9px; top:0; width:12px; height:12px; background:#1976d2; border-radius:50%;}
+  .chart-placeholder {width:100%; height:200px; background:#e8f0fe; border:1px dashed #90caf9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#90caf9; font-size:0.9em;}
+  @media (max-width:768px) { .flex {flex-direction:column; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- 顶部基础信息区 -->
+  <div class="section header">
+    <div class="info">
+      <h1>深圳华腾科技有限公司</h1>
+      <span>客户编号：CUST-20231045 | 客户等级：A | 行业：机器人制造 | 国家/地区：美国</span>
+    </div>
+    <div class="actions">
+      <button onclick="alert('新建商机')">新建商机</button>
+      <button onclick="alert('创建报价')">创建报价</button>
+      <button onclick="alert('发起工单')">发起工单</button>
+      <button onclick="alert('添加联系人')">添加联系人</button>
+    </div>
+  </div>
+
+  <!-- 基础标签与风险 -->
+  <div class="section">
+    <strong>客户标签：</strong>
+    <span class="tag">高潜客户</span>
+    <span class="tag">高客单价</span>
+    <span class="tag">VIP会员</span>
+    <span class="tag">价格敏感</span>
+    <div class="risk" style="margin-top:10px;">风险等级：中（近30天报价成功率下降）</div>
+  </div>
+
+  <!-- 经营分析卡片 -->
+  <div class="section">
+    <h2>客户核心经营指标</h2>
+    <div class="flex">
+      <div class="card"><h3>累计订单金额</h3><p>¥ 1.2M</p></div>
+      <div class="card"><h3>年度订单金额</h3><p>¥ 420K</p></div>
+      <div class="card"><h3>累计订单数</h3><p>84</p></div>
+      <div class="card"><h3>平均订单金额</h3><p>¥ 14.3K</p></div>
+      <div class="card"><h3>累计利润</h3><p>¥ 320K</p></div>
+      <div class="card"><h3>LTV（12个月）</h3><p>¥ 500K</p></div>
+      <div class="card"><h3>报价成功率</h3><p>68%</p></div>
+      <div class="card"><h3>商机转化率</h3><p>45%</p></div>
+    </div>
+  </div>
+
+  <!-- 采购趋势图 -->
+  <div class="section">
+    <h2>采购趋势分析</h2>
+    <div class="flex">
+      <div class="chart-placeholder">月度采购金额趋势图（占位）</div>
+      <div class="chart-placeholder">下单频率趋势图（占位）</div>
+      <div class="chart-placeholder">品类采购占比（占位）</div>
+    </div>
+  </div>
+
+  <!-- 商机与销售过程 -->
+  <div class="section">
+    <h2>商机概览</h2>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead style="background:#f0f4f8;">
+        <tr><th style="padding:8px; text-align:left;">商机名称</th><th>阶段</th><th>负责人</th><th>金额</th><th>创建时间</th><th>预计成交</th></tr>
+      </thead>
+      <tbody>
+        <tr style="border-top:1px solid #e0e0e0;"><td style="padding:8px;">机器人系列A项目</td><td>谈判中</td><td>张经理</td><td>¥ 300K</td><td>2024-03-12</td><td>2024-05-01</td></tr>
+        <tr><td style="padding:8px;">定制钣金批次</td><td>需求评审</td><td>李主管</td><td>¥ 80K</td><td>2024-02-28</td><td>2024-04-15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>跟进时间轴</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div><strong>2024-04-20 10:15</strong> - 张经理（电话）<br/>讨论报价细节，客户对交付周期有疑虑。</div>
+      </div>
+      <div class="timeline-item">
+        <div><strong>2024-04-18 14:00</strong> - 李主管（邮件）<br/>发送最新报价单，附加样品优惠。</div>
+      </div>
+      <div class="timeline-item">
+        <div><strong>2024-04-15 09:30</strong> - 客户技术负责人（会议）<br/>技术评审，确认需求规格。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单与履约 -->
+  <div class="section">
+    <h2>订单概览</h2>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead style="background:#f0f4f8;">
+        <tr><th style="padding:8px; text-align:left;">订单编号</th><th>金额</th><th>产品类型</th><th>下单时间</th><th>状态</th><th>交付时间</th></tr>
+      </thead>
+      <tbody>
+        <tr style="border-top:1px solid #e0e0e0;"><td style="padding:8px;">ORD-20240401-001</td><td>¥ 120K</td><td>CNC加工</td><td>2024-04-01</td><td>生产中</td><td>2024-05-05</td></tr>
+        <tr><td style="padding:8px;">ORD-20240315-009</td><td>¥ 45K</td><td>钣金</td><td>2024-03-15</td><td>已发货</td><td>2024-04-20</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 服务与工单 -->
+  <div class="section">
+    <h2>工单概览</h2>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead style="background:#f0f4f8;">
+        <tr><th style="padding:8px; text-align:left;">工单编号</th><th>类型</th><th>状态</th><th>处理人</th><th>创建时间</th><th>SLA</th></tr>
+      </thead>
+      <tbody>
+        <tr style="border-top:1px solid #e0e0e0;"><td style="padding:8px;">TICKET-20240410-07</td><td>质量问题</td><td>处理中</td><td>陈工</td><td>2024-04-10</td><td>超时</td></tr>
+        <tr><td style="padding:8px;">TICKET-20240328-03</td><td>物流异常</td><td>已解决</td><td>王工程师</td><td>2024-03-28</td><td>达标</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 联系人管理 -->
+  <div class="section">
+    <h2>关键联系人</h2>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead style="background:#f0f4f8;">
+        <tr><th style="padding:8px; text-align:left;">姓名</th><th>职位</th><th>邮箱</th><th>电话</th><th>角色</th></tr>
+      </thead>
+      <tbody>
+        <tr style="border-top:1px solid #e0e0e0;"><td style="padding:8px;">张伟</td><td>采购总监</td><td>zhangwei@example.com</td><td>+1-202-555-0198</td><td>决策人</td></tr>
+        <tr><td style="padding:8px;">李娜</td><td>技术负责人</td><td>lina@example.com</td><td>+1-202-555-0123</td><td>技术负责人</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 会员与营销 -->
+  <div class="section">
+    <h2>会员与营销信息</h2>
+    <div class="flex" style="gap:10px; align-items:center;">
+      <div>会员等级：<strong>金牌会员</strong></div>
+      <div>积分余额：<strong>3,200</strong></div>
+      <div>最近活动参与：<strong>2024-04-12 - 新品发布会</strong></div>
+      <div>EDM打开率：<strong>42%</strong></div>
+    </div>
+  </div>
+
+  <!-- AI智能分析 -->
+  <div class="section">
+    <h2>AI 客户画像 & 建议</h2>
+    <p><strong>画像：</strong>美国机器人行业客户，过去12个月累计下单¥850,000，主要需求CNC & 钣金，采购周期≈45天。活跃度高，但最近30天报价成功率下降至68%。</p>
+    <p><strong>建议：</strong></p>
+    <ul>
+      <li>发送最新优惠报价，提升报价成功率</li>
+      <li>安排电话回访，了解价格敏感点</li>
+      <li>提供样品优惠，促进转化</li>
+      <li>升级会员至白金，锁定长期合作</li>
+    </ul>
+    <p><strong>评分：</strong>价值评分 8.2 / 10，成交概率 73% ，流失风险 2.1% </p>
+  </div>
+
+</div>
+</body>
+</html>
