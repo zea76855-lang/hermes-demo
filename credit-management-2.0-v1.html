@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>客户信用管理 2.0</title>
+<style>
+  body {font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f7fa; color:#333;}
+  .header {background:#1E90FF; color:#fff; padding:16px; text-align:center;}
+  .container {max-width:1200px; margin:20px auto; padding:0 20px;}
+  .card {background:#fff; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:20px; padding:20px;}
+  .card h2 {margin-top:0; color:#1E90FF;}
+  .grid {display:flex; flex-wrap:wrap; gap:20px;}
+  .grid .card {flex:1 1 calc(50% - 20px); min-width:300px;}
+  .toggle {position:absolute; top:16px; right:16px; background:#fff; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;}
+  .progress {display:flex; justify-content:space-between; margin:10px 0;}
+  .progress span {flex:1; text-align:center;}
+  .progress .active {color:#fff; background:#1E90FF; border-radius:4px; padding:4px 8px;}
+  .form-group {margin-bottom:12px;}
+  .form-group label {display:block; margin-bottom:4px; font-weight:bold;}
+  .form-group input, .form-group select, .form-group textarea {width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;}
+  .btn {background:#1E90FF; color:#fff; border:none; padding:10px 20px; border-radius:4px; cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1 data-i18n="title">客户信用管理 2.0</h1>
+  <button class="toggle" id="langToggle">English</button>
+</div>
+<div class="container">
+  <!-- 1. 月结申请表 -->
+  <div class="card" id="applyCard">
+    <h2 data-i18n="apply_title">月结申请</h2>
+    <form id="applyForm">
+      <div class="grid">
+        <div class="form-group">
+          <label data-i18n="field_company">企业名称</label>
+          <input type="text" name="company" required />
+        </div>
+        <div class="form-group">
+          <label data-i18n="field_contact">联系人</label>
+          <input type="text" name="contact" required />
+        </div>
+        <div class="form-group">
+          <label data-i18n="field_phone">联系电话</label>
+          <input type="tel" name="phone" required />
+        </div>
+        <div class="form-group">
+          <label data-i18n="field_credit">申请额度（元）</label>
+          <input type="number" name="credit" required />
+        </div>
+        <div class="form-group">
+          <label data-i18n="field_documents">附件上传</label>
+          <input type="file" name="documents" multiple />
+        </div>
+        <div class="form-group">
+          <label data-i18n="field_agreement">我已阅读并同意《信用授信协议》</label>
+          <select name="agreement" required>
+            <option value="" data-i18n="select_placeholder">请选择</option>
+            <option value="yes" data-i18n="agree_yes">同意</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn" data-i18n="submit_btn">提交申请</button>
+    </form>
+  </div>
+
+  <!-- 2. 审批进度 -->
+  <div class="card" id="approvalCard">
+    <h2 data-i18n="approval_title">审批进度</h2>
+    <div class="progress" id="progressBar">
+      <span data-i18n="stage_submit">提交</span>
+      <span data-i18n="stage_review">审查</span>
+      <span data-i18n="stage_approve">批准</span>
+      <span data-i18n="stage_notify">通知</span>
+    </div>
+    <p data-i18n="current_status">当前状态：<strong id="statusText" data-i18n="status_pending">待提交</strong></p>
+  </div>
+
+  <!-- 3. 信用总览 -->
+  <div class="card" id="overviewCard">
+    <h2 data-i18n="overview_title">信用总览</h2>
+    <p data-i18n="overview_desc">基于最近 12 个月交易、付款及时性、逾期次数计算信用评分。</p>
+    <table style="width:100%; border-collapse:collapse;">
+      <tr style="background:#f0f4f8;"><th style="padding:8px; text-align:left;" data-i18n="metric_name">指标</th><th style="padding:8px; text-align:left;" data-i18n="metric_value">数值</th></tr>
+      <tr><td data-i18n="metric_score">信用评分</td><td>85</td></tr>
+      <tr><td data-i18n="metric_limit">授信额度</td><td>¥1,000,000</td></tr>
+      <tr><td data-i18n="metric_used">已使用</td><td>¥350,000</td></tr>
+      <tr><td data-i18n="metric_overdue">逾期天数</td><td>0</td></tr>
+    </table>
+  </div>
+
+  <!-- 4. 会员联动 -->
+  <div class="card" id="memberCard">
+    <h2 data-i18n="member_title">会员联动</h2>
+    <p data-i18n="member_desc">会员等级提升可获得授信额度加成，当前等级 <strong data-i18n="member_gold">黄金会员</strong>。</p>
+  </div>
+
+  <!-- 5. 催收管理 -->
+  <div class="card" id="collectionCard">
+    <h2 data-i18n="collection_title">催收管理</h2>
+    <p data-i18n="collection_desc">逾期 7 天后自动发送提醒邮件，逾期 30 天后转入人工催收。</p>
+  </div>
+</div>
+<script>
+const translations = {
+  zh: {
+    title: "\u5ba2\u6237\u4fe1\u7528\u7ba1\u7406 2.0",
+    apply_title: "\u6708\u7ed3\u7533\u8bf7",
+    field_company: "\u4f01\u4e1a\u540d\u79f0",
+    field_contact: "\u8054\u7cfb\u4eba",
+    field_phone: "\u8054\u7cfb\u7535\u8bdd",
+    field_credit: "\u7533\u8bf7\u989d\u5ea6\uff08\u5143\uff09",
+    field_documents: "\u9644\u4ef6\u4e0a\u4f20",
+    field_agreement: "\u6211\u5df2\u9605\u8bfb\u5e76\u540c\u610f\u300a\u4fe1\u7528\u6388\u4fe1\u534f\u8bae\u300b",
+    select_placeholder: "\u8bf7\u9009\u62e9",
+    agree_yes: "\u540c\u610f",
+    submit_btn: "\u63d0\u4ea4\u7533\u8bf7",
+    approval_title: "\u5ba1\u6279\u8fdb\u5ea6",
+    stage_submit: "\u63d0\u4ea4",
+    stage_review: "\u5ba1\u67e5",
+    stage_approve: "\u6279\u51c6",
+    stage_notify: "\u901a\u77e5",
+    status_pending: "\u5f85\u63d0\u4ea4",
+    overview_title: "\u4fe1\u7528\u603b\u89c8",
+    overview_desc: "\u57fa\u4e8e\u6700\u8fd1 12 \u4e2a\u6708\u4ea4\u6613\u3001\u4ed8\u6b3e\u53ca\u65f6\u6027\u3001\u903e\u671f\u6b21\u6570\u8ba1\u7b97\u4fe1\u7528\u8bc4\u5206\u3002",
+    metric_name: "\u6307\u6807",
+    metric_value: "\u6570\u503c",
+    metric_score: "\u4fe1\u7528\u8bc4\u5206",
+    metric_limit: "\u6388\u4fe1\u989d\u5ea6",
+    metric_used: "\u5df2\u4f7f\u7528",
+    metric_overdue: "\u903e\u671f\u5929\u6570",
+    member_title: "\u4f1a\u5458\u8054\u52a8",
+    member_desc: "\u4f1a\u5458\u7b49\u7ea7\u63d0\u5347\u53ef\u83b7\u5f97\u6388\u4fe1\u989d\u5ea6\u52a0\u6210\uff0c\u5f53\u524d\u7b49\u7ea7 <strong>\u9ec4\u91d1\u4f1a\u5458</strong>\u3002",
+    member_gold: "\u9ec4\u91d1\u4f1a\u5458",
+    collection_title: "\u50ac\u6536\u7ba1\u7406",
+    collection_desc: "\u903e\u671f 7 \u5929\u540e\u81ea\u52a8\u53d1\u9001\u63d0\u9192\u90ae\u4ef6\uff0c\u903e\u671f 30 \u5929\u540e\u8f6c\u5165\u4eba\u5de5\u50ac\u6536\u3002"
+  },
+  en: {
+    title: "Customer Credit Management 2.0",
+    apply_title: "Monthly Settlement Application",
+    field_company: "Company Name",
+    field_contact: "Contact Person",
+    field_phone: "Contact Phone",
+    field_credit: "Requested Credit (CNY)",
+    field_documents: "Upload Attachments",
+    field_agreement: "I have read and agree to the Credit Agreement",
+    select_placeholder: "Select",
+    agree_yes: "Agree",
+    submit_btn: "Submit Application",
+    approval_title: "Approval Progress",
+    stage_submit: "Submitted",
+    stage_review: "Review",
+    stage_approve: "Approved",
+    stage_notify: "Notified",
+    status_pending: "Pending Submission",
+    overview_title: "Credit Overview",
+    overview_desc: "Credit score derived from recent 12-month transactions, payment timeliness, and overdue count.",
+    metric_name: "Metric",
+    metric_value: "Value",
+    metric_score: "Credit Score",
+    metric_limit: "Credit Limit",
+    metric_used: "Used",
+    metric_overdue: "Overdue Days",
+    member_title: "Membership Interaction",
+    member_desc: "Higher membership levels grant credit bonuses; current level: <strong>Gold Member</strong>.",
+    member_gold: "Gold Member",
+    collection_title: "Collection Management",
+    collection_desc: "Automated reminder email after 7 days overdue, manual collection after 30 days."
+  }
+};
+function setLanguage(lang){
+  document.documentElement.lang = lang;
+  document.title = translations[lang].title;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    const txt = translations[lang][key];
+    if(txt!==undefined){
+      if(['INPUT','SELECT','BUTTON','TEXTAREA','OPTION'].includes(el.tagName)){
+        // ignore
+      }else{
+        el.innerHTML = txt;
+      }
+    }
+  });
+  const toggle=document.getElementById('langToggle');
+  toggle.textContent = lang==='zh' ? 'English' : '\u4e2d\u6587';
+  localStorage.setItem('lang',lang);
+}
+const saved=localStorage.getItem('lang')||'zh';
+setLanguage(saved);
+document.getElementById('langToggle').addEventListener('click',()=>{setLanguage(document.documentElement.lang==='zh'?'en':'zh');});
+document.getElementById('applyForm').addEventListener('submit',e=>{e.preventDefault();alert('\u8868\u5355\u5df2\u63d0\u4ea4\uff08\u6f14\u793a\uff09');});
+</script>
+</body>
+</html>
