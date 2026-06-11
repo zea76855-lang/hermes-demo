@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识库管理 - Knowledge Base Management</title>
+<style>
+:root {
+  --brand: #EA5540; --brand-dark: #d14330; --brand-light: #fef0ee;
+  --primary: #4f6ef7; --primary-light: #eef1fe;
+  --success: #22c55e; --success-light: #f0fdf4;
+  --warning: #f59e0b; --warning-light: #fffbeb;
+  --danger: #ef4444; --danger-light: #fef2f2;
+  --bg: #f8f9fc; --card: #fff; --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
+  --border: #e2e8f0; --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.04); --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+  --font: "PingFang SC", "Microsoft YaHei", "SF Pro Display", -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Top Bar */
+.topbar {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-left h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.topbar-left .back-link {
+  color: rgba(255,255,255,.7);
+  text-decoration: none;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color .2s;
+  white-space: nowrap;
+}
+
+.topbar-left .back-link:hover { color: #fff; }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lang-switch {
+  display: flex;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.3);
+}
+
+.lang-switch button {
+  padding: 5px 12px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255,255,255,.6);
+  transition: all .2s;
+  font-family: var(--font);
+}
+
+.lang-switch button.active {
+  background: var(--brand);
+  color: #fff;
+}
+
+.lang-switch button:hover:not(.active) {
+  color: #fff;
+  background: rgba(255,255,255,.1);
+}
+
+/* Main Layout */
+.main-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: calc(100vh - 56px);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Left Panel - FAQ Editor */
+.editor-panel {
+  height: fit-content;
+  position: sticky;
+  top: 76px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+
+.form-group label .required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color .2s, box-shadow .2s;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.form-group textarea {
+  min-height: 60px;
+}
+
+.form-group .hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-xs);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.btn-primary:hover { background: var(--brand-dark); }
+
+.btn-secondary {
+  background: var(--border-light);
+  color: var(--text2);
+}
+
+.btn-secondary:hover { background: var(--border); color: var(--text); }
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.btn-outline:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-xs {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.btn-icon {
+  width: 32px; height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 14px;
+}
+
+.btn-icon:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+.btn-icon.danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+/* Right Panel - FAQ Browser */
+.browser-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+/* Search & Filter Bar */
+.search-filter-bar {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.search-input-wrap input {
+  width: 100%;
+  padding: 9px 12px 9px 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color .2s;
+}
+
+.search-input-wrap input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.search-input-wrap .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+
+.chip.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.chip.count {
+  margin-left: 4px;
+  opacity: .7;
+}
+
+/* Toolbar Row */
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toolbar-row .faq-count {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+.toolbar-row .faq-count strong { color: var(--text); }
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* FAQ List */
+.faq-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.faq-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background .15s;
+  cursor: default;
+}
+
+.faq-item:hover { background: var(--bg); }
+
+.faq-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.badge-category {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.badge-system {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.faq-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.keyword-tag {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text3);
+  font-size: 11px;
+  border: 1px solid var(--border-light);
+}
+
+.faq-answer-preview {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.faq-item-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* Pagination */
+.pagination {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pagination button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--card);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font);
+}
+
+.pagination button:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+.pagination button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text3);
+  text-align: center;
+}
+
+.empty-state .empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: .5;
+}
+
+.empty-state p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  animation: slideIn .3s ease;
+  max-width: 360px;
+  font-family: var(--font);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+.toast.warning { background: var(--warning); color: #1e293b; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Confirm Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn .2s ease;
+}
+
+.modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+}
+
+.modal h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.modal p {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.modal .btn-row { justify-content: flex-end; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Hidden file input */
+.hidden-input { display: none; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .editor-panel {
+    position: static;
+  }
+
+  .topbar { padding: 10px 14px; }
+  .topbar-left h1 { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="ai-cs-index.html" class="back-link" data-i18n="back">← 返回首页</a>
+    <h1>📚 <span data-i18n="title">知识库管理</span></h1>
+  </div>
+  <div class="topbar-right">
+    <div class="lang-switch">
+      <button id="langZh" class="active" onclick="switchLang('zh')">中文</button>
+      <button id="langEn" onclick="switchLang('en')">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Layout -->
+<div class="main-container">
+
+  <!-- Left Panel: FAQ Editor -->
+  <div class="card editor-panel" id="editorPanel">
+    <div class="card-header">
+      <h2 data-i18n="editorTitle" id="editorTitle">添加/编辑 FAQ</h2>
+    </div>
+    <div class="card-body">
+      <form id="faqForm" onsubmit="handleSave(event)">
+        <!-- Hidden editing ID -->
+        <input type="hidden" id="editId" value="">
+
+        <!-- Keywords -->
+        <div class="form-group">
+          <label data-i18n="keywords">关键词 <span class="required">*</span></label>
+          <input type="text" id="keywords" data-i18n-placeholder="keywordsPlaceholder" placeholder="例如: CNC加工, 报价, 交期 (逗号分隔)" required>
+          <div class="hint" data-i18n="keywordsHint">用于 AI 匹配，逗号分隔多个关键词</div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label data-i18n="category">分类 <span class="required">*</span></label>
+          <select id="category" required></select>
+        </div>
+
+        <!-- Chinese Answer -->
+        <div class="form-group">
+          <label data-i18n="zhAnswer">中文回答 <span class="required">*</span></label>
+          <textarea id="zhAnswer" data-i18n-placeholder="zhAnswerPlaceholder" placeholder="输入中文回答内容..." rows="3" required></textarea>
+        </div>
+
+        <!-- English Answer -->
+        <div class="form-group">
+          <label data-i18n="enAnswer">英文回答</label>
+          <textarea id="enAnswer" data-i18n-placeholder="enAnswerPlaceholder" placeholder="输入英文回答内容..." rows="3"></textarea>
+        </div>
+
+        <!-- Question/Context -->
+        <div class="form-group">
+          <label data-i18n="questionContext">示例问题 / 上下文（可选）</label>
+          <textarea id="questionContext" data-i18n-placeholder="questionContextPlaceholder" placeholder="用户可能问到的示例问题..." rows="2"></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="saveBtn" data-i18n="save">💾 保存</button>
+          <button type="button" class="btn btn-secondary" id="cancelBtn" data-i18n="cancel" onclick="resetForm()">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right Panel: FAQ Browser -->
+  <div class="card browser-panel">
+    <!-- Search & Filter -->
+    <div class="search-filter-bar">
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="搜索关键词、分类、回答内容..." oninput="onSearchInput()">
+        </div>
+      </div>
+      <div class="filter-chips" id="filterChips"></div>
+      <div class="toolbar-row">
+        <span class="faq-count" id="faqCount" data-i18n="totalEntries">共 <strong>0</strong> 条记录</span>
+        <div class="toolbar-actions">
+          <button class="btn btn-outline btn-sm" onclick="exportData()" data-i18n="export">📥 导出</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()" data-i18n="import">📤 导入</button>
+          <input type="file" id="importFile" class="hidden-input" accept=".json" onchange="importData(event)">
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ List -->
+    <div class="faq-list" id="faqList"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <p data-i18n="noResults">没有找到匹配的 FAQ 条目</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h3 data-i18n="confirmDelete" id="confirmTitle">确认删除</h3>
+    <p id="confirmMessage">确定要删除此 FAQ 条目吗？此操作不可撤销。</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()" data-i18n="cancelText">取消</button>
+      <button class="btn btn-primary btn-sm" id="confirmBtn" style="background:var(--danger);" data-i18n="deleteConfirm">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ==================== I18N ====================
+const i18n = {
+  zh: {
+    back: '← 返回首页',
+    title: '知识库管理',
+    editorTitle: '添加/编辑 FAQ',
+    keywords: '关键词',
+    keywordsPlaceholder: '例如: CNC加工, 报价, 交期 (逗号分隔)',
+    keywordsHint: '用于 AI 匹配，逗号分隔多个关键词',
+    category: '分类',
+    zhAnswer: '中文回答',
+    zhAnswerPlaceholder: '输入中文回答内容...',
+    enAnswer: '英文回答',
+    enAnswerPlaceholder: '输入英文回答内容...',
+    questionContext: '示例问题 / 上下文（可选）',
+    questionContextPlaceholder: '用户可能问到的示例问题...',
+    save: '💾 保存',
+    update: '💾 更新',
+    cancel: '取消',
+    cancelText: '取消',
+    searchPlaceholder: '搜索关键词、分类、回答内容...',
+    totalEntries: '共 <strong>%d</strong> 条记录',
+    export: '📥 导出',
+    import: '📤 导入',
+    noResults: '没有找到匹配的 FAQ 条目',
+    confirmDelete: '确认删除',
+    confirmDeleteMsg: '确定要删除此 FAQ 条目吗？此操作不可撤销。',
+    deleteConfirm: '确认删除',
+    allCategories: '全部',
+    system: '系统',
+    edit: '编辑',
+    delete: '删除',
+    saveSuccess: 'FAQ 保存成功',
+    updateSuccess: 'FAQ 更新成功',
+    deleteSuccess: 'FAQ 已删除',
+    importSuccess: '成功导入 %d 条记录',
+    importError: '导入失败，请检查文件格式',
+    exportSuccess: '导出成功',
+    systemCantDelete: '系统预设条目不可删除',
+    requiredFields: '请填写必填字段',
+    page: '页',
+  },
+  en: {
+    back: '← Back to Home',
+    title: 'Knowledge Base Management',
+    editorTitle: 'Add / Edit FAQ',
+    keywords: 'Keywords',
+    keywordsPlaceholder: 'e.g.: CNC machining, quotation, lead time (comma separated)',
+    keywordsHint: 'Used for AI matching, separate with commas',
+    category: 'Category',
+    zhAnswer: 'Chinese Answer',
+    zhAnswerPlaceholder: 'Enter Chinese answer...',
+    enAnswer: 'English Answer',
+    enAnswerPlaceholder: 'Enter English answer...',
+    questionContext: 'Example Questions / Context (optional)',
+    questionContextPlaceholder: 'Example questions users might ask...',
+    save: '💾 Save',
+    update: '💾 Update',
+    cancel: 'Cancel',
+    cancelText: 'Cancel',
+    searchPlaceholder: 'Search keywords, category, answer content...',
+    totalEntries: '<strong>%d</strong> entries total',
+    export: '📥 Export',
+    import: '📤 Import',
+    noResults: 'No matching FAQ entries found',
+    confirmDelete: 'Confirm Delete',
+    confirmDeleteMsg: 'Are you sure you want to delete this FAQ entry? This action cannot be undone.',
+    deleteConfirm: 'Confirm Delete',
+    allCategories: 'All',
+    system: 'System',
+    edit: 'Edit',
+    delete: 'Delete',
+    saveSuccess: 'FAQ saved successfully',
+    updateSuccess: 'FAQ updated successfully',
+    deleteSuccess: 'FAQ deleted',
+    importSuccess: 'Successfully imported %d records',
+    importError: 'Import failed, please check file format',
+    exportSuccess: 'Export successful',
+    systemCantDelete: 'System preset entries cannot be deleted',
+    requiredFields: 'Please fill in required fields',
+    page: 'Page',
+  },
+};
+
+let currentLang = 'zh';
+
+function t(key) {
+  return i18n[currentLang][key] || key;
+}
+
+function switchLang(lang) {
+  currentLang = lang;
+  document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  updateAllI18n();
+  renderFilterChips();
+  renderFaqList();
+  updateEditorTitle();
+}
+
+function updateAllI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const text = t(key);
+    if (el.tagName === 'INPUT') {
+      // Don't override input values if they have data
+      const placeholderKey = el.getAttribute('data-i18n-placeholder');
+      if (placeholderKey) el.placeholder = t(placeholderKey);
+    } else if (el.tagName === 'TEXTAREA') {
+      const placeholderKey = el.getAttribute('data-i18n-placeholder');
+      if (placeholderKey) el.placeholder = t(placeholderKey);
+    } else {
+      el.textContent = text;
+    }
+  });
+  // Update FAQ count
+  updateFaqCount();
+}
+
+function updateEditorTitle() {
+  const editId = document.getElementById('editId').value;
+  document.getElementById('editorTitle').textContent = editId ? t('editorTitle') : t('editorTitle');
+  document.getElementById('saveBtn').innerHTML = editId ? t('update') : t('save');
+}
+
+// ==================== DATA ====================
+const categories = [
+  '制造能力', '报价/订单', '设计/CAD', '账号', '供应商',
+  '材料', '物流', '投诉', '会员', '订单',
+  '表面处理', '3D打印', '钣金', '注塑', '自定义'
+];
+
+const categoriesEn = [
+  'Manufacturing Capability', 'Quotation/Order', 'Design/CAD', 'Account', 'Supplier',
+  'Materials', 'Logistics', 'Complaints', 'Membership', 'Orders',
+  'Surface Finishing', '3D Printing', 'Sheet Metal', 'Injection Molding', 'Custom'
+];
+
+function getCategoryName(cat, lang) {
+  const idx = categories.indexOf(cat);
+  if (lang === 'en' && idx >= 0) return categoriesEn[idx];
+  return cat;
+}
+
+// System FAQ entries (16+)
+const systemFAQs = [
+  {
+    id: 'sys-001',
+    keywords: 'CNC加工,数控加工,CNC machining',
+    category: '制造能力',
+    zh: '我们拥有 200+ 台 CNC 加工中心，包括 3 轴、4 轴和 5 轴设备。可加工材料涵盖铝合金、不锈钢、钛合金、工程塑料等。最大加工尺寸可达 2000×1000×800mm，加工精度可达 ±0.005mm。支持快速打样和批量生产。',
+    en: 'We have 200+ CNC machining centers, including 3-axis, 4-axis, and 5-axis equipment. Machinable materials include aluminum alloys, stainless steel, titanium alloys, engineering plastics, and more. Maximum machining size up to 2000×1000×800mm with precision up to ±0.005mm. We support rapid prototyping and batch production.',
+    questionContext: '你们能做哪些CNC加工？CNC精度是多少？最大加工尺寸？',
+    system: true,
+  },
+  {
+    id: 'sys-002',
+    keywords: '注塑成型,注塑,模具,injection molding,mold',
+    category: '注塑',
+    zh: '我们提供全套注塑成型服务，包括模具设计制造和批量注塑生产。模具寿命可达 50 万-100 万模次。支持各种热塑性塑料，如 ABS、PC、PP、PA、POM、PEEK 等。可做包胶注塑、双色注塑、嵌件注塑等特殊工艺。',
+    en: 'We offer comprehensive injection molding services, including mold design, manufacturing, and mass production. Mold lifespan reaches 500K-1M shots. Supports various thermoplastics such as ABS, PC, PP, PA, POM, PEEK, etc. Special processes available: overmolding, two-shot molding, insert molding.',
+    questionContext: '能做模具吗？注塑最小起订量？可以做什么材料？模具寿命？',
+    system: true,
+  },
+  {
+    id: 'sys-003',
+    keywords: '3D打印,增材制造,快速成型,3D printing,additive manufacturing,prototype',
+    category: '3D打印',
+    zh: '我们支持多种 3D 打印工艺：SLA（光固化）、SLS（选择性激光烧结）、SLM（金属打印）、FDM。材料涵盖光敏树脂、尼龙、金属粉末（铝合金、钛合金、不锈钢）等。可做外观验证、功能测试、小批量生产。最快 24 小时交付。',
+    en: 'We support multiple 3D printing processes: SLA, SLS, SLM (metal printing), FDM. Materials include photosensitive resin, nylon, metal powders (aluminum, titanium, stainless steel), etc. Applications: appearance verification, functional testing, small-batch production. Fastest delivery in 24 hours.',
+    questionContext: '3D打印用什么工艺？可以打金属吗？多久能交付？',
+    system: true,
+  },
+  {
+    id: 'sys-004',
+    keywords: '钣金加工,折弯,冲压,激光切割,sheet metal,bending,stamping,laser cutting',
+    category: '钣金',
+    zh: '我们的钣金加工能力覆盖激光切割（厚度 0.5-25mm）、数控冲压、折弯（最大长度 4m，吨位 200T）、焊接（氩弧焊、激光焊、电阻焊）、表面处理。材料包括冷轧板、热轧板、不锈钢、铝板、铜板等。可提供从下料到装配的一站式服务。',
+    en: 'Our sheet metal capabilities cover laser cutting (0.5-25mm thickness), CNC punching, bending (max 4m length, 200T), welding (TIG, laser, resistance), and surface treatment. Materials: cold-rolled steel, hot-rolled steel, stainless steel, aluminum, copper, etc. One-stop service from blanking to assembly.',
+    questionContext: '钣金最厚能切多少？能折多长？表面处理有哪些？',
+    system: true,
+  },
+  {
+    id: 'sys-005',
+    keywords: '表面处理,阳极氧化,喷涂,电镀,surface finishing,anodizing,powder coating,plating',
+    category: '表面处理',
+    zh: '我们提供全面的表面处理服务：阳极氧化（本色、黑色、彩色）、硬质阳极氧化、喷砂、抛光、拉丝、粉末喷涂、电泳、镀锌、镀镍、镀铬、PVD 镀膜、丝印、镭雕等。可根据产品需求推荐最适合的表面处理方案。',
+    en: 'We provide comprehensive surface finishing: anodizing (natural, black, colored), hard anodizing, sandblasting, polishing, brushing, powder coating, electrophoresis, zinc plating, nickel plating, chrome plating, PVD coating, silk screening, laser engraving, etc. We can recommend the best finishing solution based on product requirements.',
+    questionContext: '可以做什么颜色的阳极氧化？有没有喷涂？',
+    system: true,
+  },
+  {
+    id: 'sys-006',
+    keywords: '报价,询价,价格,quotation,RFQ,pricing,cost',
+    category: '报价/订单',
+    zh: '报价流程：您只需提供 3D 图纸（STEP/IGS/STL 格式）、数量、材料和表面处理要求，我们将在 24 小时内提供正式报价。批量订单可享受阶梯价格优惠。我们支持 FOB、CIF、DDP 等多种贸易条款。',
+    en: 'Quotation process: Simply provide 3D drawings (STEP/IGS/STL format), quantity, material, and surface finishing requirements. We provide formal quotation within 24 hours. Volume orders enjoy tiered pricing discounts. We support FOB, CIF, DDP, and other trade terms.',
+    questionContext: '怎么询价？报价需要什么资料？多久能报价？',
+    system: true,
+  },
+  {
+    id: 'sys-007',
+    keywords: '设计支持,DFM,设计优化,CAD,design support,DFM analysis',
+    category: '设计/CAD',
+    zh: '我们的工程团队提供免费的 DFM（面向制造的设计）分析服务。在收到您的设计文件后，我们的工程师将评估可制造性，识别潜在问题，并提出优化建议，帮助您降低成本、提高产品质量。我们还提供逆向工程和 3D 扫描服务。',
+    en: 'Our engineering team provides free DFM (Design for Manufacturing) analysis. Upon receiving your design files, our engineers evaluate manufacturability, identify potential issues, and propose optimization suggestions to reduce costs and improve product quality. We also offer reverse engineering and 3D scanning services.',
+    questionContext: '可以帮我优化设计吗？DFM是什么？改设计收费吗？',
+    system: true,
+  },
+  {
+    id: 'sys-008',
+    keywords: '账号,注册,登录,密码,account,register,login,password',
+    category: '账号',
+    zh: '注册 RapidDirect 账号完全免费。您可以使用企业邮箱注册，注册后即可提交询价、管理订单、查看生产进度。忘记密码可通过注册邮箱重置。企业认证后可解锁更多功能，包括 API 对接和专属客户经理。',
+    en: 'Registering a RapidDirect account is completely free. Use your business email to sign up, then submit RFQs, manage orders, and track production progress. Reset password via registered email. Enterprise verification unlocks more features, including API integration and a dedicated account manager.',
+    questionContext: '怎么注册账号？密码忘了怎么办？企业认证有什么好处？',
+    system: true,
+  },
+  {
+    id: 'sys-009',
+    keywords: '供应商,审核,合作,supplier,audit,partnership',
+    category: '供应商',
+    zh: '成为我们的供应商需经过严格的审核流程：资质审查 → 现场审核 → 样品测试 → 小批量试产 → 正式合作。我们欢迎有 ISO 9001、IATF 16949 等认证的优质供应商加入。通过审核后可享受稳定的订单量和及时付款。',
+    en: 'Becoming our supplier requires a rigorous audit process: qualification review → on-site audit → sample testing → small-batch trial → formal cooperation. We welcome quality suppliers with ISO 9001, IATF 16949 certifications. Approved suppliers enjoy stable order volume and timely payments.',
+    questionContext: '如何成为供应商？需要什么资质？审核多久？',
+    system: true,
+  },
+  {
+    id: 'sys-010',
+    keywords: '材料,铝合金,不锈钢,塑料,materials,aluminum,stainless steel,plastic',
+    category: '材料',
+    zh: '我们常用的材料包括：铝合金（6061、7075、5052等）、不锈钢（304、316L、17-4PH等）、碳钢、铜合金、钛合金、工程塑料（ABS、PC、POM、PA、PEEK、PTFE等）。如需特殊材料，可联系我们确认供应情况。我们也提供材料认证和检测报告。',
+    en: 'Our common materials include: aluminum alloys (6061, 7075, 5052, etc.), stainless steel (304, 316L, 17-4PH), carbon steel, copper alloys, titanium alloys, engineering plastics (ABS, PC, POM, PA, PEEK, PTFE, etc.). For special materials, contact us to confirm availability. We also provide material certifications and test reports.',
+    questionContext: '你们有什么材料？可以做钛合金吗？有没有材料证书？',
+    system: true,
+  },
+  {
+    id: 'sys-011',
+    keywords: '物流,运输,发货,快递,logistics,shipping,delivery,freight',
+    category: '物流',
+    zh: '我们与 DHL、FedEx、UPS、TNT 等国际快递合作，同时也支持海运、空运和铁路运输。国内发货通常 1-3 天，国际快递 3-7 天。大货走海运约 20-35 天。我们提供门到门（DDP）服务，也可按客户指定货代发货。',
+    en: 'We partner with DHL, FedEx, UPS, TNT, and also support sea freight, air freight, and rail transport. Domestic delivery typically 1-3 days, international express 3-7 days. Sea freight for bulk orders approximately 20-35 days. We offer door-to-door (DDP) service; can also ship via customer-designated forwarders.',
+    questionContext: '发货用什么快递？多久能收到？运费怎么算？',
+    system: true,
+  },
+  {
+    id: 'sys-012',
+    keywords: '投诉,质量问题,退货,complaint,quality issue,return,defect',
+    category: '投诉',
+    zh: '如收到产品有质量问题，请在收货后 7 个工作日内联系我们，提供清晰的照片/视频和问题描述。我们会在 24 小时内响应，评估后提供补货、返工或退款方案。所有产品均有质量保证，我们严格按照 ISO 9001 质量管理体系执行。',
+    en: 'If you receive products with quality issues, please contact us within 7 business days after receipt, providing clear photos/videos and problem description. We respond within 24 hours and offer replacement, rework, or refund after evaluation. All products are quality guaranteed; we strictly follow ISO 9001 quality management system.',
+    questionContext: '产品有质量问题怎么办？退货流程？保修期多久？',
+    system: true,
+  },
+  {
+    id: 'sys-013',
+    keywords: '会员,等级,权益,membership,tier,benefits,VIP',
+    category: '会员',
+    zh: '我们设有 4 个会员等级：普通会员 → 银牌会员 → 金牌会员 → 钻石会员。等级越高，享受的折扣越大、账期越长、服务越优先。会员等级按累计交易额自动升级。钻石会员还享专属项目经理和免费加急服务。',
+    en: 'We have 4 membership tiers: Regular → Silver → Gold → Diamond. Higher tiers enjoy larger discounts, longer payment terms, and priority service. Membership upgrades automatically based on cumulative transaction volume. Diamond members also receive a dedicated project manager and free expedited service.',
+    questionContext: '会员有几个等级？怎么升级？金牌会员有什么权益？',
+    system: true,
+  },
+  {
+    id: 'sys-014',
+    keywords: '订单状态,生产进度,跟踪,order status,production tracking,progress',
+    category: '订单',
+    zh: '您可以在账户后台实时查看订单状态：待确认 → 生产中 → 质检中 → 待发货 → 已发货 → 已签收。每个阶段都有预估时间。系统会在状态变更时自动发送邮件/短信通知。也可联系您的客户经理获取详细生产照片。',
+    en: 'You can track order status in real-time in your account dashboard: Pending Confirmation → In Production → QC Inspection → Ready to Ship → Shipped → Delivered. Each stage has estimated timeframes. System sends automatic email/SMS notifications on status changes. Contact your account manager for detailed production photos.',
+    questionContext: '我的订单到哪一步了？怎么看生产进度？',
+    system: true,
+  },
+  {
+    id: 'sys-015',
+    keywords: '付款,账期,支付方式,payment,terms,methods,invoice',
+    category: '报价/订单',
+    zh: '我们接受银行转账（T/T）、信用证（L/C）、PayPal 等付款方式。标准付款条件：新客户 50% 预付 + 50% 发货前付清。信用良好客户可申请月结 30/60/90 天账期。所有交易提供正规发票。大额订单可协商分期付款。',
+    en: 'We accept bank transfer (T/T), letter of credit (L/C), PayPal, and other payment methods. Standard terms: new customers 50% advance + 50% before shipment. Customers with good credit can apply for net 30/60/90 day terms. Formal invoices provided for all transactions. Installment payments negotiable for large orders.',
+    questionContext: '怎么付款？支持信用卡吗？有没有账期？',
+    system: true,
+  },
+  {
+    id: 'sys-016',
+    keywords: '保密协议,NDA,工厂参观,保密,confidentiality,NDA,factory visit,audit',
+    category: '账号',
+    zh: '我们重视客户知识产权保护。可签署 NDA（保密协议），所有员工均签署保密条款。客户图纸和设计数据仅用于生产和质量管控，绝不外泄。我们支持客户来厂参观审核，需提前 3 个工作日预约。也可安排视频验厂。',
+    en: 'We value customer IP protection. NDA signing available; all employees sign confidentiality clauses. Customer drawings and design data are used solely for production and quality control, never disclosed. We support factory visits and audits — please book 3 business days in advance. Virtual factory tours also available.',
+    questionContext: '可以签保密协议吗？能来工厂参观吗？图纸会不会泄露？',
+    system: true,
+  },
+  {
+    id: 'sys-017',
+    keywords: '交期,生产周期,lead time,production time,delivery',
+    category: '制造能力',
+    zh: '标准交期参考：CNC 加工 5-15 个工作日，3D 打印 1-5 个工作日，钣金加工 7-15 个工作日，注塑模具 15-35 个工作日，注塑生产 7-20 个工作日。以上为参考时间，具体交期根据零件复杂度和数量确定。加急服务可在标准交期基础上缩短 30-50%。',
+    en: 'Standard lead time reference: CNC machining 5-15 business days, 3D printing 1-5 business days, sheet metal 7-15 business days, injection molds 15-35 business days, injection molding production 7-20 business days. These are estimates; actual lead times depend on part complexity and quantity. Expedited service can reduce standard lead time by 30-50%.',
+    questionContext: 'CNC加工要多久？能加急吗？模具多少天？',
+    system: true,
+  },
+  {
+    id: 'sys-018',
+    keywords: '质检,品质,检测,QC,quality inspection,inspection report',
+    category: '制造能力',
+    zh: '每批产品出厂前都经过严格质检，包括首件检验（FAI）、过程检验（IPQC）和出货检验（OQC）。我们配备三坐标测量仪（CMM）、影像测量仪、粗糙度仪、硬度计等检测设备。可根据要求提供材质证明、尺寸报告、RoHS/REACH 合规报告。',
+    en: 'Every batch undergoes strict QC before shipment: First Article Inspection (FAI), In-Process QC (IPQC), and Outgoing QC (OQC). We are equipped with CMM, video measuring systems, roughness testers, hardness testers, etc. Material certifications, dimensional reports, and RoHS/REACH compliance reports available upon request.',
+    questionContext: '产品怎么质检？有检测报告吗？用什么设备检测？',
+    system: true,
+  },
+];
+
+// Generate sequential IDs for custom entries
+let customIdCounter = 1;
+
+// Load data from localStorage
+function loadData() {
+  const saved = localStorage.getItem('ai_cs_knowledge_faqs');
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      // Corrupted data, reset
+    }
+  }
+  return JSON.parse(JSON.stringify(systemFAQs));
+}
+
+function saveData(faqs) {
+  localStorage.setItem('ai_cs_knowledge_faqs', JSON.stringify(faqs));
+}
+
+let faqs = loadData();
+
+// ==================== STATE ====================
+let currentCategory = '全部';
+let searchQuery = '';
+let currentPage = 1;
+let itemsPerPage = 20;
+let pendingDeleteId = null;
+
+// ==================== RENDER ====================
+function getFilteredFaqs() {
+  return faqs.filter(faq => {
+    // Category filter
+    if (currentCategory !== '全部' && faq.category !== currentCategory) return false;
+    // Search filter
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const searchTargets = [
+        faq.keywords || '',
+        faq.category || '',
+        faq.zh || '',
+        faq.en || '',
+        faq.questionContext || '',
+      ];
+      return searchTargets.some(t => t.toLowerCase().includes(q));
+    }
+    return true;
+  });
+}
+
+function renderFilterChips() {
+  const container = document.getElementById('filterChips');
+  const filtered = getFilteredFaqs();
+
+  // Count per category
+  const counts = {};
+  faqs.forEach(f => {
+    counts[f.category] = (counts[f.category] || 0) + 1;
+  });
+
+  const allCount = faqs.length;
+  const allLabel = currentLang === 'zh' ? '全部' : 'All';
+
+  let html = `<span class="chip ${currentCategory === '全部' ? 'active' : ''}" onclick="setCategory('全部')">${allLabel} <span class="count">${allCount}</span></span>`;
+  categories.forEach(cat => {
+    const count = counts[cat] || 0;
+    if (count > 0) {
+      const displayName = getCategoryName(cat, currentLang);
+      html += `<span class="chip ${currentCategory === cat ? 'active' : ''}" onclick="setCategory('${cat}')">${displayName} <span class="count">${count}</span></span>`;
+    }
+  });
+  container.innerHTML = html;
+}
+
+function renderFaqList() {
+  const filtered = getFilteredFaqs();
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+  const start = (currentPage - 1) * itemsPerPage;
+  const pageItems = filtered.slice(start, start + itemsPerPage);
+
+  const container = document.getElementById('faqList');
+  const emptyState = document.getElementById('emptyState');
+
+  if (pageItems.length === 0) {
+    container.innerHTML = '';
+    emptyState.style.display = 'flex';
+  } else {
+    emptyState.style.display = 'none';
+    container.innerHTML = pageItems.map(faq => {
+      const catDisplay = getCategoryName(faq.category, currentLang);
+      const keywords = (faq.keywords || '').split(',').map(k => k.trim()).filter(Boolean);
+      const displayKeywords = keywords.slice(0, 5);
+      const moreCount = keywords.length > 5 ? ` +${keywords.length - 5}` : '';
+      const answerText = (currentLang === 'en' && faq.en) ? faq.en : faq.zh;
+      const preview = answerText.length > 80 ? answerText.substring(0, 80) + '...' : answerText;
+      const systemBadge = faq.system ? `<span class="badge badge-system">${t('system')}</span>` : '';
+
+      return `
+        <div class="faq-item">
+          <div class="faq-item-header">
+            <span class="badge badge-category">${catDisplay}</span>
+            ${systemBadge}
+          </div>
+          <div class="faq-keywords">
+            ${displayKeywords.map(k => `<span class="keyword-tag">${k}</span>`).join('')}
+            ${moreCount ? `<span class="keyword-tag">${moreCount}</span>` : ''}
+          </div>
+          <div class="faq-answer-preview" title="${answerText.replace(/"/g, '&quot;')}">${preview}</div>
+          <div class="faq-item-actions">
+            <button class="btn-icon" title="${t('edit')}" onclick="editFaq('${faq.id}')">✏️</button>
+            <button class="btn-icon danger" title="${t('delete')}" onclick="deleteFaq('${faq.id}')" ${faq.system ? 'disabled style="opacity:.4;cursor:not-allowed;"' : ''}>🗑️</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  updateFaqCount();
+  renderPagination(filtered.length, totalPages);
+}
+
+function updateFaqCount() {
+  const filtered = getFilteredFaqs();
+  const el = document.getElementById('faqCount');
+  const template = t('totalEntries');
+  el.innerHTML = template.replace('%d', filtered.length);
+}
+
+function renderPagination(totalItems, totalPages) {
+  const container = document.getElementById('pagination');
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+  html += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+
+  const maxVisible = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage < maxVisible - 1) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+
+  if (startPage > 1) {
+    html += `<button onclick="goPage(1)">1</button>`;
+    if (startPage > 2) html += `<button disabled>…</button>`;
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<button disabled>…</button>`;
+    html += `<button onclick="goPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
+  container.innerHTML = html;
+}
+
+function setCategory(cat) {
+  currentCategory = cat;
+  currentPage = 1;
+  renderFilterChips();
+  renderFaqList();
+}
+
+function onSearchInput() {
+  searchQuery = document.getElementById('searchInput').value;
+  currentPage = 1;
+  renderFaqList();
+}
+
+function goPage(page) {
+  const filtered = getFilteredFaqs();
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  renderFaqList();
+  document.getElementById('faqList').scrollTop = 0;
+}
+
+// ==================== CRUD OPERATIONS ====================
+function resetForm() {
+  document.getElementById('faqForm').reset();
+  document.getElementById('editId').value = '';
+  updateEditorTitle();
+}
+
+function editFaq(id) {
+  const faq = faqs.find(f => f.id === id);
+  if (!faq) return;
+
+  document.getElementById('editId').value = faq.id;
+  document.getElementById('keywords').value = faq.keywords || '';
+  document.getElementById('category').value = faq.category || '';
+  document.getElementById('zhAnswer').value = faq.zh || '';
+  document.getElementById('enAnswer').value = faq.en || '';
+  document.getElementById('questionContext').value = faq.questionContext || '';
+
+  updateEditorTitle();
+  document.getElementById('editorPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function handleSave(event) {
+  event.preventDefault();
+
+  const editId = document.getElementById('editId').value;
+  const keywords = document.getElementById('keywords').value.trim();
+  const category = document.getElementById('category').value;
+  const zhAnswer = document.getElementById('zhAnswer').value.trim();
+  const enAnswer = document.getElementById('enAnswer').value.trim();
+  const questionContext = document.getElementById('questionContext').value.trim();
+
+  if (!keywords || !category || !zhAnswer) {
+    showToast(t('requiredFields'), 'warning');
+    return;
+  }
+
+  if (editId) {
+    // Update existing
+    const faq = faqs.find(f => f.id === editId);
+    if (faq) {
+      faq.keywords = keywords;
+      faq.category = category;
+      faq.zh = zhAnswer;
+      faq.en = enAnswer;
+      faq.questionContext = questionContext;
+    }
+    showToast(t('updateSuccess'), 'success');
+  } else {
+    // Create new
+    const newId = 'custom-' + customIdCounter++;
+    faqs.push({
+      id: newId,
+      keywords,
+      category,
+      zh: zhAnswer,
+      en: enAnswer,
+      questionContext,
+      system: false,
+    });
+    showToast(t('saveSuccess'), 'success');
+  }
+
+  saveData(faqs);
+  resetForm();
+  renderFilterChips();
+  renderFaqList();
+}
+
+function deleteFaq(id) {
+  const faq = faqs.find(f => f.id === id);
+  if (faq && faq.system) {
+    showToast(t('systemCantDelete'), 'warning');
+    return;
+  }
+
+  pendingDeleteId = id;
+  document.getElementById('confirmMessage').textContent = t('confirmDeleteMsg');
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function closeModal() {
+  pendingDeleteId = null;
+  document.getElementById('confirmModal').style.display = 'none';
+}
+
+document.getElementById('confirmBtn').addEventListener('click', () => {
+  if (pendingDeleteId) {
+    faqs = faqs.filter(f => f.id !== pendingDeleteId);
+    saveData(faqs);
+    showToast(t('deleteSuccess'), 'success');
+    pendingDeleteId = null;
+    renderFilterChips();
+    renderFaqList();
+  }
+  closeModal();
+});
+
+document.getElementById('confirmModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('confirmModal')) closeModal();
+});
+
+// ==================== IMPORT / EXPORT ====================
+function exportData() {
+  const customFaqs = faqs.filter(f => !f.system).map(({ id, keywords, category, zh, en, questionContext }) => ({
+    id, keywords, category, zh, en, questionContext,
+  }));
+
+  const blob = new Blob([JSON.stringify(customFaqs, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `faq-export-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(t('exportSuccess'), 'success');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+
+      let importCount = 0;
+      imported.forEach(item => {
+        // Basic validation
+        if (item.keywords && item.category && item.zh) {
+          // If ID already exists (system or custom), generate new ID
+          const exists = faqs.find(f => f.id === item.id);
+          const newId = exists ? 'custom-' + customIdCounter++ : (item.id || 'custom-' + customIdCounter++);
+          faqs.push({
+            id: newId,
+            keywords: item.keywords || '',
+            category: item.category,
+            zh: item.zh || '',
+            en: item.en || '',
+            questionContext: item.questionContext || '',
+            system: false,
+          });
+          importCount++;
+        }
+      });
+
+      saveData(faqs);
+      showToast(t('importSuccess').replace('%d', importCount), 'success');
+      renderFilterChips();
+      renderFaqList();
+    } catch (err) {
+      showToast(t('importError'), 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ==================== TOAST ====================
+function showToast(message, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// ==================== POPULATE CATEGORIES ====================
+function populateCategories() {
+  const select = document.getElementById('category');
+  select.innerHTML = '';
+  categories.forEach((cat, i) => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = currentLang === 'en' ? categoriesEn[i] : cat;
+    select.appendChild(option);
+  });
+}
+
+// ==================== INIT ====================
+function init() {
+  populateCategories();
+  renderFilterChips();
+  renderFaqList();
+  updateAllI18n();
+}
+
+// Save data if not already saved (first visit)
+if (!localStorage.getItem('ai_cs_knowledge_faqs')) {
+  saveData(faqs);
+}
+
+init();
+</script>
+
+</body>
+</html>

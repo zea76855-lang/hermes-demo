@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工单/会话管理 - Ticket & Session Center</title>
+<style>
+:root {
+  --brand: #EA5540; --brand-dark: #d14330; --brand-light: #fef0ee;
+  --primary: #4f6ef7; --primary-light: #eef1fe;
+  --success: #22c55e; --success-light: #f0fdf4;
+  --warning: #f59e0b; --warning-light: #fffbeb;
+  --danger: #ef4444; --danger-light: #fef2f2;
+  --bg: #f8f9fc; --card: #fff; --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
+  --border: #e2e8f0; --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.04); --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+  --font: "PingFang SC", "Microsoft YaHei", "SF Pro Display", -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  color: #fff;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.topbar-logo {
+  width: 32px; height: 32px;
+  background: var(--brand);
+  border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px;
+}
+.topbar-title { font-size: 17px; font-weight: 600; white-space: nowrap; }
+.topbar-sub { font-size: 12px; color: #94a3b8; margin-left: 4px; font-weight: 400; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.btn-back {
+  color: #cbd5e1; text-decoration: none; font-size: 14px;
+  display: flex; align-items: center; gap: 4px;
+  transition: color .2s;
+}
+.btn-back:hover { color: #fff; }
+.lang-switch {
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; padding: 6px 12px; border-radius: var(--radius-xs);
+  cursor: pointer; font-size: 13px; font-family: var(--font);
+  transition: background .2s;
+}
+.lang-switch:hover { background: rgba(255,255,255,.18); }
+
+/* ── Main Container ── */
+.main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+/* ── Stats Row ── */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 20px 24px; box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  display: flex; align-items: center; gap: 16px;
+  transition: box-shadow .2s;
+}
+.stat-card:hover { box-shadow: var(--shadow); }
+.stat-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.stat-icon.blue { background: var(--primary-light); color: var(--primary); }
+.stat-icon.orange { background: var(--warning-light); color: var(--warning); }
+.stat-icon.green { background: var(--success-light); color: var(--success); }
+.stat-icon.red { background: var(--danger-light); color: var(--danger); }
+.stat-info { min-width: 0; }
+.stat-value { font-size: 28px; font-weight: 700; line-height: 1.2; }
+.stat-label { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.stat-change { font-size: 12px; margin-top: 2px; }
+.stat-change.up { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+/* ── Filter Bar ── */
+.filter-bar {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px 20px; box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  margin-bottom: 16px;
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+}
+.filter-bar > * { flex-shrink: 0; }
+.filter-search {
+  flex: 1 1 220px; min-width: 180px;
+  position: relative;
+}
+.filter-search input {
+  width: 100%; padding: 8px 12px 8px 36px;
+  border: 1px solid var(--border); border-radius: var(--radius-xs);
+  font-size: 14px; font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  transition: border-color .2s;
+}
+.filter-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.filter-search .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
+.filter-select {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-xs);
+  font-size: 14px; font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  transition: border-color .2s;
+}
+.filter-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.filter-date {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  font-size: 14px; font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  transition: border-color .2s;
+}
+.filter-date:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.btn-filter-reset {
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  background: var(--card); color: var(--text2); cursor: pointer;
+  font-size: 13px; font-family: var(--font); transition: all .2s;
+}
+.btn-filter-reset:hover { background: var(--border-light); color: var(--text); }
+.filter-collapse-btn {
+  display: none;
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  background: var(--card); color: var(--text2); cursor: pointer;
+  font-size: 13px; font-family: var(--font);
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
+}
+.toolbar-left { display: flex; gap: 8px; align-items: center; }
+.toolbar-right { display: flex; gap: 8px; align-items: center; }
+.toolbar-count { font-size: 13px; color: var(--text2); }
+.toolbar-count strong { color: var(--text); }
+.btn {
+  padding: 8px 16px; border-radius: var(--radius-xs); font-size: 13px;
+  font-family: var(--font); cursor: pointer; border: 1px solid var(--border);
+  background: var(--card); color: var(--text);
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all .2s; white-space: nowrap; font-weight: 500;
+}
+.btn:hover { background: var(--border-light); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: #3d5de5; border-color: #3d5de5; }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-danger:hover { background: #dc2626; border-color: #dc2626; }
+.btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+.btn-success:hover { background: #16a34a; border-color: #16a34a; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Table ── */
+.table-wrap {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead { background: var(--border-light); }
+th {
+  padding: 12px 16px; text-align: left; font-weight: 600;
+  color: var(--text2); font-size: 12px; text-transform: uppercase;
+  letter-spacing: .5px; white-space: nowrap; user-select: none;
+}
+th.sortable { cursor: pointer; }
+th.sortable:hover { color: var(--text); }
+th .sort-arrow { margin-left: 4px; font-size: 10px; }
+td { padding: 14px 16px; border-top: 1px solid var(--border-light); vertical-align: middle; }
+tbody tr { transition: background .15s; cursor: pointer; }
+tbody tr:hover { background: #f8fafc; }
+tbody tr.selected { background: var(--primary-light); }
+tbody tr.expanded { background: #f1f5f9; }
+.ticket-id { font-family: "SF Mono", "Fira Code", monospace; font-size: 13px; color: var(--primary); font-weight: 500; }
+.customer-name { font-weight: 500; color: var(--text); }
+.summary-cell { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text2); }
+.source-cell { font-size: 13px; color: var(--text2); }
+
+/* ── Tags ── */
+.tag {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 500; white-space: nowrap;
+}
+.tag-priority-urgent { background: #fef2f2; color: #dc2626; }
+.tag-priority-high { background: #fff7ed; color: #ea580c; }
+.tag-priority-medium { background: #eff6ff; color: #2563eb; }
+.tag-priority-low { background: #f8fafc; color: #64748b; }
+.tag-status-pending { background: #fffbeb; color: #d97706; }
+.tag-status-processing { background: #eff6ff; color: #2563eb; }
+.tag-status-resolved { background: #f0fdf4; color: #16a34a; }
+.tag-status-closed { background: #f8fafc; color: #64748b; }
+
+/* ── Checkbox ── */
+.checkbox-cell { width: 40px; text-align: center; }
+.checkbox-cell input[type="checkbox"] {
+  width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary);
+}
+
+/* ── Action Buttons in Table ── */
+.actions-cell { display: flex; gap: 4px; }
+.actions-cell .btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; }
+
+/* ── Detail Panel ── */
+.detail-panel {
+  display: none;
+  background: var(--card); border-top: 2px solid var(--primary-light);
+}
+.detail-panel.active { display: block; }
+.detail-inner {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.detail-section { 
+  background: var(--bg); border-radius: var(--radius-sm); padding: 20px;
+  border: 1px solid var(--border-light);
+}
+.detail-section.full { grid-column: 1 / -1; }
+.detail-section h3 {
+  font-size: 14px; font-weight: 600; margin-bottom: 12px;
+  color: var(--text); display: flex; align-items: center; gap: 8px;
+}
+.detail-section h3 .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot.blue { background: var(--primary); }
+.dot.green { background: var(--success); }
+.dot.orange { background: var(--warning); }
+.detail-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+.detail-value { font-size: 14px; color: var(--text); margin-bottom: 16px; line-height: 1.6; }
+.detail-value.block { white-space: pre-wrap; background: var(--card); padding: 12px; border-radius: var(--radius-xs); border: 1px solid var(--border); }
+.customer-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.customer-info-item { }
+.customer-info-item .detail-label { margin-bottom: 2px; }
+.customer-info-item .detail-value { margin-bottom: 0; }
+
+/* ── Session History ── */
+.session-list { max-height: 320px; overflow-y: auto; }
+.session-item {
+  padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  margin-bottom: 8px; background: var(--card); font-size: 13px;
+}
+.session-item .session-meta {
+  display: flex; justify-content: space-between; color: var(--text2); font-size: 12px; margin-bottom: 4px;
+}
+.session-item .session-content { color: var(--text); line-height: 1.5; }
+.session-tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+.session-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card); color: var(--text2);
+  font-family: var(--font); transition: all .2s;
+}
+.session-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.satisfaction-stars { color: #f59e0b; letter-spacing: 2px; }
+
+/* ── Detail Actions ── */
+.detail-actions {
+  display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
+}
+
+/* ── Pagination ── */
+.pagination {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px; background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
+  margin-top: 16px; flex-wrap: wrap; gap: 12px;
+}
+.pagination-info { font-size: 13px; color: var(--text2); }
+.pagination-btns { display: flex; gap: 4px; }
+.page-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-xs);
+  border: 1px solid var(--border); background: var(--card);
+  cursor: pointer; font-size: 14px; font-family: var(--font);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; color: var(--text);
+}
+.page-btn:hover { background: var(--border-light); }
+.page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Modal ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
+  z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px; max-width: 480px; width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+}
+.modal h3 { font-size: 16px; margin-bottom: 16px; }
+.modal .form-group { margin-bottom: 16px; }
+.modal label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text2); }
+.modal select, .modal textarea, .modal input[type="text"] {
+  width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  font-size: 14px; font-family: var(--font); background: var(--bg);
+}
+.modal textarea { resize: vertical; min-height: 80px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+/* ── Toast ── */
+.toast-container { position: fixed; top: 72px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); animation: slideIn .3s ease;
+  max-width: 360px;
+}
+.toast.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.toast.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.toast.info { background: #eef1fe; color: #4f6ef7; border: 1px solid #c7d2fe; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ── Empty State ── */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text3); }
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .detail-inner { grid-template-columns: 1fr; }
+  .filter-bar .filter-search { flex: 1 1 100%; }
+}
+@media (max-width: 768px) {
+  .main { padding: 16px; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 14px 16px; gap: 10px; }
+  .stat-value { font-size: 22px; }
+  .stat-icon { width: 40px; height: 40px; font-size: 18px; }
+  .filter-bar { flex-direction: column; }
+  .filter-bar > * { width: 100%; }
+  .filter-collapse-btn { display: block; margin-bottom: 8px; }
+  .filter-row { display: none; flex-direction: column; gap: 10px; width: 100%; }
+  .filter-row.open { display: flex; }
+  .topbar { padding: 0 12px; }
+  .topbar-sub { display: none; }
+  .toolbar { flex-direction: column; align-items: flex-start; }
+  .toolbar-right { width: 100%; }
+  .toolbar-right .btn { flex: 1; justify-content: center; }
+  .detail-inner { padding: 16px; gap: 16px; }
+  .pagination { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top Bar ── -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">CS</div>
+    <span class="topbar-title" data-i18n="page.title">工单/会话管理</span>
+    <span class="topbar-sub" data-i18n="page.subtitle">Ticket & Session Management Center</span>
+  </div>
+  <div class="topbar-right">
+    <a href="index.html" class="btn-back" data-i18n="nav.back">← 返回首页</a>
+    <button class="lang-switch" onclick="toggleLang()" data-i18n="nav.lang">EN</button>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Stats -->
+  <div class="stats" id="statsRow"></div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <button class="filter-collapse-btn" onclick="toggleFilters()" data-i18n="filter.toggle">☰ 筛选条件</button>
+    <div class="filter-row open" id="filterRow">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;width:100%;align-items:center;">
+        <div class="filter-search">
+          <span class="icon">🔍</span>
+          <input type="text" id="filterKeyword" placeholder="搜索工单ID / 客户名 / 摘要..." oninput="applyFilters()">
+        </div>
+        <input type="date" class="filter-date" id="filterDateFrom" onchange="applyFilters()" title="开始日期">
+        <input type="date" class="filter-date" id="filterDateTo" onchange="applyFilters()" title="结束日期">
+        <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+          <option value="" data-i18n="filter.allStatus">全部状态</option>
+          <option value="pending" data-i18n="status.pending">待处理</option>
+          <option value="processing" data-i18n="status.processing">处理中</option>
+          <option value="resolved" data-i18n="status.resolved">已解决</option>
+          <option value="closed" data-i18n="status.closed">已关闭</option>
+        </select>
+        <select class="filter-select" id="filterSource" onchange="applyFilters()">
+          <option value="" data-i18n="filter.allSource">全部来源</option>
+          <option value="AI聊天" data-i18n="source.ai">AI聊天</option>
+          <option value="邮件" data-i18n="source.email">邮件</option>
+          <option value="电话" data-i18n="source.phone">电话</option>
+          <option value="自助门户" data-i18n="source.portal">自助门户</option>
+        </select>
+        <select class="filter-select" id="filterPriority" onchange="applyFilters()">
+          <option value="" data-i18n="filter.allPriority">全部优先级</option>
+          <option value="urgent" data-i18n="priority.urgent">紧急</option>
+          <option value="high" data-i18n="priority.high">高</option>
+          <option value="medium" data-i18n="priority.medium">中</option>
+          <option value="low" data-i18n="priority.low">低</option>
+        </select>
+        <button class="btn-filter-reset" onclick="resetFilters()" data-i18n="filter.reset">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-count" id="toolbarCount" data-i18n="toolbar.count">共 <strong>0</strong> 条工单</span>
+      <span class="toolbar-count" id="toolbarSelected" style="display:none;" data-i18n="toolbar.selected">已选 <strong>0</strong> 条</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-primary btn-sm" onclick="openAssignModal()" id="btnBatchAssign" disabled data-i18n="action.batchAssign">批量分配</button>
+      <button class="btn btn-success btn-sm" onclick="batchResolve()" id="btnBatchResolve" disabled data-i18n="action.batchResolve">批量解决</button>
+      <button class="btn btn-danger btn-sm" onclick="batchClose()" id="btnBatchClose" disabled data-i18n="action.batchClose">批量关闭</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+            <th class="sortable" onclick="sortTable('id')" data-i18n="table.id">工单ID <span class="sort-arrow">⇅</span></th>
+            <th class="sortable" onclick="sortTable('customer')" data-i18n="table.customer">客户名 <span class="sort-arrow">⇅</span></th>
+            <th data-i18n="table.summary">问题摘要</th>
+            <th class="sortable" onclick="sortTable('source')" data-i18n="table.source">来源 <span class="sort-arrow">⇅</span></th>
+            <th class="sortable" onclick="sortTable('priority')" data-i18n="table.priority">优先级 <span class="sort-arrow">⇅</span></th>
+            <th class="sortable" onclick="sortTable('status')" data-i18n="table.status">状态 <span class="sort-arrow">⇅</span></th>
+            <th data-i18n="table.agent">分配坐席</th>
+            <th class="sortable" onclick="sortTable('created')" data-i18n="table.created">创建时间 <span class="sort-arrow">⇅</span></th>
+            <th data-i18n="table.actions">操作</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">📋</div>
+      <p data-i18n="empty.title">没有找到匹配的工单</p>
+      <p style="font-size:12px;margin-top:4px;" data-i18n="empty.hint">请尝试调整筛选条件</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+
+</main>
+
+<!-- ── Modal: Assign / Note ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ── Toast Container ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const AGENTS = ['张伟', '李娜', '王磊', '陈静', '赵明', '刘洋', '孙悦'];
+const SOURCES = ['AI聊天', '邮件', '电话', '自助门户'];
+const STATUSES = ['pending', 'processing', 'resolved', 'closed'];
+const PRIORITIES = ['urgent', 'high', 'medium', 'low'];
+
+const CUSTOMERS = [
+  '华为技术有限公司', '阿里巴巴集团', '腾讯科技', '字节跳动', '美团',
+  '京东集团', '网易', '小米科技', '比亚迪', '宁德时代',
+  '招商银行', '平安集团', '中芯国际', '百度', '滴滴出行',
+  '联想集团', '吉利汽车', '蔚来汽车', '商汤科技', '大疆创新'
+];
+
+const SUMMARY_TEMPLATES = [
+  'API接口调用返回500错误，影响订单创建流程',
+  'Dashboard数据看板加载缓慢，需要优化性能',
+  '用户权限配置异常，部分员工无法访问报表',
+  '系统升级后旧版SDK兼容性问题',
+  '批量导入功能上传CSV文件后数据丢失',
+  '支付回调通知未收到，订单状态未更新',
+  'SSO单点登录配置失败，企业微信集成问题',
+  '数据库连接池耗尽导致服务间歇性不可用',
+  '消息推送延迟超过30分钟，影响实时通知',
+  '报表导出PDF格式排版错乱',
+  'Webhook回调地址验证失败',
+  '多语言切换后部分页面未翻译',
+  '文件上传大小限制需要调整至50MB',
+  '定时任务执行失败，日志显示权限不足',
+  '移动端适配问题，iOS端按钮点击无响应'
+];
+
+const AI_ANSWERS = [
+  '我们已定位到问题，API网关在高峰期出现了限流触发。建议调整限流阈值并增加重试机制。相关团队正在部署修复方案，预计30分钟内完成。',
+  '经分析，数据看板加载慢是由于大量历史数据未建立索引。已提交数据库优化工单（DBO-2024-0821），优化后加载时间预计缩短至2秒以内。',
+  '权限配置异常已确认是角色同步服务缓存未刷新导致。已手动触发全量同步，请用户退出重新登录后验证。同时建议增加缓存自动刷新策略。',
+  '旧版SDK的签名算法与新版本不兼容，需要客户端升级到v3.2以上版本。过渡期间已在新版网关增加兼容层，旧版请求会自动转换。'
+];
+
+const SESSION_TEMPLATES = [
+  { type: 'ai', agent: 'AI助手', content: '您好！我是AI智能助手，已了解到您的API接口返回500错误的问题。让我帮您分析一下可能的原因...', rating: 4 },
+  { type: 'human', agent: '张伟', content: '您好，我是技术支持张伟。AI助手已将您的问题转接给我。关于API 500错误，我们已经检查了服务端日志，发现是数据库连接池在高并发下出现了短暂耗尽。', rating: 5 },
+  { type: 'ai', agent: 'AI助手', content: '感谢您的耐心等待。根据系统诊断结果，问题出在订单服务的数据库查询超时。建议临时方案：增加连接池大小到200，同时我已经为您创建了优化工单。', rating: 4 },
+  { type: 'human', agent: '李娜', content: '问题已确认解决。我们对数据库连接池进行了扩容，并优化了慢查询。请您验证一下订单创建功能是否恢复正常？如有问题随时联系我们。', rating: 5 },
+  { type: 'ai', agent: 'AI助手', content: '您好！关于Dashboard加载速度的问题，我们已经识别出是几个大表缺少索引。技术团队已开始优化，预计今晚完成。', rating: 3 },
+  { type: 'human', agent: '王磊', content: 'Dashboard优化已完成，我们在orders和users表上添加了复合索引，查询速度从8秒降低到了0.5秒。请刷新页面验证。', rating: 5 }
+];
+
+// Generate tickets
+let tickets = [];
+function generateTickets(count = 65) {
+  const data = [];
+  const now = Date.now();
+  for (let i = 0; i < count; i++) {
+    const id = 'TK-' + String(1000 + i).padStart(6, '0');
+    const customer = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
+    const summary = SUMMARY_TEMPLATES[Math.floor(Math.random() * SUMMARY_TEMPLATES.length)];
+    const source = SOURCES[Math.floor(Math.random() * SOURCES.length)];
+    const priority = PRIORITIES[Math.floor(Math.random() * PRIORITIES.length)];
+    const status = STATUSES[Math.floor(Math.random() * STATUSES.length)];
+    const agent = status === 'pending' ? '—' : AGENTS[Math.floor(Math.random() * AGENTS.length)];
+    const created = new Date(now - Math.random() * 7 * 24 * 3600 * 1000);
+    const aiAnswer = AI_ANSWERS[Math.floor(Math.random() * AI_ANSWERS.length)];
+    const sessions = [...SESSION_TEMPLATES].sort(() => Math.random() - 0.5).slice(0, 2 + Math.floor(Math.random() * 3));
+    const customerInfo = {
+      company: customer,
+      contact: ['张先生', '李女士', '王经理', '赵总监', '陈工'][Math.floor(Math.random() * 5)],
+      phone: '138' + String(Math.floor(Math.random() * 90000000 + 10000000)),
+      email: customer.replace(/[^\w]/g, '').toLowerCase().slice(0, 6) + '@example.com',
+      level: ['VIP', '企业版', '专业版', '标准版'][Math.floor(Math.random() * 4)],
+    };
+    data.push({ id, customer, summary, source, priority, status, agent, created, aiAnswer, sessions, customerInfo });
+  }
+  // Ensure some realistic distribution
+  data[0].status = 'pending'; data[0].priority = 'urgent'; data[0].agent = '—';
+  data[1].status = 'processing'; data[1].priority = 'high'; data[1].agent = '张伟';
+  data[2].status = 'resolved'; data[2].priority = 'medium';
+  data[3].status = 'closed'; data[3].priority = 'low';
+  data[4].status = 'pending'; data[4].priority = 'urgent';
+  data[5].status = 'processing'; data[5].priority = 'high';
+  return data;
+}
+
+// ═══════════════════════════════════════
+//  I18N
+// ═══════════════════════════════════════
+const i18n = {
+  zh: {
+    'page.title': '工单/会话管理',
+    'page.subtitle': 'Ticket & Session Management Center',
+    'nav.back': '← 返回首页',
+    'nav.lang': 'EN',
+    'stat.today': '今日工单数',
+    'stat.pending': '待处理',
+    'stat.avgResponse': '平均响应时间',
+    'stat.sla': 'SLA达标率',
+    'filter.toggle': '☰ 筛选条件',
+    'filter.allStatus': '全部状态',
+    'filter.allSource': '全部来源',
+    'filter.allPriority': '全部优先级',
+    'filter.reset': '重置',
+    'status.pending': '待处理',
+    'status.processing': '处理中',
+    'status.resolved': '已解决',
+    'status.closed': '已关闭',
+    'source.ai': 'AI聊天',
+    'source.email': '邮件',
+    'source.phone': '电话',
+    'source.portal': '自助门户',
+    'priority.urgent': '紧急',
+    'priority.high': '高',
+    'priority.medium': '中',
+    'priority.low': '低',
+    'table.id': '工单ID',
+    'table.customer': '客户名',
+    'table.summary': '问题摘要',
+    'table.source': '来源',
+    'table.priority': '优先级',
+    'table.status': '状态',
+    'table.agent': '分配坐席',
+    'table.created': '创建时间',
+    'table.actions': '操作',
+    'toolbar.count': '共 <strong>{count}</strong> 条工单',
+    'toolbar.selected': '已选 <strong>{count}</strong> 条',
+    'action.assign': '分配坐席',
+    'action.resolve': '标记已解决',
+    'action.transfer': '转交',
+    'action.note': '备注',
+    'action.batchAssign': '批量分配',
+    'action.batchResolve': '批量解决',
+    'action.batchClose': '批量关闭',
+    'empty.title': '没有找到匹配的工单',
+    'empty.hint': '请尝试调整筛选条件',
+    'detail.question': '完整问题',
+    'detail.aiAnswer': 'AI回答',
+    'detail.sessions': '会话历史',
+    'detail.customerInfo': '客户信息',
+    'detail.actions': '操作',
+    'detail.company': '公司名称',
+    'detail.contact': '联系人',
+    'detail.phone': '电话',
+    'detail.email': '邮箱',
+    'detail.level': '客户等级',
+    'session.filterAll': '全部',
+    'session.filterAi': 'AI会话',
+    'session.filterHuman': '人工会话',
+    'session.filterRating5': '⭐5分',
+    'session.filterRating4': '⭐4分',
+    'session.filterRating3': '⭐3分及以下',
+    'session.rating': '满意度',
+    'modal.assignTitle': '分配坐席',
+    'modal.transferTitle': '转交工单',
+    'modal.noteTitle': '添加工单备注',
+    'modal.selectAgent': '选择坐席',
+    'modal.notePlaceholder': '请输入备注内容...',
+    'modal.cancel': '取消',
+    'modal.confirm': '确认',
+    'pagination.prev': '上一页',
+    'pagination.next': '下一页',
+    'pagination.info': '第 {page} / {total} 页，共 {count} 条',
+    'toast.assigned': '工单已成功分配给 {agent}',
+    'toast.resolved': '工单已标记为已解决',
+    'toast.closed': '工单已关闭',
+    'toast.transferred': '工单已转交给 {agent}',
+    'toast.noteAdded': '备注已添加',
+    'toast.batchAssigned': '已批量分配 {count} 条工单',
+    'toast.batchResolved': '已批量解决 {count} 条工单',
+    'toast.batchClosed': '已批量关闭 {count} 条工单',
+  },
+  en: {
+    'page.title': 'Ticket & Session Center',
+    'page.subtitle': 'AI Customer Service Management',
+    'nav.back': '← Back to Home',
+    'nav.lang': '中文',
+    'stat.today': "Today's Tickets",
+    'stat.pending': 'Pending',
+    'stat.avgResponse': 'Avg Response Time',
+    'stat.sla': 'SLA Compliance',
+    'filter.toggle': '☰ Filters',
+    'filter.allStatus': 'All Statuses',
+    'filter.allSource': 'All Sources',
+    'filter.allPriority': 'All Priorities',
+    'filter.reset': 'Reset',
+    'status.pending': 'Pending',
+    'status.processing': 'Processing',
+    'status.resolved': 'Resolved',
+    'status.closed': 'Closed',
+    'source.ai': 'AI Chat',
+    'source.email': 'Email',
+    'source.phone': 'Phone',
+    'source.portal': 'Self-service',
+    'priority.urgent': 'Urgent',
+    'priority.high': 'High',
+    'priority.medium': 'Medium',
+    'priority.low': 'Low',
+    'table.id': 'Ticket ID',
+    'table.customer': 'Customer',
+    'table.summary': 'Summary',
+    'table.source': 'Source',
+    'table.priority': 'Priority',
+    'table.status': 'Status',
+    'table.agent': 'Assigned Agent',
+    'table.created': 'Created',
+    'table.actions': 'Actions',
+    'toolbar.count': '<strong>{count}</strong> tickets total',
+    'toolbar.selected': '<strong>{count}</strong> selected',
+    'action.assign': 'Assign',
+    'action.resolve': 'Resolve',
+    'action.transfer': 'Transfer',
+    'action.note': 'Note',
+    'action.batchAssign': 'Batch Assign',
+    'action.batchResolve': 'Batch Resolve',
+    'action.batchClose': 'Batch Close',
+    'empty.title': 'No matching tickets found',
+    'empty.hint': 'Try adjusting your filters',
+    'detail.question': 'Full Question',
+    'detail.aiAnswer': 'AI Answer',
+    'detail.sessions': 'Session History',
+    'detail.customerInfo': 'Customer Info',
+    'detail.actions': 'Actions',
+    'detail.company': 'Company',
+    'detail.contact': 'Contact',
+    'detail.phone': 'Phone',
+    'detail.email': 'Email',
+    'detail.level': 'Tier',
+    'session.filterAll': 'All',
+    'session.filterAi': 'AI Sessions',
+    'session.filterHuman': 'Human Sessions',
+    'session.filterRating5': '⭐5 Stars',
+    'session.filterRating4': '⭐4 Stars',
+    'session.filterRating3': '⭐3 & Below',
+    'session.rating': 'Rating',
+    'modal.assignTitle': 'Assign Agent',
+    'modal.transferTitle': 'Transfer Ticket',
+    'modal.noteTitle': 'Add Note',
+    'modal.selectAgent': 'Select Agent',
+    'modal.notePlaceholder': 'Enter note content...',
+    'modal.cancel': 'Cancel',
+    'modal.confirm': 'Confirm',
+    'pagination.prev': 'Previous',
+    'pagination.next': 'Next',
+    'pagination.info': 'Page {page} / {total}, {count} total',
+    'toast.assigned': 'Ticket assigned to {agent}',
+    'toast.resolved': 'Ticket marked as resolved',
+    'toast.closed': 'Ticket closed',
+    'toast.transferred': 'Ticket transferred to {agent}',
+    'toast.noteAdded': 'Note added',
+    'toast.batchAssigned': '{count} tickets assigned',
+    'toast.batchResolved': '{count} tickets resolved',
+    'toast.batchClosed': '{count} tickets closed',
+  }
+};
+
+let currentLang = 'zh';
+function t(key, params) {
+  let text = i18n[currentLang][key] || i18n['zh'][key] || key;
+  if (params) {
+    Object.keys(params).forEach(k => { text = text.replace('{' + k + '}', params[k]); });
+  }
+  return text;
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  document.documentElement.setAttribute('data-lang', currentLang);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'search')) {
+      el.placeholder = t(key);
+    } else if (el.tagName === 'OPTION') {
+      el.textContent = t(key);
+    } else if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+      // Keep icon if present
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) { el.textContent = t(key); }
+      });
+    } else {
+      el.textContent = t(key);
+    }
+  });
+  renderAll();
+}
+
+function updateI18nElements() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (el.tagName === 'OPTION') {
+      el.textContent = t(key);
+    } else if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'search')) {
+      el.placeholder = t(key);
+    } else if (el.tagName === 'BUTTON') {
+      const existingText = Array.from(el.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join('');
+      if (existingText.trim() || !el.querySelector('span')) {
+        const key2 = el.getAttribute('data-i18n');
+        if (key2) { el.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = t(key2); }); }
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let filteredTickets = [];
+let selectedIds = new Set();
+let expandedId = null;
+let currentPage = 1;
+const pageSize = 20;
+let sortField = 'created';
+let sortDir = 'desc';
+let sessionFilter = 'all';
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+function init() {
+  tickets = generateTickets(65);
+  applyFilters();
+}
+
+// ═══════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════
+function getFilteredTickets() {
+  const keyword = (document.getElementById('filterKeyword').value || '').toLowerCase();
+  const status = document.getElementById('filterStatus').value;
+  const source = document.getElementById('filterSource').value;
+  const priority = document.getElementById('filterPriority').value;
+  const dateFrom = document.getElementById('filterDateFrom').value;
+  const dateTo = document.getElementById('filterDateTo').value;
+
+  return tickets.filter(t => {
+    if (keyword && !t.id.toLowerCase().includes(keyword) && !t.customer.toLowerCase().includes(keyword) && !t.summary.toLowerCase().includes(keyword)) return false;
+    if (status && t.status !== status) return false;
+    if (source && t.source !== source) return false;
+    if (priority && t.priority !== priority) return false;
+    if (dateFrom && new Date(t.created) < new Date(dateFrom)) return false;
+    if (dateTo && new Date(t.created) > new Date(dateTo + 'T23:59:59')) return false;
+    return true;
+  });
+}
+
+function applyFilters() {
+  filteredTickets = getFilteredTickets();
+  // Sort
+  filteredTickets.sort((a, b) => {
+    let va, vb;
+    if (sortField === 'created') { va = new Date(a.created).getTime(); vb = new Date(b.created).getTime(); }
+    else if (sortField === 'id') { va = a.id; vb = b.id; }
+    else if (sortField === 'priority') {
+      const order = { urgent: 0, high: 1, medium: 2, low: 3 };
+      va = order[a.priority]; vb = order[b.priority];
+    }
+    else if (sortField === 'status') {
+      const order = { pending: 0, processing: 1, resolved: 2, closed: 3 };
+      va = order[a.status]; vb = order[b.status];
+    }
+    else { va = (a[sortField] || '').toString(); vb = (b[sortField] || '').toString(); }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  selectedIds.clear();
+  expandedId = null;
+  currentPage = 1;
+  renderAll();
+}
+
+function resetFilters() {
+  document.getElementById('filterKeyword').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterSource').value = '';
+  document.getElementById('filterPriority').value = '';
+  document.getElementById('filterDateFrom').value = '';
+  document.getElementById('filterDateTo').value = '';
+  applyFilters();
+}
+
+function toggleFilters() {
+  document.getElementById('filterRow').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════
+//  SORT
+// ═══════════════════════════════════════
+function sortTable(field) {
+  if (sortField === field) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField = field;
+    sortDir = 'asc';
+  }
+  applyFilters();
+}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+function renderAll() {
+  renderStats();
+  renderTable();
+  renderPagination();
+  updateToolbar();
+  updateI18nElements();
+}
+
+function renderStats() {
+  const today = tickets.filter(t => {
+    const d = new Date(t.created);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  }).length;
+  const pending = tickets.filter(t => t.status === 'pending').length;
+  const avgResponse = Math.floor(Math.random() * 15 + 3); // simulated
+  const sla = Math.floor(Math.random() * 8 + 90);
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon blue">📋</div>
+      <div class="stat-info">
+        <div class="stat-value">${today}</div>
+        <div class="stat-label" data-i18n="stat.today">${t('stat.today')}</div>
+        <div class="stat-change up">↑ 12% vs 昨日</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-info">
+        <div class="stat-value">${pending}</div>
+        <div class="stat-label" data-i18n="stat.pending">${t('stat.pending')}</div>
+        <div class="stat-change down">需关注</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">⏱️</div>
+      <div class="stat-info">
+        <div class="stat-value">${avgResponse}m</div>
+        <div class="stat-label" data-i18n="stat.avgResponse">${t('stat.avgResponse')}</div>
+        <div class="stat-change up">↑ 改善 8%</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">🎯</div>
+      <div class="stat-info">
+        <div class="stat-value">${sla}%</div>
+        <div class="stat-label" data-i18n="stat.sla">${t('stat.sla')}</div>
+        <div class="stat-change up">↑ 目标: 95%</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTable() {
+  const start = (currentPage - 1) * pageSize;
+  const pageTickets = filteredTickets.slice(start, start + pageSize);
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (pageTickets.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = pageTickets.map(t => {
+      const isSel = selectedIds.has(t.id);
+      const isExp = expandedId === t.id;
+      const priorityLabel = { urgent: '紧急', high: '高', medium: '中', low: '低' };
+      const statusLabel = { pending: '待处理', processing: '处理中', resolved: '已解决', closed: '已关闭' };
+      return `
+        <tr class="${isSel ? 'selected' : ''} ${isExp ? 'expanded' : ''}" data-id="${t.id}">
+          <td class="checkbox-cell" onclick="event.stopPropagation()">
+            <input type="checkbox" ${isSel ? 'checked' : ''} onchange="toggleSelect('${t.id}', this.checked)">
+          </td>
+          <td><span class="ticket-id">${t.id}</span></td>
+          <td><span class="customer-name">${t.customer}</span></td>
+          <td><span class="summary-cell" title="${t.summary}">${t.summary}</span></td>
+          <td><span class="source-cell">${t.source}</span></td>
+          <td><span class="tag tag-priority-${t.priority}">${priorityLabel[t.priority]}</span></td>
+          <td><span class="tag tag-status-${t.status}">${statusLabel[t.status]}</span></td>
+          <td>${t.agent}</td>
+          <td>${formatDate(t.created)}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn-sm" onclick="event.stopPropagation(); openAssignModal('${t.id}')" data-i18n="action.assign">分配</button>
+              <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); resolveTicket('${t.id}')" data-i18n="action.resolve">解决</button>
+            </div>
+          </td>
+        </tr>
+        ${isExp ? renderDetailRow(t) : ''}
+      `;
+    }).join('');
+
+    // Attach row click for expand
+    tbody.querySelectorAll('tr[data-id]').forEach(row => {
+      row.addEventListener('click', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+        toggleExpand(this.getAttribute('data-id'));
+      });
+    });
+  }
+
+  document.getElementById('selectAll').checked = pageTickets.length > 0 && pageTickets.every(t => selectedIds.has(t.id));
+}
+
+function renderDetailRow(t) {
+  const priorityLabel = { urgent: '紧急', high: '高', medium: '中', low: '低' };
+  const statusLabel = { pending: '待处理', processing: '处理中', resolved: '已解决', closed: '已关闭' };
+  return `
+    <tr class="detail-panel active" data-detail="${t.id}">
+      <td colspan="10" style="padding:0;">
+        <div class="detail-inner">
+          <!-- Full Question & AI Answer -->
+          <div class="detail-section">
+            <h3><span class="dot blue"></span> <span data-i18n="detail.question">完整问题</span></h3>
+            <div class="detail-label">${t.id} · ${priorityLabel[t.priority]} · ${statusLabel[t.status]}</div>
+            <div class="detail-value block">${t.summary}</div>
+            <h3 style="margin-top:16px;"><span class="dot green"></span> <span data-i18n="detail.aiAnswer">AI回答</span></h3>
+            <div class="detail-value block">${t.aiAnswer}</div>
+          </div>
+
+          <!-- Customer Info -->
+          <div class="detail-section">
+            <h3><span class="dot orange"></span> <span data-i18n="detail.customerInfo">客户信息</span></h3>
+            <div class="customer-info-grid">
+              <div class="customer-info-item">
+                <div class="detail-label" data-i18n="detail.company">公司名称</div>
+                <div class="detail-value">${t.customerInfo.company}</div>
+              </div>
+              <div class="customer-info-item">
+                <div class="detail-label" data-i18n="detail.contact">联系人</div>
+                <div class="detail-value">${t.customerInfo.contact}</div>
+              </div>
+              <div class="customer-info-item">
+                <div class="detail-label" data-i18n="detail.phone">电话</div>
+                <div class="detail-value">${t.customerInfo.phone}</div>
+              </div>
+              <div class="customer-info-item">
+                <div class="detail-label" data-i18n="detail.email">邮箱</div>
+                <div class="detail-value">${t.customerInfo.email}</div>
+              </div>
+              <div class="customer-info-item" style="grid-column:1/-1;">
+                <div class="detail-label" data-i18n="detail.level">客户等级</div>
+                <div class="detail-value"><span class="tag tag-priority-${t.customerInfo.level === 'VIP' ? 'urgent' : t.customerInfo.level === '企业版' ? 'high' : 'medium'}">${t.customerInfo.level}</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session History (full width) -->
+          <div class="detail-section full">
+            <h3><span class="dot blue"></span> <span data-i18n="detail.sessions">会话历史</span></h3>
+            <div class="session-tabs">
+              <button class="session-tab active" onclick="event.stopPropagation();filterSessions('all','${t.id}')" data-i18n="session.filterAll">全部</button>
+              <button class="session-tab" onclick="event.stopPropagation();filterSessions('ai','${t.id}')" data-i18n="session.filterAi">AI会话</button>
+              <button class="session-tab" onclick="event.stopPropagation();filterSessions('human','${t.id}')" data-i18n="session.filterHuman">人工会话</button>
+              <button class="session-tab" onclick="event.stopPropagation();filterSessions('rating5','${t.id}')" data-i18n="session.filterRating5">⭐5分</button>
+              <button class="session-tab" onclick="event.stopPropagation();filterSessions('rating4','${t.id}')" data-i18n="session.filterRating4">⭐4分</button>
+              <button class="session-tab" onclick="event.stopPropagation();filterSessions('rating3','${t.id}')" data-i18n="session.filterRating3">⭐3分及以下</button>
+            </div>
+            <div class="session-list" id="sessionList-${t.id}">
+              ${renderSessions(t.sessions, 'all')}
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="detail-section full">
+            <h3><span class="dot green"></span> <span data-i18n="detail.actions">操作</span></h3>
+            <div class="detail-actions">
+              <button class="btn btn-primary" onclick="event.stopPropagation();openAssignModal('${t.id}')" data-i18n="action.assign">分配坐席</button>
+              <button class="btn btn-success" onclick="event.stopPropagation();resolveTicket('${t.id}')" data-i18n="action.resolve">标记已解决</button>
+              <button class="btn" onclick="event.stopPropagation();openTransferModal('${t.id}')" data-i18n="action.transfer">转交</button>
+              <button class="btn" onclick="event.stopPropagation();openNoteModal('${t.id}')" data-i18n="action.note">备注</button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+function renderSessions(sessions, filter) {
+  let filtered = sessions;
+  if (filter === 'ai') filtered = sessions.filter(s => s.type === 'ai');
+  if (filter === 'human') filtered = sessions.filter(s => s.type === 'human');
+  if (filter === 'rating5') filtered = sessions.filter(s => s.rating === 5);
+  if (filter === 'rating4') filtered = sessions.filter(s => s.rating === 4);
+  if (filter === 'rating3') filtered = sessions.filter(s => s.rating <= 3);
+
+  if (filtered.length === 0) return '<div style="text-align:center;padding:24px;color:var(--text3);">暂无匹配会话</div>';
+
+  return filtered.map(s => `
+    <div class="session-item">
+      <div class="session-meta">
+        <span>${s.agent} · ${s.type === 'ai' ? '🤖 AI' : '👤 人工'}</span>
+        <span>${t('session.rating')}: <span class="satisfaction-stars">${'★'.repeat(s.rating)}${'☆'.repeat(5 - s.rating)}</span></span>
+      </div>
+      <div class="session-content">${s.content}</div>
+    </div>
+  `).join('');
+}
+
+function filterSessions(filter, ticketId) {
+  const ticket = tickets.find(t => t.id === ticketId);
+  if (!ticket) return;
+  const listEl = document.getElementById('sessionList-' + ticketId);
+  if (listEl) {
+    listEl.innerHTML = renderSessions(ticket.sessions, filter);
+  }
+  // Update active tab
+  const tabs = listEl.parentElement.querySelectorAll('.session-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  const tabMap = { all: 0, ai: 1, human: 2, rating5: 3, rating4: 4, rating3: 5 };
+  if (tabs[tabMap[filter]]) tabs[tabMap[filter]].classList.add('active');
+}
+
+function renderPagination() {
+  const total = filteredTickets.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const pag = document.getElementById('pagination');
+  if (total === 0) { pag.innerHTML = ''; return; }
+
+  let btns = '';
+  btns += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>◀</button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    if (totalPages <= 7 || i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+      btns += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    } else if (i === 2 && currentPage > 4) {
+      btns += `<span style="padding:0 8px;color:var(--text3);">…</span>`;
+    } else if (i === totalPages - 1 && currentPage < totalPages - 3) {
+      btns += `<span style="padding:0 8px;color:var(--text3);">…</span>`;
+    }
+  }
+  btns += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>▶</button>`;
+
+  pag.innerHTML = `
+    <div class="pagination-info">${t('pagination.info', { page: currentPage, total: totalPages, count: total })}</div>
+    <div class="pagination-btns">${btns}</div>
+  `;
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(filteredTickets.length / pageSize);
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  expandedId = null;
+  renderAll();
+}
+
+function updateToolbar() {
+  const countEl = document.getElementById('toolbarCount');
+  const selEl = document.getElementById('toolbarSelected');
+  countEl.innerHTML = t('toolbar.count', { count: filteredTickets.length }).replace('<strong>', '<strong>').replace('</strong>', '</strong>');
+
+  if (selectedIds.size > 0) {
+    selEl.style.display = '';
+    selEl.innerHTML = t('toolbar.selected', { count: selectedIds.size }).replace('<strong>', '<strong>').replace('</strong>', '</strong>');
+    document.getElementById('btnBatchAssign').disabled = false;
+    document.getElementById('btnBatchResolve').disabled = false;
+    document.getElementById('btnBatchClose').disabled = false;
+  } else {
+    selEl.style.display = 'none';
+    document.getElementById('btnBatchAssign').disabled = true;
+    document.getElementById('btnBatchResolve').disabled = true;
+    document.getElementById('btnBatchClose').disabled = true;
+  }
+}
+
+// ═══════════════════════════════════════
+//  SELECTION
+// ═══════════════════════════════════════
+function toggleSelect(id, checked) {
+  if (checked) selectedIds.add(id);
+  else selectedIds.delete(id);
+  renderAll();
+}
+
+function toggleSelectAll() {
+  const checked = document.getElementById('selectAll').checked;
+  const start = (currentPage - 1) * pageSize;
+  const pageTickets = filteredTickets.slice(start, start + pageSize);
+  pageTickets.forEach(t => {
+    if (checked) selectedIds.add(t.id);
+    else selectedIds.delete(t.id);
+  });
+  renderAll();
+}
+
+// ═══════════════════════════════════════
+//  EXPAND
+// ═══════════════════════════════════════
+function toggleExpand(id) {
+  expandedId = expandedId === id ? null : id;
+  renderAll();
+}
+
+// ═══════════════════════════════════════
+//  ACTIONS
+// ═══════════════════════════════════════
+function openAssignModal(ticketId) {
+  const ids = ticketId ? [ticketId] : [...selectedIds];
+  if (ids.length === 0) return;
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <h3 data-i18n="modal.assignTitle">${t('modal.assignTitle')}</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">${ids.length === 1 ? '工单: ' + ids[0] : '共 ' + ids.length + ' 条工单'}</p>
+    <div class="form-group">
+      <label data-i18n="modal.selectAgent">${t('modal.selectAgent')}</label>
+      <select id="modalAgentSelect">
+        ${AGENTS.map(a => `<option value="${a}">${a}</option>`).join('')}
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()" data-i18n="modal.cancel">${t('modal.cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmAssign('${ids.join(',')}')" data-i18n="modal.confirm">${t('modal.confirm')}</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function confirmAssign(idsStr) {
+  const ids = idsStr.split(',');
+  const agent = document.getElementById('modalAgentSelect').value;
+  ids.forEach(id => {
+    const t = tickets.find(tk => tk.id === id);
+    if (t) { t.agent = agent; if (t.status === 'pending') t.status = 'processing'; }
+  });
+  closeModal();
+  if (ids.length === 1) showToast(t('toast.assigned', { agent }), 'success');
+  else showToast(t('toast.batchAssigned', { count: ids.length }), 'success');
+  selectedIds.clear();
+  applyFilters();
+}
+
+function openTransferModal(ticketId) {
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <h3 data-i18n="modal.transferTitle">${t('modal.transferTitle')}</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">工单: ${ticketId}</p>
+    <div class="form-group">
+      <label data-i18n="modal.selectAgent">${t('modal.selectAgent')}</label>
+      <select id="modalAgentSelect">
+        ${AGENTS.map(a => `<option value="${a}">${a}</option>`).join('')}
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()" data-i18n="modal.cancel">${t('modal.cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmTransfer('${ticketId}')" data-i18n="modal.confirm">${t('modal.confirm')}</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function confirmTransfer(ticketId) {
+  const agent = document.getElementById('modalAgentSelect').value;
+  const t = tickets.find(tk => tk.id === ticketId);
+  if (t) t.agent = agent;
+  closeModal();
+  showToast(t('toast.transferred', { agent }), 'success');
+  applyFilters();
+}
+
+function openNoteModal(ticketId) {
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <h3 data-i18n="modal.noteTitle">${t('modal.noteTitle')}</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">工单: ${ticketId}</p>
+    <div class="form-group">
+      <textarea id="modalNoteText" placeholder="${t('modal.notePlaceholder')}" data-i18n="modal.notePlaceholder"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()" data-i18n="modal.cancel">${t('modal.cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmNote('${ticketId}')" data-i18n="modal.confirm">${t('modal.confirm')}</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function confirmNote(ticketId) {
+  closeModal();
+  showToast(t('toast.noteAdded'), 'success');
+}
+
+function resolveTicket(ticketId) {
+  const ids = ticketId ? [ticketId] : [...selectedIds];
+  ids.forEach(id => {
+    const t = tickets.find(tk => tk.id === id);
+    if (t) t.status = 'resolved';
+  });
+  if (ids.length === 1) showToast(t('toast.resolved'), 'success');
+  else showToast(t('toast.batchResolved', { count: ids.length }), 'success');
+  selectedIds.clear();
+  applyFilters();
+}
+
+function batchResolve() {
+  if (selectedIds.size === 0) return;
+  resolveTicket(null);
+}
+
+function batchClose() {
+  if (selectedIds.size === 0) return;
+  [...selectedIds].forEach(id => {
+    const t = tickets.find(tk => tk.id === id);
+    if (t) t.status = 'closed';
+  });
+  const count = selectedIds.size;
+  showToast(t('toast.batchClosed', { count }), 'success');
+  selectedIds.clear();
+  applyFilters();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function showToast(msg, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 3000);
+}
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function formatDate(d) {
+  const date = new Date(d);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+  return `${y}-${m}-${day} ${h}:${min}`;
+}
+
+// ═══════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+  if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+    // Allow default select-all in inputs; otherwise toggle all
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    e.preventDefault();
+    document.getElementById('selectAll').checked = !document.getElementById('selectAll').checked;
+    toggleSelectAll();
+  }
+});
+
+// ═══════════════════════════════════════
+//  START
+// ═══════════════════════════════════════
+init();
+</script>
+</body>
+</html>

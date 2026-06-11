@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RapidDirect 客户服务中心 | Customer Service Portal</title>
+<style>
+:root {
+  --brand: #EA5540; --brand-dark: #d14330; --brand-light: #fef0ee;
+  --primary: #4f6ef7; --primary-light: #eef1fe;
+  --success: #22c55e; --success-light: #f0fdf4;
+  --warning: #f59e0b; --warning-light: #fffbeb;
+  --danger: #ef4444; --danger-light: #fef2f2;
+  --bg: #f8f9fc; --card: #fff; --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
+  --border: #e2e8f0; --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.04); --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+  --font: "PingFang SC", "Microsoft YaHei", "SF Pro Display", -apple-system, sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── Top Bar ── */
+.topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.topbar-title{font-size:15px;font-weight:600;letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-lang{cursor:pointer;font-size:13px;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.3);transition:all .2s;background:transparent;color:#fff;font-family:var(--font)}
+.topbar-lang:hover{background:rgba(255,255,255,.1)}
+.topbar-chat-link{font-size:13px;color:#fff;text-decoration:none;padding:6px 14px;border-radius:20px;background:var(--brand);font-weight:500;transition:all .2s}
+.topbar-chat-link:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.topbar-user{display:flex;align-items:center;gap:8px}
+.topbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.topbar-username{font-size:13px;font-weight:500}
+
+/* ── Layout ── */
+.container{max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ── Hero / Search ── */
+.hero{padding:40px 0 32px;text-align:center}
+.hero-greeting{font-size:26px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.hero-sub{font-size:14px;color:var(--text2);margin-bottom:24px}
+.search-wrapper{position:relative;max-width:640px;margin:0 auto 20px}
+.search-input{width:100%;padding:14px 48px 14px 44px;border:2px solid var(--border);border-radius:50px;font-size:15px;font-family:var(--font);outline:none;transition:all .25s;background:var(--card);box-shadow:var(--shadow-sm)}
+.search-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(79,110,247,.12)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:18px;pointer-events:none}
+.search-clear{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--text3);cursor:pointer;font-size:16px;display:none;border:none;background:none;padding:4px}
+.search-clear.visible{display:block}
+.search-suggest{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--shadow);border:1px solid var(--border);display:none;z-index:50;overflow:hidden}
+.search-suggest.open{display:block}
+.suggest-item{padding:10px 16px;cursor:pointer;font-size:14px;transition:background .15s;border-bottom:1px solid var(--border-light)}
+.suggest-item:last-child{border-bottom:none}
+.suggest-item:hover,.suggest-item.active{background:var(--primary-light);color:var(--primary)}
+.suggest-category{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+
+/* Category pills */
+.cat-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;margin:0 auto 8px}
+.cat-pill{padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;border:1.5px solid var(--border);background:var(--card);transition:all .2s;font-family:var(--font);color:var(--text);white-space:nowrap}
+.cat-pill:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+.working-hours{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--success-light);color:var(--success);border-radius:20px;font-size:12px;font-weight:500;margin-top:4px}
+.working-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.working-off{background:var(--danger-light);color:var(--danger)}
+.working-off .working-dot{background:var(--danger);animation:none}
+
+/* ── Section Headers ── */
+.section{margin:40px 0}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:20px;font-weight:700}
+.section-link{font-size:13px;color:var(--primary);text-decoration:none;font-weight:500;transition:color .2s}
+.section-link:hover{color:var(--brand)}
+
+/* ── FAQ Cards ── */
+.faq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.faq-card{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.faq-card:hover{border-color:var(--primary);box-shadow:var(--shadow);transform:translateY(-2px)}
+.faq-card-icon{font-size:24px;margin-bottom:8px}
+.faq-card-q{font-size:14px;font-weight:600;margin-bottom:8px;line-height:1.4;color:var(--text)}
+.faq-card-a{font-size:13px;color:var(--text2);line-height:1.5;display:none;padding-top:8px;border-top:1px solid var(--border-light);margin-top:8px}
+.faq-card.expanded .faq-card-a{display:block}
+.faq-card .expand-hint{font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:4px}
+.faq-card.expanded .expand-hint{display:none}
+
+/* ── Tickets Table ── */
+.tickets-table{width:100%;background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.tickets-table table{width:100%;border-collapse:collapse}
+.tickets-table th{text-align:left;padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;background:var(--border-light);border-bottom:1px solid var(--border)}
+.tickets-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border-light);color:var(--text)}
+.tickets-table tr:last-child td{border-bottom:none}
+.tickets-empty{text-align:center;padding:32px;color:var(--text3);font-size:14px}
+.ticket-submit-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;margin-top:12px}
+.ticket-submit-btn:hover{background:#3d5ce5;transform:translateY(-1px);box-shadow:var(--shadow)}
+
+/* Status badges */
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block}
+.badge-open{background:var(--warning-light);color:var(--warning)}
+.badge-progress{background:var(--primary-light);color:var(--primary)}
+.badge-resolved{background:var(--success-light);color:var(--success)}
+.badge-closed{background:#f1f5f9;color:#94a3b8}
+
+/* ── Orders ── */
+.orders-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.order-card{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);transition:all .2s;cursor:pointer}
+.order-card:hover{border-color:var(--primary);box-shadow:var(--shadow);transform:translateY(-2px)}
+.order-id{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.order-product{font-size:14px;font-weight:600;margin:4px 0;color:var(--text)}
+.order-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.order-status{font-size:12px;font-weight:600}
+.order-eta{font-size:11px;color:var(--text2)}
+.status-processing{color:var(--primary)}
+.status-shipping{color:var(--warning)}
+.status-delivered{color:var(--success)}
+.status-pending{color:var(--text3)}
+
+/* ── Contact ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.contact-info{display:flex;flex-direction:column;gap:16px}
+.contact-card{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;transition:all .2s}
+.contact-card:hover{border-color:var(--primary)}
+.contact-card-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.contact-icon-email{background:var(--primary-light);color:var(--primary)}
+.contact-icon-phone{background:var(--success-light);color:var(--success)}
+.contact-icon-whatsapp{background:#dcfce7;color:#25d366}
+.contact-icon-chat{background:var(--brand-light);color:var(--brand)}
+.contact-card-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.contact-card-value{font-size:14px;font-weight:500;color:var(--text)}
+.contact-form{background:var(--card);border-radius:var(--radius);padding:24px;border:1px solid var(--border)}
+.form-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.form-input,.form-textarea,.form-select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-xs);font-size:14px;font-family:var(--font);outline:none;transition:border .2s;background:var(--card);color:var(--text)}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--primary)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-submit{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.form-submit:hover{background:var(--brand-dark);transform:translateY(-1px)}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.modal{background:var(--card);border-radius:var(--radius);width:100%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease}
+.modal-lg{max-width:720px}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:17px;font-weight:700}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--border-light);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text2)}
+.modal-close:hover{background:var(--danger-light);color:var(--danger)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* Attach area */
+.attach-area{border:1.5px dashed var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-top:4px}
+.attach-area:hover{border-color:var(--primary);background:var(--primary-light)}
+.attach-icon{font-size:24px;margin-bottom:4px}
+.attach-text{font-size:12px;color:var(--text2)}
+
+/* ── FAQ Modal ── */
+.faq-tabs{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.faq-tab{padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;border:none;background:var(--border-light);color:var(--text2);font-family:var(--font);font-weight:500;white-space:nowrap;transition:all .2s}
+.faq-tab.active{background:var(--primary);color:#fff}
+.faq-tab:hover:not(.active){background:#e2e8f0}
+.faq-list{display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.faq-item-q{padding:14px 16px;cursor:pointer;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.faq-item-q:hover{background:var(--border-light)}
+.faq-item-q .arrow{transition:transform .25s;font-size:12px;color:var(--text3)}
+.faq-item.open .faq-item-q .arrow{transform:rotate(180deg)}
+.faq-item-a{padding:0 16px 14px;font-size:13px;color:var(--text2);line-height:1.6;display:none}
+.faq-item.open .faq-item-a{display:block}
+.faq-feedback{display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)}
+.faq-feedback-text{font-size:12px;color:var(--text3)}
+.faq-feedback-btn{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid var(--border);cursor:pointer;background:var(--card);transition:all .2s;font-family:var(--font)}
+.faq-feedback-btn:hover{background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.faq-feedback-btn .voted{background:var(--success);color:#fff;border-color:var(--success)}
+.faq-search{margin-bottom:16px}
+.faq-search-input{width:100%;padding:10px 14px 10px 36px;border:1.5px solid var(--border);border-radius:var(--radius-xs);font-size:14px;font-family:var(--font);outline:none;background:var(--card)}
+.faq-search-input:focus{border-color:var(--primary)}
+.faq-search-wrap{position:relative}
+.faq-search-wrap .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px}
+
+/* ── Footer ── */
+.footer{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:rgba(255,255,255,.7);text-align:center;padding:24px;margin-top:48px;font-size:13px}
+.footer-brand{color:#fff;font-weight:600}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 24px;background:#1e293b;color:#fff;border-radius:50px;font-size:13px;font-weight:500;z-index:300;animation:toastIn .3s ease,toastOut .3s ease 2.5s forwards;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(10px)}}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .container{padding:0 14px}
+  .hero{padding:28px 0 20px}
+  .hero-greeting{font-size:22px}
+  .faq-grid{grid-template-columns:1fr}
+  .orders-grid{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .tickets-table{overflow-x:auto}
+  .tickets-table table{min-width:500px}
+  .cat-pills{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .topbar{padding:0 12px}
+  .topbar-username{display:none}
+  .modal{max-width:95vw;max-height:90vh}
+}
+@media(max-width:480px){
+  .orders-grid{grid-template-columns:1fr}
+  .hero-greeting{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">RD</div>
+    <span class="topbar-title" data-i18n="topbar.title">RapidDirect 客户服务中心</span>
+  </div>
+  <div class="topbar-right">
+    <button class="topbar-lang" onclick="toggleLang()" data-i18n="topbar.lang">EN</button>
+    <a href="ai-cs-chat.html" class="topbar-chat-link" data-i18n="topbar.chat">💬 在线客服</a>
+    <div class="topbar-user">
+      <div class="topbar-avatar">张</div>
+      <span class="topbar-username">张明 / Zhang Ming</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ HERO / SEARCH ═══ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <h1 class="hero-greeting" data-i18n="hero.greeting">您好，有什么可以帮您？</h1>
+    <p class="hero-sub" data-i18n="hero.sub">搜索问题、查看订单或提交工单，我们随时为您服务</p>
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text" data-i18n-placeholder="search.placeholder" placeholder="搜索您的问题..." autocomplete="off">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <div class="search-suggest" id="searchSuggest"></div>
+    </div>
+    <div class="cat-pills">
+      <button class="cat-pill" data-i18n="cat.manufacturing" onclick="searchCategory('manufacturing')">🏭 制造能力</button>
+      <button class="cat-pill" data-i18n="cat.quoting" onclick="searchCategory('quoting')">💰 报价相关</button>
+      <button class="cat-pill" data-i18n="cat.logistics" onclick="searchCategory('logistics')">📦 订单物流</button>
+      <button class="cat-pill" data-i18n="cat.tech" onclick="searchCategory('tech')">🔧 技术支持</button>
+      <button class="cat-pill" data-i18n="cat.account" onclick="searchCategory('account')">👤 账户问题</button>
+    </div>
+    <div class="working-hours" id="workingBadge">
+      <span class="working-dot"></span>
+      <span data-i18n="hours.online">在线客服：工作日 9:00 - 22:00</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ POPULAR FAQ ═══ -->
+<section class="section" id="faq-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="faq.title">🔥 热门问题</h2>
+      <a href="javascript:void(0)" class="section-link" onclick="openFaqModal()" data-i18n="faq.viewAll">查看全部FAQ →</a>
+    </div>
+    <div class="faq-grid" id="faqGrid"></div>
+  </div>
+</section>
+
+<!-- ═══ MY TICKETS ═══ -->
+<section class="section" id="tickets-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="tickets.title">📋 我的工单</h2>
+      <a href="javascript:void(0)" class="section-link" data-i18n="tickets.viewAll">查看全部工单 →</a>
+    </div>
+    <div class="tickets-table" id="ticketsTable"></div>
+    <button class="ticket-submit-btn" onclick="openTicketModal()">＋ <span data-i18n="tickets.submit">提交新工单</span></button>
+  </div>
+</section>
+
+<!-- ═══ MY ORDERS ═══ -->
+<section class="section" id="orders-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="orders.title">📦 近期订单</h2>
+      <a href="javascript:void(0)" class="section-link" data-i18n="orders.viewAll">查看全部订单 →</a>
+    </div>
+    <div class="orders-grid" id="ordersGrid"></div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT US ═══ -->
+<section class="section" id="contact-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="contact.title">📞 联系我们</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-card-icon contact-icon-email">✉</div>
+          <div>
+            <div class="contact-card-label" data-i18n="contact.emailLabel">电子邮件</div>
+            <div class="contact-card-value">support@rapiddirect.com</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon contact-icon-phone">📞</div>
+          <div>
+            <div class="contact-card-label" data-i18n="contact.phoneLabel">电话</div>
+            <div class="contact-card-value">+86 400-123-4567</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon contact-icon-whatsapp">💬</div>
+          <div>
+            <div class="contact-card-label">WhatsApp</div>
+            <div class="contact-card-value">+86 138-0000-1234</div>
+          </div>
+        </div>
+        <div class="contact-card" style="cursor:pointer" onclick="window.location.href='ai-cs-chat.html'">
+          <div class="contact-card-icon contact-icon-chat">⚡</div>
+          <div>
+            <div class="contact-card-label" data-i18n="contact.chatLabel">在线客服</div>
+            <div class="contact-card-value" data-i18n="contact.chatValue">立即开始对话</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form" id="contactForm">
+        <h3 class="form-title" data-i18n="contact.formTitle">发送消息</h3>
+        <div class="form-group">
+          <label class="form-label" data-i18n="contact.formName">姓名</label>
+          <input class="form-input" id="cfName" data-i18n-placeholder="contact.formNamePh" placeholder="您的姓名" value="张明">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="contact.formEmail">邮箱</label>
+          <input class="form-input" id="cfEmail" type="email" data-i18n-placeholder="contact.formEmailPh" placeholder="your@email.com" value="zhangming@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="contact.formSubject">主题</label>
+          <select class="form-select" id="cfSubject">
+            <option value="" data-i18n="contact.formSubjectGeneral">一般咨询</option>
+            <option value="order" data-i18n="contact.formSubjectOrder">订单问题</option>
+            <option value="tech" data-i18n="contact.formSubjectTech">技术支持</option>
+            <option value="quality" data-i18n="contact.formSubjectQuality">质量投诉</option>
+            <option value="other" data-i18n="contact.formSubjectOther">其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="contact.formMessage">消息内容</label>
+          <textarea class="form-textarea" id="cfMessage" data-i18n-placeholder="contact.formMessagePh" placeholder="请描述您的问题..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitContactForm()" data-i18n="contact.formSubmit">发送消息</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <span class="footer-brand">RapidDirect</span> &copy; 2026 &nbsp;|&nbsp;
+  <span data-i18n="footer.rights">版权所有</span> &nbsp;|&nbsp;
+  <span data-i18n="footer.slogan">您值得信赖的制造伙伴</span>
+</footer>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- Submit Ticket Modal -->
+<div class="modal-overlay" id="ticketModalOverlay" style="display:none" onclick="closeTicketModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title" data-i18n="ticketModal.title">提交新工单</h3>
+      <button class="modal-close" onclick="closeTicketModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" data-i18n="ticketModal.subject">主题</label>
+        <input class="form-input" id="tkSubject" data-i18n-placeholder="ticketModal.subjectPh" placeholder="简要描述您的问题">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="ticketModal.category">分类</label>
+        <select class="form-select" id="tkCategory">
+          <option value="order" data-i18n="ticketModal.catOrder">订单问题</option>
+          <option value="tech" data-i18n="ticketModal.catTech">技术咨询</option>
+          <option value="quality" data-i18n="ticketModal.catQuality">质量投诉</option>
+          <option value="account" data-i18n="ticketModal.catAccount">账户问题</option>
+          <option value="other" data-i18n="ticketModal.catOther">其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="ticketModal.description">详细描述</label>
+        <textarea class="form-textarea" id="tkDescription" rows="4" data-i18n-placeholder="ticketModal.descriptionPh" placeholder="请详细描述您遇到的问题..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="ticketModal.priority">优先级</label>
+        <div style="display:flex;gap:10px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="tkPriority" value="normal" checked> <span data-i18n="ticketModal.priorityNormal">普通</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="tkPriority" value="urgent"> <span data-i18n="ticketModal.priorityUrgent" style="color:var(--danger);font-weight:600">紧急</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="ticketModal.attachment">附件（可选）</label>
+        <div class="attach-area" onclick="simulateAttachment()">
+          <div class="attach-icon">📎</div>
+          <div class="attach-text" data-i18n="ticketModal.attachText">点击上传文件或拖拽到此处（最大 10MB）</div>
+          <div id="attachFiles" style="font-size:12px;color:var(--primary);margin-top:4px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="ticket-submit-btn" style="background:var(--border-light);color:var(--text);margin-top:0" onclick="closeTicketModal()" data-i18n="ticketModal.cancel">取消</button>
+      <button class="ticket-submit-btn" style="margin-top:0" onclick="submitTicket()" data-i18n="ticketModal.submit">提交工单</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ Modal -->
+<div class="modal-overlay" id="faqModalOverlay" style="display:none" onclick="closeFaqModal(event)">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title" data-i18n="faqModal.title">常见问题</h3>
+      <button class="modal-close" onclick="closeFaqModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="faq-search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="faq-search-input" id="faqSearchInput" data-i18n-placeholder="faqModal.searchPh" placeholder="搜索 FAQ..." oninput="filterFaq()">
+      </div>
+      <div class="faq-tabs" id="faqTabs"></div>
+      <div class="faq-list" id="faqList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script>
+// ── i18n data ──
+const i18n = {
+  zh: {
+    'topbar.title':'RapidDirect 客户服务中心','topbar.lang':'EN','topbar.chat':'💬 在线客服',
+    'hero.greeting':'您好，有什么可以帮您？','hero.sub':'搜索问题、查看订单或提交工单，我们随时为您服务',
+    'search.placeholder':'搜索您的问题...',
+    'cat.manufacturing':'🏭 制造能力','cat.quoting':'💰 报价相关','cat.logistics':'📦 订单物流','cat.tech':'🔧 技术支持','cat.account':'👤 账户问题',
+    'hours.online':'在线客服：工作日 9:00 - 22:00','hours.offline':'客服已离线：工作日 9:00 - 22:00',
+    'faq.title':'🔥 热门问题','faq.viewAll':'查看全部FAQ →',
+    'tickets.title':'📋 我的工单','tickets.viewAll':'查看全部工单 →','tickets.submit':'提交新工单','tickets.empty':'暂无工单',
+    'tickets.id':'工单编号','tickets.subject':'主题','tickets.status':'状态','tickets.updated':'最后更新',
+    'orders.title':'📦 近期订单','orders.viewAll':'查看全部订单 →',
+    'contact.title':'📞 联系我们','contact.emailLabel':'电子邮件','contact.phoneLabel':'电话',
+    'contact.chatLabel':'在线客服','contact.chatValue':'立即开始对话',
+    'contact.formTitle':'发送消息','contact.formName':'姓名','contact.formNamePh':'您的姓名',
+    'contact.formEmail':'邮箱','contact.formEmailPh':'your@email.com',
+    'contact.formSubject':'主题','contact.formSubjectGeneral':'一般咨询','contact.formSubjectOrder':'订单问题',
+    'contact.formSubjectTech':'技术支持','contact.formSubjectQuality':'质量投诉','contact.formSubjectOther':'其他',
+    'contact.formMessage':'消息内容','contact.formMessagePh':'请描述您的问题...','contact.formSubmit':'发送消息',
+    'ticketModal.title':'提交新工单','ticketModal.subject':'主题','ticketModal.subjectPh':'简要描述您的问题',
+    'ticketModal.category':'分类','ticketModal.catOrder':'订单问题','ticketModal.catTech':'技术咨询',
+    'ticketModal.catQuality':'质量投诉','ticketModal.catAccount':'账户问题','ticketModal.catOther':'其他',
+    'ticketModal.description':'详细描述','ticketModal.descriptionPh':'请详细描述您遇到的问题...',
+    'ticketModal.priority':'优先级','ticketModal.priorityNormal':'普通','ticketModal.priorityUrgent':'紧急',
+    'ticketModal.attachment':'附件（可选）','ticketModal.attachText':'点击上传文件或拖拽到此处（最大 10MB）',
+    'ticketModal.cancel':'取消','ticketModal.submit':'提交工单',
+    'faqModal.title':'常见问题','faqModal.searchPh':'搜索 FAQ...',
+    'faqModal.all':'全部','faqModal.manufacturing':'制造能力','faqModal.quoting':'报价相关','faqModal.logistics':'订单物流','faqModal.tech':'技术支持','faqModal.account':'账户',
+    'faq.feedback':'此回答有帮助吗？','faq.feedbackYes':'👍 有帮助','faq.feedbackNo':'👎 没有',
+    'toast.ticketCreated':'工单已成功提交！客服将尽快回复您。','toast.contactSent':'消息已发送！我们会尽快回复您。',
+    'toast.faqFeedback':'感谢您的反馈！','toast.attachSim':'附件上传功能演示（实际环境将支持真实上传）',
+    'footer.rights':'版权所有','footer.slogan':'您值得信赖的制造伙伴',
+    'status.open':'处理中','status.progress':'跟进中','status.resolved':'已解决','status.closed':'已关闭',
+    'order.processing':'生产中','order.shipping':'运输中','order.delivered':'已交付','order.pending':'待确认',
+  },
+  en: {
+    'topbar.title':'RapidDirect Customer Service','topbar.lang':'中文','topbar.chat':'💬 Live Chat',
+    'hero.greeting':'Hello, how can we help you?','hero.sub':'Search FAQs, check orders, or submit a ticket — we\'re here to help',
+    'search.placeholder':'Search your question...',
+    'cat.manufacturing':'🏭 Manufacturing','cat.quoting':'💰 Quoting','cat.logistics':'📦 Logistics','cat.tech':'🔧 Tech Support','cat.account':'👤 Account',
+    'hours.online':'Live Support: Weekdays 9:00 AM - 10:00 PM','hours.offline':'Offline: Weekdays 9:00 AM - 10:00 PM',
+    'faq.title':'🔥 Popular FAQs','faq.viewAll':'View All FAQs →',
+    'tickets.title':'📋 My Tickets','tickets.viewAll':'View All Tickets →','tickets.submit':'Submit New Ticket','tickets.empty':'No tickets yet',
+    'tickets.id':'Ticket ID','tickets.subject':'Subject','tickets.status':'Status','tickets.updated':'Last Updated',
+    'orders.title':'📦 Recent Orders','orders.viewAll':'View All Orders →',
+    'contact.title':'📞 Contact Us','contact.emailLabel':'Email','contact.phoneLabel':'Phone',
+    'contact.chatLabel':'Live Chat','contact.chatValue':'Start Conversation',
+    'contact.formTitle':'Send Message','contact.formName':'Name','contact.formNamePh':'Your name',
+    'contact.formEmail':'Email','contact.formEmailPh':'your@email.com',
+    'contact.formSubject':'Subject','contact.formSubjectGeneral':'General Inquiry','contact.formSubjectOrder':'Order Issue',
+    'contact.formSubjectTech':'Technical Support','contact.formSubjectQuality':'Quality Complaint','contact.formSubjectOther':'Other',
+    'contact.formMessage':'Message','contact.formMessagePh':'Describe your issue...','contact.formSubmit':'Send Message',
+    'ticketModal.title':'Submit New Ticket','ticketModal.subject':'Subject','ticketModal.subjectPh':'Briefly describe your issue',
+    'ticketModal.category':'Category','ticketModal.catOrder':'Order Issue','ticketModal.catTech':'Technical Support',
+    'ticketModal.catQuality':'Quality Complaint','ticketModal.catAccount':'Account Issue','ticketModal.catOther':'Other',
+    'ticketModal.description':'Description','ticketModal.descriptionPh':'Please describe your issue in detail...',
+    'ticketModal.priority':'Priority','ticketModal.priorityNormal':'Normal','ticketModal.priorityUrgent':'Urgent',
+    'ticketModal.attachment':'Attachment (optional)','ticketModal.attachText':'Click to upload or drag files here (max 10MB)',
+    'ticketModal.cancel':'Cancel','ticketModal.submit':'Submit Ticket',
+    'faqModal.title':'Frequently Asked Questions','faqModal.searchPh':'Search FAQs...',
+    'faqModal.all':'All','faqModal.manufacturing':'Manufacturing','faqModal.quoting':'Quoting','faqModal.logistics':'Logistics','faqModal.tech':'Tech Support','faqModal.account':'Account',
+    'faq.feedback':'Was this helpful?','faq.feedbackYes':'👍 Yes','faq.feedbackNo':'👎 No',
+    'toast.ticketCreated':'Ticket submitted successfully! Our team will respond shortly.','toast.contactSent':'Message sent! We\'ll get back to you soon.',
+    'toast.faqFeedback':'Thank you for your feedback!','toast.attachSim':'Attachment upload demo (real upload supported in production)',
+    'footer.rights':'All Rights Reserved','footer.slogan':'Your Trusted Manufacturing Partner',
+    'status.open':'In Progress','status.progress':'Following Up','status.resolved':'Resolved','status.closed':'Closed',
+    'order.processing':'In Production','order.shipping':'Shipping','order.delivered':'Delivered','order.pending':'Pending',
+  }
+};
+
+let currentLang = 'zh';
+
+function t(key) {
+  return (i18n[currentLang] && i18n[currentLang][key]) || (i18n['zh'][key]) || key;
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  applyI18n();
+  renderAll();
+}
+
+function applyI18n() {
+  document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  // update radio/select options with data-i18n
+  document.querySelectorAll('option[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+}
+
+// ── FAQ Data ──
+const faqData = [
+  {id:1, cat:'manufacturing', q:'支持哪些制造工艺？', qEn:'What manufacturing processes do you support?', a:'我们支持CNC加工、3D打印（SLS/SLA/FDM）、钣金加工、注塑成型、压铸、聚氨酯浇注等多种工艺。覆盖金属和塑料材料，满足原型和小批量生产需求。', aEn:'We support CNC machining, 3D printing (SLS/SLA/FDM), sheet metal fabrication, injection molding, die casting, and urethane casting. We cover both metal and plastic materials for prototyping and low-volume production.'},
+  {id:2, cat:'manufacturing', q:'最小订单量是多少？', qEn:'What is the minimum order quantity?', a:'我们支持从1件起的原型制作到数千件的小批量生产。没有硬性的最小订单量限制。对于不同工艺，建议的最小起订量可能有所不同，具体请联系我们确认。', aEn:'We support everything from single-piece prototypes to thousands of units in low-volume production. There is no strict minimum order quantity. Recommended minimums may vary by process — please contact us for details.'},
+  {id:3, cat:'quoting', q:'如何获取报价？', qEn:'How do I get a quote?', a:'您可以通过以下方式获取报价：1) 登录平台上传CAD文件（支持STEP/IGES/STL等格式），系统将自动分析并生成即时报价；2) 联系客服团队获取人工报价；3) 发送邮件至 quoting@rapiddirect.com。通常24小时内回复。', aEn:'You can get a quote by: 1) Uploading CAD files (STEP/IGES/STL supported) through the platform for instant automated quoting; 2) Contacting our team for manual quoting; 3) Emailing quoting@rapiddirect.com. Typically responded within 24 hours.'},
+  {id:4, cat:'quoting', q:'报价需要提供哪些信息？', qEn:'What information is needed for a quote?', a:'需要提供：3D CAD文件（STEP/IGES/SLDprt等）、材料要求、表面处理需求、数量、期望交期。您也可以上传2D图纸标注公差要求。', aEn:'Required: 3D CAD files (STEP/IGES/SLDprt, etc.), material requirements, surface finish needs, quantity, and desired lead time. 2D drawings with tolerance annotations are also helpful.'},
+  {id:5, cat:'logistics', q:'订单生产周期多久？', qEn:'What is the typical production lead time?', a:'标准交期：CNC加工3-7个工作日，3D打印2-5个工作日，钣金5-10个工作日，注塑10-20个工作日（含模具制作）。加急服务可缩短至1-3天（需额外费用）。', aEn:'Standard lead times: CNC machining 3-7 business days, 3D printing 2-5 business days, sheet metal 5-10 business days, injection molding 10-20 business days (including tooling). Expedited service available (1-3 days, additional cost).'},
+  {id:6, cat:'logistics', q:'支持国际运输吗？', qEn:'Do you ship internationally?', a:'是的，我们支持全球运输。合作物流包括DHL、FedEx、UPS和TNT。标准国际运输3-7天，加急1-3天。我们会根据目的地和包裹重量自动推荐最优运输方案。', aEn:'Yes, we ship globally via DHL, FedEx, UPS, and TNT. Standard international shipping 3-7 days, express 1-3 days. We automatically recommend the best shipping option based on destination and package weight.'},
+  {id:7, cat:'tech', q:'支持哪些文件格式？', qEn:'What file formats are supported?', a:'我们支持STEP (.stp/.step)、IGES (.igs/.iges)、SolidWorks (.sldprt)、STL、OBJ、Parasolid (.x_t/.x_b) 等3D格式，以及PDF和DWG/DXF格式的2D图纸。推荐使用STEP格式以获得最佳兼容性。', aEn:'We support STEP (.stp/.step), IGES (.igs/.iges), SolidWorks (.sldprt), STL, OBJ, Parasolid (.x_t/.x_b), and 2D drawings in PDF and DWG/DXF. STEP format is recommended for best compatibility.'},
+  {id:8, cat:'tech', q:'公差可以达到多少？', qEn:'What tolerances can you achieve?', a:'标准CNC加工公差为±0.05mm，精密加工可达±0.01mm。3D打印公差因工艺不同：SLS ±0.3mm，SLA ±0.1mm，FDM ±0.3mm。具体公差请参考各工艺页面或在报价时确认。', aEn:'Standard CNC machining tolerance: ±0.05mm, precision machining up to ±0.01mm. 3D printing tolerances vary: SLS ±0.3mm, SLA ±0.1mm, FDM ±0.3mm. Please refer to process pages or confirm during quoting.'},
+  {id:9, cat:'account', q:'如何注册账户？', qEn:'How do I create an account?', a:'点击页面右上角的"注册"按钮，填写公司信息、联系人和邮箱地址。注册后我们的客户经理将在1个工作日内与您联系完成企业认证。', aEn:'Click "Sign Up" in the top right corner, fill in your company info, contact person, and email. After registration, our account manager will contact you within 1 business day for enterprise verification.'},
+  {id:10, cat:'account', q:'支持哪些付款方式？', qEn:'What payment methods do you accept?', a:'我们支持银行转账（T/T）、信用卡（Visa/Mastercard）、PayPal和支付宝。企业客户可申请30天账期（需通过信用审核）。大额订单建议使用银行转账以节省手续费。', aEn:'We accept bank transfer (T/T), credit cards (Visa/Mastercard), PayPal, and Alipay. Enterprise customers can apply for 30-day net terms (subject to credit review). Bank transfer is recommended for large orders to save processing fees.'},
+];
+
+// ── Ticket Data ──
+const ticketData = [
+  {id:'TK-2026-0582', subject:'CNC零件表面粗糙度不达标', subjectEn:'CNC part surface roughness not meeting spec', status:'open', updated:'2026-06-10 14:30'},
+  {id:'TK-2026-0541', subject:'询价：铝合金阳极氧化零件', subjectEn:'Inquiry: Aluminum anodized parts quote', status:'progress', updated:'2026-06-08 09:15'},
+  {id:'TK-2026-0510', subject:'3D打印零件尺寸偏差问题', subjectEn:'3D printed part dimensional deviation', status:'resolved', updated:'2026-06-05 16:45'},
+  {id:'TK-2026-0492', subject:'账户认证延迟咨询', subjectEn:'Account verification delay inquiry', status:'closed', updated:'2026-06-01 11:00'},
+];
+
+// ── Order Data ──
+const orderData = [
+  {id:'RD-2026-1203', product:'铝合金 CNC 加工件 × 50', productEn:'Aluminum CNC Parts × 50', status:'processing', eta:'预计 6月15日'},
+  {id:'RD-2026-1189', product:'不锈钢钣金外壳 × 20', productEn:'Stainless Steel Enclosure × 20', status:'shipping', eta:'预计 6月12日'},
+  {id:'RD-2026-1165', product:'尼龙 SLS 原型件 × 10', productEn:'Nylon SLS Prototypes × 10', status:'delivered', eta:'已签收 6月8日'},
+  {id:'RD-2026-1147', product:'黄铜精密车削件 × 200', productEn:'Brass Precision Turned Parts × 200', status:'pending', eta:'待确认'},
+  {id:'RD-2026-1120', product:'ABS 注塑件 × 500', productEn:'ABS Injection Molded Parts × 500', status:'processing', eta:'预计 6月20日'},
+  {id:'RD-2026-1098', product:'钛合金 3D打印件 × 5', productEn:'Titanium 3D Printed Parts × 5', status:'delivered', eta:'已签收 6月3日'},
+];
+
+// Suggest data
+const suggestData = [
+  '如何上传CAD文件获取报价','CNC加工公差标准','订单物流进度查询','3D打印材料选择指南',
+  '如何修改订单','表面处理选项','账户注册流程','加急订单费用','退换货政策',
+  '钣金折弯最小半径','注塑模具费用预估','国际运输关税问题','如何取消订单',
+];
+
+// ── Render Functions ──
+function renderFaqGrid() {
+  const grid = document.getElementById('faqGrid');
+  const items = faqData.slice(0, 6);
+  grid.innerHTML = items.map((f,i) => {
+    const q = currentLang === 'zh' ? f.q : f.qEn;
+    const a = currentLang === 'zh' ? f.a : f.aEn;
+    const icons = ['🏭','⚙️','💰','💵','📦','🚚'];
+    return `<div class="faq-card" onclick="this.classList.toggle('expanded')" id="faqCard${f.id}">
+      <div class="faq-card-icon">${icons[i]}</div>
+      <div class="faq-card-q">${q}</div>
+      <div class="expand-hint">${currentLang==='zh'?'点击查看答案':'Click for answer'} ▾</div>
+      <div class="faq-card-a">${a}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTickets() {
+  const container = document.getElementById('ticketsTable');
+  const thId = t('tickets.id');
+  const thSubject = t('tickets.subject');
+  const thStatus = t('tickets.status');
+  const thUpdated = t('tickets.updated');
+  let html = `<table><thead><tr><th>${thId}</th><th>${thSubject}</th><th>${thStatus}</th><th>${thUpdated}</th></tr></thead><tbody>`;
+  ticketData.forEach(tk => {
+    const subject = currentLang === 'zh' ? tk.subject : tk.subjectEn;
+    const statusText = t('status.'+tk.status);
+    const badgeClass = 'badge badge-'+tk.status;
+    html += `<tr><td style="font-weight:600;color:var(--primary);font-size:12px">${tk.id}</td><td>${subject}</td><td><span class="${badgeClass}">${statusText}</span></td><td style="color:var(--text2);font-size:12px">${tk.updated}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function renderOrders() {
+  const grid = document.getElementById('ordersGrid');
+  grid.innerHTML = orderData.slice(0,6).map(o => {
+    const product = currentLang === 'zh' ? o.product : o.productEn;
+    const statusText = t('order.'+o.status);
+    const statusClass = 'order-status status-'+o.status;
+    return `<div class="order-card">
+      <div class="order-id">${o.id}</div>
+      <div class="order-product">${product}</div>
+      <div class="order-meta">
+        <span class="${statusClass}">${statusText}</span>
+        <span class="order-eta">${o.eta}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAll() {
+  renderFaqGrid();
+  renderTickets();
+  renderOrders();
+  applyI18n();
+}
+
+// ── Search Auto-Suggest ──
+const searchInput = document.getElementById('searchInput');
+const searchSuggest = document.getElementById('searchSuggest');
+const searchClear = document.getElementById('searchClear');
+
+searchInput.addEventListener('input', function() {
+  const val = this.value.trim().toLowerCase();
+  searchClear.classList.toggle('visible', val.length > 0);
+  if (val.length === 0) { searchSuggest.classList.remove('open'); return; }
+
+  // Search FAQ
+  const matches = faqData.filter(f => {
+    const q = (currentLang === 'zh' ? f.q : f.qEn).toLowerCase();
+    const a = (currentLang === 'zh' ? f.a : f.aEn).toLowerCase();
+    return q.includes(val) || a.includes(val);
+  });
+
+  let html = '';
+  if (matches.length > 0) {
+    html += `<div class="suggest-category" style="padding:8px 16px">📚 FAQ</div>`;
+    matches.slice(0,4).forEach(f => {
+      const q = currentLang === 'zh' ? f.q : f.qEn;
+      html += `<div class="suggest-item" onclick="openFaqWithHighlight(${f.id})">${q}</div>`;
+    });
+  }
+  if (html === '') {
+    html = `<div class="suggest-item" style="color:var(--text3)">${currentLang==='zh'?'未找到相关结果，请尝试其他关键词':'No results found, try different keywords'}</div>`;
+  }
+  searchSuggest.innerHTML = html;
+  searchSuggest.classList.add('open');
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { clearSearch(); }
+  if (e.key === 'Enter') {
+    const val = this.value.trim();
+    if (val) { openFaqModal(); document.getElementById('faqSearchInput').value = val; setTimeout(filterFaq,100); }
+    searchSuggest.classList.remove('open');
+  }
+});
+
+document.addEventListener('click', function(e) {
+  if (!searchInput.contains(e.target) && !searchSuggest.contains(e.target)) {
+    searchSuggest.classList.remove('open');
+  }
+});
+
+function clearSearch() {
+  searchInput.value = '';
+  searchClear.classList.remove('visible');
+  searchSuggest.classList.remove('open');
+  searchInput.focus();
+}
+
+function searchCategory(cat) {
+  searchInput.value = '';
+  searchSuggest.classList.remove('open');
+  searchClear.classList.remove('visible');
+  openFaqModal();
+  // activate the corresponding tab
+  const tabs = document.querySelectorAll('#faqTabs .faq-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  const targetMap = {manufacturing:1,quoting:2,logistics:3,tech:4,account:5};
+  const idx = targetMap[cat] || 0;
+  if (tabs[idx]) tabs[idx].classList.add('active');
+  activeFaqCat = cat;
+  document.getElementById('faqSearchInput').value = '';
+  filterFaq();
+  document.getElementById('faq-section').scrollIntoView({behavior:'smooth'});
+}
+
+// ── Working Hours ──
+function updateWorkingHours() {
+  const badge = document.getElementById('workingBadge');
+  const now = new Date();
+  const day = now.getDay();
+  const hour = now.getHours();
+  const isOnline = day >= 1 && day <= 5 && hour >= 9 && hour < 22;
+  if (isOnline) {
+    badge.className = 'working-hours';
+    badge.querySelector('.working-dot').style.display = '';
+    badge.querySelector('span:last-child').textContent = t('hours.online');
+  } else {
+    badge.className = 'working-hours working-off';
+    badge.querySelector('.working-dot').style.display = '';
+    badge.querySelector('span:last-child').textContent = t('hours.offline');
+  }
+}
+updateWorkingHours();
+setInterval(updateWorkingHours, 60000);
+
+// ── Ticket Modal ──
+function openTicketModal() {
+  document.getElementById('ticketModalOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('tkSubject').focus();
+}
+function closeTicketModal(e) {
+  if (e && e.target !== document.getElementById('ticketModalOverlay')) return;
+  document.getElementById('ticketModalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  // clear form
+  document.getElementById('tkSubject').value = '';
+  document.getElementById('tkDescription').value = '';
+  document.getElementById('tkCategory').value = 'order';
+  document.querySelector('input[name="tkPriority"][value="normal"]').checked = true;
+  document.getElementById('attachFiles').textContent = '';
+}
+
+function submitTicket() {
+  const subject = document.getElementById('tkSubject').value.trim();
+  const desc = document.getElementById('tkDescription').value.trim();
+  if (!subject || !desc) {
+    showToast(currentLang==='zh'?'请填写主题和详细描述':'Please fill in subject and description');
+    return;
+  }
+  const now = new Date();
+  const ts = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const id = 'TK-'+now.getFullYear()+'-'+String(Math.floor(Math.random()*9000+1000));
+  ticketData.unshift({id, subject, subjectEn:subject, status:'open', updated:ts});
+  closeTicketModal();
+  renderTickets();
+  showToast(t('toast.ticketCreated'));
+}
+
+function simulateAttachment() {
+  const el = document.getElementById('attachFiles');
+  el.textContent = '📄 screenshot.png (245KB) — ' + t('toast.attachSim');
+  showToast(t('toast.attachSim'));
+}
+
+// ── FAQ Modal ──
+let activeFaqCat = 'all';
+let faqFeedbackGiven = {};
+
+function openFaqModal() {
+  document.getElementById('faqModalOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  activeFaqCat = 'all';
+  document.getElementById('faqSearchInput').value = '';
+  renderFaqTabs();
+  filterFaq();
+}
+
+function closeFaqModal(e) {
+  if (e && e.target !== document.getElementById('faqModalOverlay')) return;
+  document.getElementById('faqModalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function renderFaqTabs() {
+  const tabs = document.getElementById('faqTabs');
+  const categories = [
+    {key:'all', label: t('faqModal.all')},
+    {key:'manufacturing', label: t('faqModal.manufacturing')},
+    {key:'quoting', label: t('faqModal.quoting')},
+    {key:'logistics', label: t('faqModal.logistics')},
+    {key:'tech', label: t('faqModal.tech')},
+    {key:'account', label: t('faqModal.account')},
+  ];
+  tabs.innerHTML = categories.map(c =>
+    `<button class="faq-tab${c.key===activeFaqCat?' active':''}" onclick="switchFaqCat('${c.key}')">${c.label}</button>`
+  ).join('');
+}
+
+function switchFaqCat(cat) {
+  activeFaqCat = cat;
+  renderFaqTabs();
+  document.getElementById('faqSearchInput').value = '';
+  filterFaq();
+}
+
+function filterFaq() {
+  const query = document.getElementById('faqSearchInput').value.trim().toLowerCase();
+  const list = document.getElementById('faqList');
+  let filtered = faqData;
+  if (query) {
+    filtered = faqData.filter(f => {
+      const q = (currentLang==='zh'?f.q:f.qEn).toLowerCase();
+      const a = (currentLang==='zh'?f.a:f.aEn).toLowerCase();
+      return q.includes(query) || a.includes(query);
+    });
+  } else if (activeFaqCat !== 'all') {
+    filtered = faqData.filter(f => f.cat === activeFaqCat);
+  }
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text3)">${currentLang==='zh'?'未找到匹配的FAQ':'No matching FAQs found'}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(f => {
+    const q = currentLang === 'zh' ? f.q : f.qEn;
+    const a = currentLang === 'zh' ? f.a : f.aEn;
+    const feedbackKey = 'faq_'+f.id;
+    const given = faqFeedbackGiven[feedbackKey];
+    return `<div class="faq-item" id="faqItem${f.id}">
+      <div class="faq-item-q" onclick="toggleFaqItem(${f.id})">
+        <span>${q}</span>
+        <span class="arrow">▾</span>
+      </div>
+      <div class="faq-item-a">
+        <p>${a}</p>
+        <div class="faq-feedback">
+          <span class="faq-feedback-text">${t('faq.feedback')}</span>
+          <button class="faq-feedback-btn${given==='yes'?' voted':''}" onclick="event.stopPropagation();faqFeedback(${f.id},'yes')" style="${given==='yes'?'background:var(--success);color:#fff;border-color:var(--success)':''}">${t('faq.feedbackYes')}</button>
+          <button class="faq-feedback-btn${given==='no'?' voted':''}" onclick="event.stopPropagation();faqFeedback(${f.id},'no')" style="${given==='no'?'background:var(--danger);color:#fff;border-color:var(--danger)':''}">${t('faq.feedbackNo')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFaqItem(id) {
+  const item = document.getElementById('faqItem'+id);
+  item.classList.toggle('open');
+}
+
+function openFaqWithHighlight(id) {
+  searchSuggest.classList.remove('open');
+  searchClear.classList.remove('visible');
+  searchInput.value = '';
+  openFaqModal();
+  activeFaqCat = 'all';
+  renderFaqTabs();
+  filterFaq();
+  setTimeout(() => {
+    const item = document.getElementById('faqItem'+id);
+    if (item) {
+      item.classList.add('open');
+      item.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  }, 150);
+}
+
+function faqFeedback(id, vote) {
+  faqFeedbackGiven['faq_'+id] = vote;
+  filterFaq();
+  showToast(t('toast.faqFeedback'));
+}
+
+// ── Contact Form ──
+function submitContactForm() {
+  const msg = document.getElementById('cfMessage').value.trim();
+  if (!msg) {
+    showToast(currentLang==='zh'?'请填写消息内容':'Please fill in the message');
+    return;
+  }
+  showToast(t('toast.contactSent'));
+  document.getElementById('cfMessage').value = '';
+}
+
+// ── Toast ──
+function showToast(message) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ── Init ──
+renderAll();
+applyI18n();
+
+// Close modals with Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    if (document.getElementById('faqModalOverlay').style.display === 'flex') {
+      closeFaqModal();
+    } else if (document.getElementById('ticketModalOverlay').style.display === 'flex') {
+      closeTicketModal();
+    }
+  }
+});
+</script>
+
+</body>
+</html>

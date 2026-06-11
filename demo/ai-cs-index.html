@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI客服系统 — RapidDirect</title>
+<style>
+/* ===== Design System: RapidDirect B2B ===== */
+:root {
+  --brand: #EA5540;
+  --brand-dark: #d14330;
+  --brand-light: #fef0ee;
+  --primary: #4f6ef7;
+  --primary-dark: #3b52cc;
+  --primary-light: #eef1fe;
+  --success: #22c55e;
+  --success-light: #f0fdf4;
+  --warning: #f59e0b;
+  --warning-light: #fffbeb;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+  --bg: #f8f9fc;
+  --card-bg: #fff;
+  --text: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.04);
+  --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+  --tran: all .25s ease;
+  --font: "PingFang SC", "Microsoft YaHei", "SF Pro Display", -apple-system, sans-serif;
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topbar-logo {
+  width: 36px;
+  height: 36px;
+  background: var(--brand);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lang-toggle {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 6px 14px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  transition: var(--tran);
+  white-space: nowrap;
+}
+.lang-toggle:hover {
+  background: rgba(255,255,255,.2);
+  border-color: rgba(255,255,255,.35);
+}
+.lang-toggle.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+/* ===== Main Content ===== */
+.main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  text-align: center;
+  padding: 40px 20px 44px;
+  margin-bottom: 8px;
+}
+.hero-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(234,85,64,.25);
+}
+.hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.hero-subtitle {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===== Card Grid ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 8px;
+}
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  padding: 28px 24px 24px;
+  transition: var(--tran);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border);
+  transform: translateY(-2px);
+}
+.card:hover::before {
+  transform: scaleX(1);
+}
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.card-icon.c1 { background: var(--primary-light); color: var(--primary); }
+.card-icon.c2 { background: var(--warning-light); color: var(--warning); }
+.card-icon.c3 { background: var(--success-light); color: var(--success); }
+.card-icon.c4 { background: var(--brand-light); color: var(--brand); }
+.card-icon.c5 { background: #f5f3ff; color: #8b5cf6; }
+.card-icon.c6 { background: #f0f9ff; color: #0ea5e9; }
+.card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.card-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  flex: 1;
+  margin-bottom: 16px;
+}
+.card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand);
+  transition: var(--tran);
+}
+.card-action .arrow {
+  transition: transform .2s ease;
+}
+.card:hover .card-action .arrow {
+  transform: translateX(3px);
+}
+
+/* ===== Footer ===== */
+.footer {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px 24px;
+  font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.footer-brand {
+  color: var(--brand);
+  font-weight: 600;
+}
+.footer-divider {
+  margin: 0 8px;
+  color: #475569;
+}
+
+/* ===== Responsive: Tablet ===== */
+@media (max-width: 900px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .hero { padding: 32px 12px 36px; }
+  .hero-title { font-size: 24px; }
+  .hero-subtitle { font-size: 14px; }
+  .main { padding: 24px 16px 40px; }
+  .topbar { padding: 10px 16px; }
+  .topbar-title { font-size: 14px; }
+}
+
+/* ===== Responsive: Mobile ===== */
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .hero { padding: 24px 8px 28px; }
+  .hero-icon { width: 52px; height: 52px; font-size: 26px; border-radius: 14px; }
+  .hero-title { font-size: 22px; }
+  .hero-subtitle { font-size: 14px; max-width: 100%; }
+  .main { padding: 16px 12px 32px; }
+  .topbar { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+  .topbar-title { font-size: 13px; }
+  .topbar-logo { width: 28px; height: 28px; font-size: 16px; }
+  .lang-toggle { font-size: 12px; padding: 4px 10px; }
+  .card { padding: 22px 18px 20px; }
+  .card-title { font-size: 15px; }
+  .card-desc { font-size: 13px; }
+  .footer { padding: 16px 12px; font-size: 12px; }
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Top Bar ===== -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo" aria-hidden="true">RD</div>
+    <span class="topbar-title" data-i18n="topbar.title">RapidDirect AI 客服系统</span>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle active" id="btnZh" onclick="switchLang('zh')" aria-label="切换到中文">中文</button>
+    <button class="lang-toggle" id="btnEn" onclick="switchLang('en')" aria-label="Switch to English">EN</button>
+  </div>
+</header>
+
+<!-- ===== Main Content ===== -->
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-icon" aria-hidden="true">🤖</div>
+    <h1 class="hero-title" data-i18n="hero.title">智能 AI 客服平台</h1>
+    <p class="hero-subtitle" data-i18n="hero.subtitle">一站式 B2B 智能客服解决方案 — 集成 AI 对话、工单管理、知识库、坐席工作台、客户门户与数据分析，助力企业高效服务全球客户。</p>
+  </section>
+
+  <!-- Screen Cards -->
+  <div class="card-grid">
+
+    <!-- Card 1: AI Chat -->
+    <a href="ai-cs-chat.html" class="card">
+      <div class="card-icon c1" aria-hidden="true">💬</div>
+      <h3 class="card-title" data-i18n="cards.chat.title">AI 对话窗口</h3>
+      <p class="card-desc" data-i18n="cards.chat.desc">智能问答、FAQ匹配、多语言翻译、一键转人工</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+    <!-- Card 2: Tickets -->
+    <a href="ai-cs-tickets.html" class="card">
+      <div class="card-icon c2" aria-hidden="true">🎫</div>
+      <h3 class="card-title" data-i18n="cards.tickets.title">工单/会话管理</h3>
+      <p class="card-desc" data-i18n="cards.tickets.desc">工单创建分配、会话追踪、SLA监控</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+    <!-- Card 3: Knowledge Base -->
+    <a href="ai-cs-knowledge.html" class="card">
+      <div class="card-icon c3" aria-hidden="true">📚</div>
+      <h3 class="card-title" data-i18n="cards.knowledge.title">知识库管理</h3>
+      <p class="card-desc" data-i18n="cards.knowledge.desc">FAQ编辑、分类管理、批量导入导出</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+    <!-- Card 4: Agent Workspace -->
+    <a href="ai-cs-agent.html" class="card">
+      <div class="card-icon c4" aria-hidden="true">👩‍💼</div>
+      <h3 class="card-title" data-i18n="cards.agent.title">客服工作台</h3>
+      <p class="card-desc" data-i18n="cards.agent.desc">坐席工作台、技能组分配、协作转接</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+    <!-- Card 5: Customer Portal -->
+    <a href="ai-cs-portal.html" class="card">
+      <div class="card-icon c5" aria-hidden="true">🏠</div>
+      <h3 class="card-title" data-i18n="cards.portal.title">客户自助门户</h3>
+      <p class="card-desc" data-i18n="cards.portal.desc">订单查询、自助FAQ、工单提交</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+    <!-- Card 6: Dashboard -->
+    <a href="ai-cs-dashboard.html" class="card">
+      <div class="card-icon c6" aria-hidden="true">📊</div>
+      <h3 class="card-title" data-i18n="cards.dashboard.title">数据看板</h3>
+      <p class="card-desc" data-i18n="cards.dashboard.desc">咨询量趋势、命中率、满意度、坐席绩效</p>
+      <span class="card-action"><span data-i18n="cards.action">进入</span> <span class="arrow">→</span></span>
+    </a>
+
+  </div>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <span class="footer-brand">RapidDirect</span><span class="footer-divider">|</span><span data-i18n="footer.text">AI 客服系统 v2.0</span><span class="footer-divider">|</span><span data-i18n="footer.copyright">&copy; 2026 RapidDirect. All rights reserved.</span>
+</footer>
+
+<!-- ===== i18n Script ===== -->
+<script>
+(function() {
+  'use strict';
+
+  var i18nData = {
+    zh: {
+      'topbar.title': 'RapidDirect AI 客服系统',
+      'hero.title': '智能 AI 客服平台',
+      'hero.subtitle': '一站式 B2B 智能客服解决方案 — 集成 AI 对话、工单管理、知识库、坐席工作台、客户门户与数据分析，助力企业高效服务全球客户。',
+      'cards.action': '进入',
+      'cards.chat.title': 'AI 对话窗口',
+      'cards.chat.desc': '智能问答、FAQ匹配、多语言翻译、一键转人工',
+      'cards.tickets.title': '工单/会话管理',
+      'cards.tickets.desc': '工单创建分配、会话追踪、SLA监控',
+      'cards.knowledge.title': '知识库管理',
+      'cards.knowledge.desc': 'FAQ编辑、分类管理、批量导入导出',
+      'cards.agent.title': '客服工作台',
+      'cards.agent.desc': '坐席工作台、技能组分配、协作转接',
+      'cards.portal.title': '客户自助门户',
+      'cards.portal.desc': '订单查询、自助FAQ、工单提交',
+      'cards.dashboard.title': '数据看板',
+      'cards.dashboard.desc': '咨询量趋势、命中率、满意度、坐席绩效',
+      'footer.text': 'AI 客服系统 v2.0',
+      'footer.copyright': '© 2026 RapidDirect. All rights reserved.'
+    },
+    en: {
+      'topbar.title': 'RapidDirect AI Customer Service',
+      'hero.title': 'Intelligent AI Customer Service Platform',
+      'hero.subtitle': 'An all-in-one B2B intelligent customer service solution — integrating AI chat, ticket management, knowledge base, agent workspace, customer portal, and data analytics to help enterprises serve global customers efficiently.',
+      'cards.action': 'Enter',
+      'cards.chat.title': 'AI Chat Window',
+      'cards.chat.desc': 'Smart Q&A, FAQ matching, multilingual translation, one-click handoff to human agent',
+      'cards.tickets.title': 'Ticket & Session Management',
+      'cards.tickets.desc': 'Ticket creation & assignment, session tracking, SLA monitoring',
+      'cards.knowledge.title': 'Knowledge Base Management',
+      'cards.knowledge.desc': 'FAQ editing, category management, bulk import & export',
+      'cards.agent.title': 'Agent Workspace',
+      'cards.agent.desc': 'Agent dashboard, skill group assignment, collaboration & transfer',
+      'cards.portal.title': 'Customer Self-Service Portal',
+      'cards.portal.desc': 'Order inquiry, self-service FAQ, ticket submission',
+      'cards.dashboard.title': 'Data Dashboard',
+      'cards.dashboard.desc': 'Inquiry trends, hit rate, satisfaction, agent performance',
+      'footer.text': 'AI Customer Service System v2.0',
+      'footer.copyright': '© 2026 RapidDirect. All rights reserved.'
+    }
+  };
+
+  var STORAGE_KEY = 'ai-cs-lang';
+  var currentLang = 'zh';
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    var data = i18nData[lang] || i18nData.zh;
+    var elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(function(el) {
+      var key = el.getAttribute('data-i18n');
+      if (data[key]) {
+        el.textContent = data[key];
+      }
+    });
+    // Update document lang
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    // Update title
+    document.title = lang === 'zh' ? 'AI客服系统 — RapidDirect' : 'AI Customer Service — RapidDirect';
+    // Update toggle buttons
+    var btnZh = document.getElementById('btnZh');
+    var btnEn = document.getElementById('btnEn');
+    if (btnZh && btnEn) {
+      if (lang === 'zh') {
+        btnZh.classList.add('active');
+        btnEn.classList.remove('active');
+      } else {
+        btnEn.classList.add('active');
+        btnZh.classList.remove('active');
+      }
+    }
+    // Persist
+    try {
+      localStorage.setItem(STORAGE_KEY, lang);
+    } catch(e) {}
+  }
+
+  window.switchLang = function(lang) {
+    if (lang !== currentLang) {
+      applyLanguage(lang);
+    }
+  };
+
+  // Init: load saved language
+  var savedLang = null;
+  try {
+    savedLang = localStorage.getItem(STORAGE_KEY);
+  } catch(e) {}
+  applyLanguage(savedLang === 'en' ? 'en' : 'zh');
+
+})();
+</script>
+
+</body>
+</html>

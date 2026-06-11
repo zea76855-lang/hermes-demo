@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服工作台 - Agent Workstation</title>
+<style>
+:root {
+  --brand: #EA5540; --brand-dark: #d14330; --brand-light: #fef0ee;
+  --primary: #4f6ef7; --primary-light: #eef1fe;
+  --success: #22c55e; --success-light: #f0fdf4;
+  --warning: #f59e0b; --warning-light: #fffbeb;
+  --danger: #ef4444; --danger-light: #fef2f2;
+  --purple: #8b5cf6; --purple-light: #f5f3ff;
+  --teal: #14b8a6; --teal-light: #f0fdfa;
+  --bg: #f8f9fc; --card: #fff; --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
+  --border: #e2e8f0; --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.04); --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+  --font: "PingFang SC", "Microsoft YaHei", "SF Pro Display", -apple-system, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+/* Top Bar */
+.topbar{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;flex-shrink:0;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.topbar-back{color:#94a3b8;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:4px;transition:color .2s;white-space:nowrap}
+.topbar-back:hover{color:#fff}
+.topbar-center{display:flex;align-items:center;gap:12px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.agent-select{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 32px 6px 12px;border-radius:var(--radius-xs);font-size:13px;font-family:var(--font);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.agent-select option{color:#1e293b;background:#fff}
+.status-toggle{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:5px 10px;border-radius:var(--radius-xs);border:1px solid rgba(255,255,255,.2);transition:all .2s}
+.status-toggle:hover{background:rgba(255,255,255,.1)}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.status-dot.online{background:var(--success);box-shadow:0 0 6px var(--success)}
+.status-dot.busy{background:var(--warning);box-shadow:0 0 6px var(--warning)}
+.status-dot.offline{background:var(--text3)}
+.lang-switch{display:flex;align-items:center;gap:4px;font-size:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-xs);overflow:hidden}
+.lang-btn{padding:4px 10px;cursor:pointer;border:none;background:transparent;color:#94a3b8;font-size:12px;font-family:var(--font);transition:all .2s}
+.lang-btn.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
+/* Main Layout */
+.main-layout{display:flex;flex:1;overflow:hidden}
+/* Panel 1 - Left Sidebar */
+.panel-left{width:280px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.agent-card{padding:16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.agent-card-header{display:flex;align-items:center;gap:10px}
+.agent-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.agent-info{flex:1;min-width:0}
+.agent-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-group{font-size:11px;color:var(--text2)}
+.agent-status-row{display:flex;gap:6px;margin-top:4px}
+.agent-status-btn{flex:1;padding:5px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:11px;cursor:pointer;text-align:center;background:var(--card);transition:all .2s;font-family:var(--font)}
+.agent-status-btn.active{background:var(--success-light);border-color:var(--success);color:var(--success);font-weight:600}
+.agent-status-btn.busy.active{background:var(--warning-light);border-color:var(--warning);color:#d97706}
+.agent-status-btn.offline-btn.active{background:#f1f5f9;border-color:var(--text3);color:var(--text2)}
+.agent-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.stat-item{text-align:center}
+.stat-val{font-size:15px;font-weight:700;color:var(--text)}
+.stat-label{font-size:10px;color:var(--text3);margin-top:1px}
+/* Section */
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+.section-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.section-badge{background:var(--brand);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+/* Queue List */
+.queue-list{flex:1;overflow-y:auto;padding:0 12px}
+.queue-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;transition:all .2s;cursor:default}
+.queue-item:hover{box-shadow:var(--shadow);border-color:var(--primary)}
+.queue-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.queue-cust-name{font-weight:600;font-size:13px}
+.queue-priority{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.queue-priority.high{background:var(--danger-light);color:var(--danger)}
+.queue-priority.medium{background:var(--warning-light);color:#b45309}
+.queue-priority.low{background:#f1f5f9;color:var(--text3)}
+.queue-meta{display:flex;align-items:center;justify-content:space-between}
+.queue-wait{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.queue-wait .wait-time{color:var(--warning);font-weight:600}
+.queue-take-btn{padding:5px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-xs);font-size:12px;cursor:pointer;font-weight:600;transition:all .2s;font-family:var(--font)}
+.queue-take-btn:hover{background:#3d5de5}
+.queue-take-btn:active{transform:scale(.96)}
+/* Active Conversations */
+.active-list{overflow-y:auto;padding:0 12px}
+.active-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;margin-bottom:4px;position:relative}
+.active-item:hover{background:var(--border-light)}
+.active-item.selected{background:var(--primary-light);border:1px solid var(--primary)}
+.active-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0d9488);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.active-info{flex:1;min-width:0}
+.active-cust-name{font-size:13px;font-weight:600}
+.active-last-msg{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.active-meta{text-align:right;flex-shrink:0}
+.active-duration{font-size:10px;color:var(--text3)}
+.active-badge{display:inline-block;min-width:18px;height:18px;line-height:18px;background:var(--brand);color:#fff;font-size:10px;border-radius:9px;text-align:center;margin-top:2px;padding:0 5px}
+/* Panel 2 - Center Chat */
+.panel-center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.chat-header{border-bottom:1px solid var(--border);padding:12px 20px;background:var(--card);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-cust-info{display:flex;align-items:center;gap:10px}
+.chat-cust-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--warning));color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+.chat-cust-details{}
+.chat-cust-name-row{display:flex;align-items:center;gap:8px}
+.chat-cust-name{font-weight:700;font-size:14px}
+.chat-cust-tier{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.tier-vip{background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff}
+.tier-gold{background:linear-gradient(135deg,#fbbf24,#b45309);color:#fff}
+.tier-silver{background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff}
+.tier-normal{background:var(--border-light);color:var(--text2)}
+.chat-cust-company{font-size:11px;color:var(--text3)}
+.chat-actions{display:flex;gap:6px}
+.chat-action-btn{padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--card);font-size:12px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;transition:all .2s;color:var(--text2)}
+.chat-action-btn:hover{background:var(--border-light);color:var(--text)}
+.chat-action-btn.danger{color:var(--danger);border-color:var(--danger-light)}
+.chat-action-btn.danger:hover{background:var(--danger-light)}
+/* Messages Area */
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.msg-row{display:flex;gap:8px;max-width:75%}
+.msg-row.agent{flex-direction:row-reverse;align-self:flex-end}
+.msg-row.customer{align-self:flex-start}
+.msg-row.system{align-self:center;max-width:90%}
+.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+.msg-avatar.customer-avatar{background:linear-gradient(135deg,var(--teal),#0d9488)}
+.msg-avatar.agent-avatar{background:linear-gradient(135deg,var(--brand),var(--brand-dark))}
+.msg-bubble{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;word-break:break-word}
+.msg-row.customer .msg-bubble{background:var(--card);border:1px solid var(--border);border-top-left-radius:4px;box-shadow:var(--shadow-sm)}
+.msg-row.agent .msg-bubble{background:var(--brand);color:#fff;border-top-right-radius:4px;box-shadow:var(--shadow-sm)}
+.msg-row.system .msg-bubble{background:var(--border-light);color:var(--text2);font-size:11px;text-align:center;border-radius:var(--radius-sm);padding:6px 16px}
+.msg-time{font-size:10px;color:var(--text3);margin-top:4px}
+.msg-row.agent .msg-time{text-align:right;color:rgba(255,255,255,.7)}
+/* Typing Indicator */
+.typing-indicator{display:flex;align-items:center;gap:8px;padding:8px 20px;font-size:12px;color:var(--text3);background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
+.typing-dots{display:flex;gap:3px}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:typingBounce 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+/* Quick Replies */
+.quick-replies{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
+.quick-reply-btn{padding:6px 14px;background:var(--primary-light);color:var(--primary);border:1px solid transparent;border-radius:16px;font-size:12px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:var(--font)}
+.quick-reply-btn:hover{background:var(--primary);color:#fff}
+/* AI Suggestions */
+.ai-suggestions{border-top:1px solid var(--border);background:linear-gradient(135deg,#fef3c7,#fef9c3);flex-shrink:0}
+.ai-suggestions-header{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;cursor:pointer}
+.ai-suggestions-title{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#b45309}
+.ai-suggestions-toggle{font-size:11px;color:#b45309;cursor:pointer;background:none;border:none;font-family:var(--font)}
+.ai-suggestions-body{display:flex;gap:8px;padding:0 20px 10px;overflow-x:auto}
+.ai-suggestion-card{flex:1;min-width:200px;max-width:280px;background:var(--card);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;transition:all .2s}
+.ai-suggestion-card:hover{border-color:var(--warning);box-shadow:var(--shadow)}
+.ai-sugg-score{font-size:10px;color:var(--warning);font-weight:600}
+.ai-sugg-title{font-size:12px;font-weight:600;margin:4px 0}
+.ai-sugg-preview{font-size:11px;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ai-sugg-insert{display:inline-block;margin-top:6px;font-size:10px;color:var(--primary);font-weight:600}
+/* Chat Input */
+.chat-input-area{padding:12px 20px;background:var(--card);border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.chat-input-wrapper{flex:1;position:relative}
+.chat-input{width:100%;min-height:40px;max-height:120px;padding:10px 14px;padding-right:70px;border:1px solid var(--border);border-radius:20px;font-size:13px;font-family:var(--font);resize:none;outline:none;line-height:1.5}
+.chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.chat-input-icons{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;gap:4px}
+.chat-input-icon{width:28px;height:28px;border-radius:50%;border:none;background:var(--border-light);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.chat-input-icon:hover{background:var(--border)}
+.chat-send-btn{width:40px;height:40px;border-radius:50%;background:var(--brand);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.chat-send-btn:hover{background:var(--brand-dark)}
+.chat-send-btn:active{transform:scale(.92)}
+/* No Conversation Placeholder */
+.no-conversation{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--text3);gap:12px}
+.no-conv-icon{font-size:56px;opacity:.5}
+.no-conv-text{font-size:14px}
+/* Panel 3 - Right */
+.panel-right{width:320px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.panel-right-scroll{flex:1;overflow-y:auto;padding:16px}
+.c360-section{margin-bottom:16px}
+.c360-section-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.c360-card{background:var(--bg);border-radius:var(--radius-sm);padding:12px}
+.c360-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid var(--border-light)}
+.c360-row:last-child{border-bottom:none}
+.c360-label{color:var(--text3);flex-shrink:0}
+.c360-value{color:var(--text);font-weight:500;text-align:right}
+/* Tags */
+.tags-row{display:flex;flex-wrap:wrap;gap:4px}
+.tag{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag-vip{background:#fef3c7;color:#b45309}
+.tag-new{background:var(--primary-light);color:var(--primary)}
+.tag-complaint{background:var(--danger-light);color:var(--danger)}
+.tag-highvalue{background:linear-gradient(135deg,#fef3c7,#fed7aa);color:#9a3412}
+.tag-enterprise{background:var(--purple-light);color:var(--purple)}
+/* Orders List */
+.order-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:11px}
+.order-item:last-child{border-bottom:none}
+.order-id{font-weight:600;color:var(--primary)}
+.order-status{font-size:10px;padding:1px 6px;border-radius:4px}
+.order-status.shipped{background:var(--success-light);color:var(--success)}
+.order-status.processing{background:var(--warning-light);color:#b45309}
+.order-status.delivered{background:#f1f5f9;color:var(--text2)}
+/* Tickets */
+.ticket-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:11px}
+.ticket-item:last-child{border-bottom:none}
+.ticket-status{font-size:10px;padding:1px 6px;border-radius:4px}
+.ticket-status.open{background:var(--warning-light);color:#b45309}
+.ticket-status.closed{background:#f1f5f9;color:var(--text2)}
+.ticket-status.resolved{background:var(--success-light);color:var(--success)}
+/* Knowledge Base */
+.kb-search{margin-top:12px}
+.kb-search-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:var(--font);outline:none}
+.kb-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.kb-results{margin-top:8px;max-height:200px;overflow-y:auto}
+.kb-item{padding:8px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:4px;cursor:pointer;transition:all .2s;font-size:11px}
+.kb-item:hover{border-color:var(--primary);background:var(--primary-light)}
+.kb-item-title{font-weight:600;font-size:12px}
+.kb-item-preview{font-size:10px;color:var(--text3);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Ticket Form */
+.ticket-form{margin-top:12px}
+.ticket-form input,.ticket-form textarea,.ticket-form select{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:11px;font-family:var(--font);margin-bottom:6px;outline:none}
+.ticket-form input:focus,.ticket-form textarea:focus,.ticket-form select:focus{border-color:var(--primary)}
+.ticket-form textarea{min-height:60px;resize:vertical}
+.ticket-form button{width:100%;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-xs);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.ticket-form button:hover{background:#3d5de5}
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
+.modal{background:var(--card);border-radius:var(--radius);padding:24px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:80vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.modal-btn{padding:8px 18px;border-radius:var(--radius-xs);font-size:13px;cursor:pointer;font-family:var(--font);border:none;font-weight:600;transition:all .2s}
+.modal-btn.primary{background:var(--primary);color:#fff}
+.modal-btn.primary:hover{background:#3d5de5}
+.modal-btn.secondary{background:var(--border-light);color:var(--text2)}
+.modal-btn.secondary:hover{background:var(--border)}
+.modal-btn.danger{background:var(--danger);color:#fff}
+.modal-btn.danger:hover{background:#dc2626}
+.modal select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:13px;font-family:var(--font);margin-bottom:12px}
+.modal textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:13px;font-family:var(--font);resize:vertical;min-height:60px;margin-bottom:12px}
+/* Internal Note */
+.internal-note{background:#fef9c3;border:1px dashed #fbbf24;border-radius:var(--radius-sm);padding:8px 12px;margin:4px 16px;font-size:11px;color:#92400e;display:flex;align-items:flex-start;gap:6px;flex-shrink:0}
+.internal-note-icon{flex-shrink:0}
+/* Empty States */
+.empty-state{text-align:center;padding:24px 16px;color:var(--text3);font-size:12px}
+.empty-state-icon{font-size:28px;margin-bottom:6px}
+/* Mobile Tabs */
+.mobile-tabs{display:none}
+/* Responsive */
+@media (max-width:1024px){
+  .panel-right{width:280px}
+  .panel-left{width:260px}
+}
+@media (max-width:768px){
+  .main-layout{flex-direction:column}
+  .panel-left{display:none;width:100%;max-height:50vh;position:fixed;bottom:0;left:0;z-index:200;border-radius:var(--radius) var(--radius) 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+  .panel-left.show{display:flex}
+  .panel-center{flex:1}
+  .panel-right{display:none;width:100%;position:fixed;bottom:0;left:0;z-index:200;border-radius:var(--radius) var(--radius) 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.15);max-height:60vh}
+  .panel-right.show{display:flex}
+  .mobile-tabs{display:flex;background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
+  .mobile-tab{flex:1;padding:10px 6px;text-align:center;font-size:10px;color:var(--text3);cursor:pointer;border:none;background:transparent;font-family:var(--font);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s}
+  .mobile-tab.active{color:var(--primary)}
+  .mobile-tab-icon{font-size:16px}
+  .chat-messages{padding:12px}
+  .msg-row{max-width:90%}
+  .quick-replies{padding:6px 10px;gap:4px}
+  .quick-reply-btn{padding:5px 10px;font-size:11px}
+  .chat-input-area{padding:8px 12px}
+  .topbar{padding:8px 12px;flex-wrap:wrap;gap:6px}
+  .topbar-title{font-size:13px}
+  .topbar-right{gap:6px}
+}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+/* Transitions */
+.fade-enter{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* Notification toast */
+.toast{position:fixed;top:70px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;box-shadow:var(--shadow);z-index:2000;font-size:13px;animation:fadeIn .3s ease;display:flex;align-items:center;gap:8px;max-width:360px}
+.toast.success{border-left:3px solid var(--success)}
+.toast.info{border-left:3px solid var(--primary)}
+.pop{position:fixed;top:80px;right:20px;background:var(--card);border:2px solid var(--brand);border-radius:var(--radius);padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:2000;font-size:13px;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);text-align:center}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-title" data-i18n="topbar_title">👩‍💼 客服工作台</span>
+    <a href="ai-cs-index.html" class="topbar-back" data-i18n="back_to_index">← 返回首页</a>
+  </div>
+  <div class="topbar-center">
+    <select class="agent-select" id="agentSelect" onchange="switchAgent(this.value)">
+    </select>
+    <div class="status-toggle" id="statusToggle" onclick="cycleStatus()">
+      <span class="status-dot online" id="statusDot"></span>
+      <span data-i18n="status_online">在线</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('zh')" data-i18n="lang_zh">中</button>
+      <button class="lang-btn" id="langEnBtn" onclick="setLang('en')" data-i18n="lang_en">EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+  <!-- Panel 1 - Left Sidebar -->
+  <div class="panel-left" id="panelLeft">
+    <!-- Agent Card -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-avatar" id="agentAvatar">张</div>
+        <div class="agent-info">
+          <div class="agent-name" id="agentName">张伟</div>
+          <div class="agent-group" id="agentGroup">技术支持组 · 高级工程师</div>
+        </div>
+      </div>
+      <div class="agent-status-row">
+        <button class="agent-status-btn active" onclick="setAgentStatus('online')" data-i18n="status_online_btn">在线</button>
+        <button class="agent-status-btn" onclick="setAgentStatus('busy')" data-i18n="status_busy_btn">忙碌</button>
+        <button class="agent-status-btn offline-btn" onclick="setAgentStatus('offline')" data-i18n="status_offline_btn">离线</button>
+      </div>
+      <div class="agent-stats">
+        <div class="stat-item">
+          <div class="stat-val" id="statHandled">47</div>
+          <div class="stat-label" data-i18n="stat_handled">今日处理</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statResponseTime">2.3m</div>
+          <div class="stat-label" data-i18n="stat_response">平均响应</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statSatisfaction">98%</div>
+          <div class="stat-label" data-i18n="stat_satisfaction">满意度</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incoming Queue -->
+    <div class="section-header">
+      <span class="section-title" data-i18n="incoming_queue">📥 待接入队列</span>
+      <span class="section-badge" id="queueCount">3</span>
+    </div>
+    <div class="queue-list" id="queueList"></div>
+
+    <!-- Active Conversations -->
+    <div class="section-header">
+      <span class="section-title" data-i18n="active_conversations">💬 进行中会话</span>
+    </div>
+    <div class="active-list" id="activeList"></div>
+  </div>
+
+  <!-- Panel 2 - Center Chat -->
+  <div class="panel-center" id="panelCenter">
+    <!-- Chat Header (shown when conversation active) -->
+    <div class="chat-header" id="chatHeader" style="display:none">
+      <div class="chat-cust-info">
+        <div class="chat-cust-avatar" id="chatCustAvatar">李</div>
+        <div class="chat-cust-details">
+          <div class="chat-cust-name-row">
+            <span class="chat-cust-name" id="chatCustName">李明</span>
+            <span class="chat-cust-tier tier-vip" id="chatCustTier">VIP</span>
+          </div>
+          <div class="chat-cust-company" id="chatCustCompany">上海科技有限公司 · sales@shanghaitech.com</div>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button class="chat-action-btn" onclick="openTransferModal()" data-i18n="btn_transfer">↗ 转接</button>
+        <button class="chat-action-btn" onclick="addInternalNote()" data-i18n="btn_note">📝 内部备注</button>
+        <button class="chat-action-btn danger" onclick="endConversation()" data-i18n="btn_end">⏹ 结束</button>
+      </div>
+    </div>
+
+    <!-- No Conversation Placeholder -->
+    <div class="no-conversation" id="noConversation">
+      <div class="no-conv-icon">💬</div>
+      <div class="no-conv-text" data-i18n="no_conv">选择一个会话开始工作</div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages" style="display:none"></div>
+
+    <!-- Internal Note -->
+    <div class="internal-note" id="internalNote" style="display:none"></div>
+
+    <!-- Typing Indicator -->
+    <div class="typing-indicator" id="typingIndicator" style="display:none">
+      <div class="typing-dots">
+        <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+      </div>
+      <span data-i18n="typing">客户正在输入...</span>
+    </div>
+
+    <!-- AI Suggestions -->
+    <div class="ai-suggestions" id="aiSuggestions" style="display:none">
+      <div class="ai-suggestions-header" onclick="toggleAISuggestions()">
+        <span class="ai-suggestions-title">🤖 <span data-i18n="ai_suggestions">AI 建议回复</span></span>
+        <button class="ai-suggestions-toggle" data-i18n="ai_collapse">收起 ▲</button>
+      </div>
+      <div class="ai-suggestions-body" id="aiSuggestionsBody"></div>
+    </div>
+
+    <!-- Quick Replies -->
+    <div class="quick-replies" id="quickReplies" style="display:none">
+      <button class="quick-reply-btn" onclick="sendQuickReply('请稍等，我查询一下')" data-i18n="qr_wait">请稍等</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('正在查询相关信息')" data-i18n="qr_checking">正在查询</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('已转交相关部门处理')" data-i18n="qr_transferred">已转交相关部门</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('感谢您的耐心等待')" data-i18n="qr_thanks">感谢耐心等待</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('还有其他问题可以帮您吗？')" data-i18n="qr_more">还有其他问题吗？</button>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input-area" id="chatInputArea" style="display:none">
+      <div class="chat-input-wrapper">
+        <textarea class="chat-input" id="chatInput" placeholder="输入消息..." rows="1" onkeydown="handleInputKey(event)"></textarea>
+        <div class="chat-input-icons">
+          <button class="chat-input-icon" title="表情">😊</button>
+          <button class="chat-input-icon" title="附件">📎</button>
+        </div>
+      </div>
+      <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- Panel 3 - Right Panel -->
+  <div class="panel-right" id="panelRight">
+    <div class="panel-right-scroll">
+      <!-- Customer 360 -->
+      <div class="c360-section" id="c360Section">
+        <div class="c360-section-title">👤 <span data-i18n="c360_title">客户360°视图</span></div>
+        <div class="c360-card" id="c360Card">
+          <div class="empty-state"><div class="empty-state-icon">👆</div><span data-i18n="c360_empty">选择客户查看详情</span></div>
+        </div>
+      </div>
+
+      <!-- Knowledge Base Search -->
+      <div class="kb-search">
+        <div class="c360-section-title">📚 <span data-i18n="kb_title">知识库搜索</span></div>
+        <input class="kb-search-input" id="kbSearchInput" placeholder="搜索FAQ..." oninput="searchKB(this.value)" data-i18n-placeholder="kb_placeholder">
+        <div class="kb-results" id="kbResults"></div>
+      </div>
+
+      <!-- Ticket Creation -->
+      <div class="ticket-form">
+        <div class="c360-section-title">🎫 <span data-i18n="ticket_title">快速创建工单</span></div>
+        <select id="ticketPriority">
+          <option value="normal" data-i18n="ticket_normal">普通</option>
+          <option value="urgent" data-i18n="ticket_urgent">紧急</option>
+          <option value="critical" data-i18n="ticket_critical">严重</option>
+        </select>
+        <input type="text" id="ticketTitle" placeholder="工单标题" data-i18n-placeholder="ticket_title_placeholder">
+        <textarea id="ticketDesc" placeholder="工单描述" data-i18n-placeholder="ticket_desc_placeholder"></textarea>
+        <button onclick="createTicket()" data-i18n="ticket_create">创建工单</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Tabs -->
+<div class="mobile-tabs" id="mobileTabs">
+  <button class="mobile-tab active" onclick="showMobilePanel('center')">
+    <span class="mobile-tab-icon">💬</span>
+    <span data-i18n="mobile_chat">会话</span>
+  </button>
+  <button class="mobile-tab" onclick="showMobilePanel('left')">
+    <span class="mobile-tab-icon">📋</span>
+    <span data-i18n="mobile_queue">队列</span>
+  </button>
+  <button class="mobile-tab" onclick="showMobilePanel('right')">
+    <span class="mobile-tab-icon">👤</span>
+    <span data-i18n="mobile_c360">客户</span>
+  </button>
+</div>
+
+<!-- Modal Container -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modalContent" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script>
+// ============ I18N ============
+const i18n = {
+  zh: {
+    topbar_title:"👩‍💼 客服工作台", back_to_index:"← 返回首页",
+    status_online:"在线", status_busy:"忙碌", status_offline:"离线",
+    lang_zh:"中", lang_en:"EN",
+    status_online_btn:"在线", status_busy_btn:"忙碌", status_offline_btn:"离线",
+    stat_handled:"今日处理", stat_response:"平均响应", stat_satisfaction:"满意度",
+    incoming_queue:"📥 待接入队列", active_conversations:"💬 进行中会话",
+    btn_transfer:"↗ 转接", btn_note:"📝 内部备注", btn_end:"⏹ 结束",
+    no_conv:"选择一个会话开始工作", typing:"客户正在输入...",
+    ai_suggestions:"AI 建议回复", ai_collapse:"收起 ▲", ai_expand:"展开 ▼",
+    qr_wait:"请稍等", qr_checking:"正在查询", qr_transferred:"已转交相关部门", qr_thanks:"感谢耐心等待", qr_more:"还有其他问题吗？",
+    c360_title:"客户360°视图", c360_empty:"选择客户查看详情",
+    kb_title:"知识库搜索", kb_placeholder:"搜索FAQ...",
+    ticket_title:"快速创建工单", ticket_normal:"普通", ticket_urgent:"紧急", ticket_critical:"严重",
+    ticket_title_placeholder:"工单标题", ticket_desc_placeholder:"工单描述", ticket_create:"创建工单",
+    mobile_chat:"会话", mobile_queue:"队列", mobile_c360:"客户",
+    transfer_title:"转接会话", transfer_agent:"选择转接对象", transfer_note:"转接备注（可选）",
+    transfer_confirm:"确认转接", transfer_cancel:"取消",
+    note_title:"添加内部备注", note_placeholder:"输入备注内容...", note_save:"保存",
+    end_title:"结束会话", end_confirm_text:"确定要结束此会话吗？结束后将自动发送满意度调查。",
+    end_confirm:"确认结束", end_cancel:"取消",
+    system_connected:"会话已建立", system_transferred:"会话已转接至",
+    system_ended:"会话已结束",
+    input_placeholder:"输入消息...",
+    ai_match:"匹配度",
+    ai_insert:"点击插入回复",
+    toast_ticket:"工单已创建",
+    toast_ticket_id:"工单编号",
+    wait_time:"等待",
+    min_short:"分钟",
+    sec_short:"秒",
+    just_now:"刚刚",
+    priority_high:"紧急",
+    priority_medium:"普通",
+    priority_low:"低优",
+    take_btn:"接入",
+    survey_title:"服务评价",
+    survey_ask:"请对本次服务进行评价：",
+    survey_submit:"提交评价",
+    ticket_created:"工单创建成功",
+    c360_basic_info:"基本信息",
+    c360_name:"姓名", c360_company:"公司", c360_email:"邮箱", c360_phone:"电话", c360_tier:"会员等级",
+    c360_orders:"近期订单", c360_tickets:"历史工单", c360_tags:"标签",
+    tier_vip:"VIP", tier_gold:"黄金会员", tier_silver:"白银会员", tier_normal:"普通会员",
+  },
+  en: {
+    topbar_title:"👩‍💼 Agent Workstation", back_to_index:"← Back to Index",
+    status_online:"Online", status_busy:"Busy", status_offline:"Offline",
+    lang_zh:"中文", lang_en:"EN",
+    status_online_btn:"Online", status_busy_btn:"Busy", status_offline_btn:"Offline",
+    stat_handled:"Handled Today", stat_response:"Avg Response", stat_satisfaction:"Satisfaction",
+    incoming_queue:"📥 Incoming Queue", active_conversations:"💬 Active Chats",
+    btn_transfer:"↗ Transfer", btn_note:"📝 Note", btn_end:"⏹ End",
+    no_conv:"Select a conversation to begin", typing:"Customer is typing...",
+    ai_suggestions:"AI Suggestions", ai_collapse:"Collapse ▲", ai_expand:"Expand ▼",
+    qr_wait:"One moment please", qr_checking:"Checking now", qr_transferred:"Transferred to team", qr_thanks:"Thanks for waiting", qr_more:"Anything else?",
+    c360_title:"Customer 360°", c360_empty:"Select a customer to view details",
+    kb_title:"Knowledge Base", kb_placeholder:"Search FAQ...",
+    ticket_title:"Quick Create Ticket", ticket_normal:"Normal", ticket_urgent:"Urgent", ticket_critical:"Critical",
+    ticket_title_placeholder:"Ticket title", ticket_desc_placeholder:"Ticket description", ticket_create:"Create Ticket",
+    mobile_chat:"Chat", mobile_queue:"Queue", mobile_c360:"Customer",
+    transfer_title:"Transfer Conversation", transfer_agent:"Select Transfer Target", transfer_note:"Transfer Note (optional)",
+    transfer_confirm:"Confirm Transfer", transfer_cancel:"Cancel",
+    note_title:"Add Internal Note", note_placeholder:"Enter note content...", note_save:"Save",
+    end_title:"End Conversation", end_confirm_text:"Are you sure you want to end this conversation? A satisfaction survey will be sent automatically.",
+    end_confirm:"Confirm End", end_cancel:"Cancel",
+    system_connected:"Conversation established", system_transferred:"Transferred to",
+    system_ended:"Conversation ended",
+    input_placeholder:"Type a message...",
+    ai_match:"Match",
+    ai_insert:"Click to insert",
+    toast_ticket:"Ticket Created",
+    toast_ticket_id:"Ticket ID",
+    wait_time:"Waiting",
+    min_short:"min",
+    sec_short:"s",
+    just_now:"Just now",
+    priority_high:"Urgent",
+    priority_medium:"Normal",
+    priority_low:"Low",
+    take_btn:"Accept",
+    survey_title:"Service Rating",
+    survey_ask:"Please rate this service:",
+    survey_submit:"Submit",
+    ticket_created:"Ticket created successfully",
+    c360_basic_info:"Basic Info",
+    c360_name:"Name", c360_company:"Company", c360_email:"Email", c360_phone:"Phone", c360_tier:"Member Tier",
+    c360_orders:"Recent Orders", c360_tickets:"History Tickets", c360_tags:"Tags",
+    tier_vip:"VIP", tier_gold:"Gold", tier_silver:"Silver", tier_normal:"Standard",
+  }
+};
+
+let currentLang = 'zh';
+function t(key) { return i18n[currentLang][key] || key; }
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === (lang === 'zh' ? '中' : 'EN')));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+  // Update dynamic text
+  updateAgentInfo();
+  renderQueue();
+  renderActiveList();
+  if (state.activeConvId) updateC360(state.activeConvId);
+  updateAISuggestions();
+  updateQuickReplies();
+}
+
+// ============ DATA ============
+const agents = [
+  { id:'a1', name:'张伟', nameEn:'Zhang Wei', group:'技术支持组', groupEn:'Tech Support', role:'高级工程师', roleEn:'Senior Engineer', status:'online', handled:47, responseTime:'2.3m', satisfaction:'98%' },
+  { id:'a2', name:'王芳', nameEn:'Wang Fang', group:'客户成功组', groupEn:'Customer Success', role:'客户经理', roleEn:'Account Manager', status:'online', handled:35, responseTime:'1.8m', satisfaction:'96%' },
+  { id:'a3', name:'刘洋', nameEn:'Liu Yang', group:'售后支持组', groupEn:'After-Sales', role:'售后专员', roleEn:'After-Sales Specialist', status:'busy', handled:52, responseTime:'3.1m', satisfaction:'94%' },
+  { id:'a4', name:'陈静', nameEn:'Chen Jing', group:'技术支持组', groupEn:'Tech Support', role:'技术专家', roleEn:'Tech Expert', status:'online', handled:28, responseTime:'1.5m', satisfaction:'99%' },
+  { id:'a5', name:'赵强', nameEn:'Zhao Qiang', group:'VIP支持组', groupEn:'VIP Support', role:'VIP经理', roleEn:'VIP Manager', status:'offline', handled:15, responseTime:'2.0m', satisfaction:'100%' }
+];
+
+const customers = {
+  c1: { id:'c1', name:'李明', nameEn:'Li Ming', company:'上海科技有限公司', companyEn:'Shanghai Tech Co., Ltd', email:'liming@shanghaitech.com', phone:'138-0000-1001', tier:'vip', tags:['VIP','高价值','长期合作'], tagsEn:['VIP','High Value','Long-term'],
+    orders:[
+      {id:'ORD-2024-0892',date:'2024-06-08',amount:'¥48,500',status:'shipped',name:'工业传感器模块 x200'},
+      {id:'ORD-2024-0851',date:'2024-06-03',amount:'¥32,000',status:'delivered',name:'PLC控制器套装 x50'},
+      {id:'ORD-2024-0810',date:'2024-05-28',amount:'¥15,800',status:'delivered',name:'伺服电机驱动器 x30'},
+      {id:'ORD-2024-0765',date:'2024-05-20',amount:'¥78,200',status:'delivered',name:'自动化装配线配件'},
+      {id:'ORD-2024-0700',date:'2024-05-10',amount:'¥23,600',status:'delivered',name:'精密轴承组件 x100'},
+    ],
+    tickets:[
+      {id:'TKT-312',date:'2024-06-05',subject:'传感器精度校准问题',status:'resolved'},
+      {id:'TKT-289',date:'2024-05-25',subject:'PLC程序兼容性咨询',status:'resolved'},
+      {id:'TKT-255',date:'2024-05-12',subject:'订单交付延迟投诉',status:'closed'},
+      {id:'TKT-230',date:'2024-04-28',subject:'产品技术参数确认',status:'resolved'},
+      {id:'TKT-198',date:'2024-04-10',subject:'批量采购折扣申请',status:'closed'},
+      {id:'TKT-165',date:'2024-03-20',subject:'驱动控制器故障排查',status:'resolved'},
+      {id:'TKT-142',date:'2024-03-05',subject:'设备安装指导需求',status:'resolved'},
+      {id:'TKT-118',date:'2024-02-18',subject:'售后服务合同续签',status:'closed'},
+      {id:'TKT-095',date:'2024-02-01',subject:'产品退换货申请',status:'closed'},
+      {id:'TKT-072',date:'2024-01-15',subject:'技术支持响应时效',status:'resolved'},
+    ]
+  },
+  c2: { id:'c2', name:'王小红', nameEn:'Wang Xiaohong', company:'北京精工制造有限公司', companyEn:'Beijing Precision Mfg', email:'wangxh@bjprecision.com', phone:'139-0000-2002', tier:'gold', tags:['新客户','制造业'], tagsEn:['New Customer','Manufacturing'],
+    orders:[
+      {id:'ORD-2024-0901',date:'2024-06-09',amount:'¥12,300',status:'processing',name:'液压阀组件 x15'},
+      {id:'ORD-2024-0870',date:'2024-06-05',amount:'¥8,900',status:'shipped',name:'精密测量仪器 x5'},
+      {id:'ORD-2024-0830',date:'2024-05-30',amount:'¥25,000',status:'delivered',name:'CNC加工中心配件'},
+    ],
+    tickets:[
+      {id:'TKT-320',date:'2024-06-09',subject:'新订单技术规格确认',status:'open'},
+      {id:'TKT-300',date:'2024-06-02',subject:'产品使用培训需求',status:'resolved'},
+    ]
+  },
+  c3: { id:'c3', name:'赵建国', nameEn:'Zhao Jianguo', company:'深圳电子科技有限公司', companyEn:'Shenzhen Electronics', email:'zhaojg@szetech.com', phone:'137-0000-3003', tier:'silver', tags:['投诉客户','交货延迟'], tagsEn:['Complaint','Delivery Delay'],
+    orders:[
+      {id:'ORD-2024-0880',date:'2024-06-07',amount:'¥56,000',status:'delayed',name:'PCB主板 x500'},
+      {id:'ORD-2024-0790',date:'2024-05-22',amount:'¥18,500',status:'delivered',name:'电容电阻套装 x1000'},
+    ],
+    tickets:[
+      {id:'TKT-318',date:'2024-06-07',subject:'订单ORD-2024-0880延迟交付投诉',status:'open'},
+    ]
+  },
+  c4: { id:'c4', name:'孙丽', nameEn:'Sun Li', company:'广州自动化设备有限公司', companyEn:'Guangzhou Automation', email:'sunli@gzauto.com', phone:'136-0000-4004', tier:'normal', tags:['新客户'], tagsEn:['New Customer'],
+    orders:[
+      {id:'ORD-2024-0910',date:'2024-06-10',amount:'¥6,800',status:'processing',name:'传感器模块试样 x10'},
+    ],
+    tickets:[]
+  },
+  c5: { id:'c5', name:'周明', nameEn:'Zhou Ming', company:'成都精密仪器有限公司', companyEn:'Chengdu Precision Instruments', email:'zhouming@cdprecision.com', phone:'135-0000-5005', tier:'gold', tags:['长期合作','技术咨询'], tagsEn:['Long-term','Tech Inquiry'],
+    orders:[
+      {id:'ORD-2024-0860',date:'2024-06-04',amount:'¥41,000',status:'shipped',name:'光谱分析仪 x3'},
+      {id:'ORD-2024-0820',date:'2024-05-29',amount:'¥29,500',status:'delivered',name:'激光测距模块 x20'},
+      {id:'ORD-2024-0750',date:'2024-05-18',amount:'¥62,000',status:'delivered',name:'高精度位移传感器 x50'},
+    ],
+    tickets:[
+      {id:'TKT-310',date:'2024-06-04',subject:'分析仪校准方法咨询',status:'open'},
+      {id:'TKT-270',date:'2024-05-15',subject:'设备维护周期确认',status:'resolved'},
+    ]
+  }
+};
+
+// Knowledge Base
+const knowledgeBase = [
+  {id:'k1',title:'传感器精度校准步骤',titleEn:'Sensor Calibration Steps',content:'1. 将传感器连接至校准平台\n2. 运行自检程序\n3. 根据偏差值调整零点\n4. 重复测试至精度达标',contentEn:'1. Connect sensor to calibration platform\n2. Run self-test\n3. Adjust zero point based on deviation\n4. Repeat until precision is met'},
+  {id:'k2',title:'PLC控制器兼容性列表',titleEn:'PLC Controller Compatibility',content:'支持西门子S7系列、三菱FX系列、欧姆龙CP系列、松下FP系列。需要固件版本v3.2以上。',contentEn:'Supports Siemens S7, Mitsubishi FX, Omron CP, Panasonic FP series. Firmware v3.2+ required.'},
+  {id:'k3',title:'订单交付周期说明',titleEn:'Order Delivery Timeline',content:'标准订单：3-5个工作日\n定制订单：7-15个工作日\n紧急订单：可加急至1-2个工作日（加收20%加急费）',contentEn:'Standard: 3-5 business days\nCustom: 7-15 business days\nUrgent: 1-2 business days (20% surcharge)'},
+  {id:'k4',title:'产品退换货政策',titleEn:'Return & Exchange Policy',content:'收货7天内可无条件退换\n超过7天需经质检确认\n定制产品不支持退换',contentEn:'7-day unconditional return\nQuality inspection required after 7 days\nCustom products non-returnable'},
+  {id:'k5',title:'设备安装环境要求',titleEn:'Installation Requirements',content:'温度：0-40°C\n湿度：20%-80%RH\n电源：220V±10%\n接地电阻：<4Ω',contentEn:'Temperature: 0-40°C\nHumidity: 20-80% RH\nPower: 220V±10%\nGround resistance: <4Ω'},
+  {id:'k6',title:'批量采购优惠方案',titleEn:'Bulk Purchase Discount',content:'100-499件：9.5折\n500-999件：9折\n1000-4999件：8.5折\n5000件以上：面议',contentEn:'100-499 units: 5% off\n500-999: 10% off\n1000-4999: 15% off\n5000+: Negotiable'},
+];
+
+// AI Suggestions based on context
+const aiSuggestionsDB = [
+  {context:'校准',title:'传感器校准方案',titleEn:'Sensor Calibration',content:'建议按以下步骤进行校准：1.使用标准校准器 2.检查环境温度 3.逐通道校准 4.记录偏差值',contentEn:'Calibration steps: 1. Use standard calibrator 2. Check temperature 3. Calibrate per channel 4. Record deviation',match:95},
+  {context:'交付',title:'交付周期查询',titleEn:'Delivery Timeline',content:'根据您订单的当前状态，预计交付时间为3-5个工作日。我可以帮您追踪具体进度。',contentEn:'Based on your order status, estimated delivery is 3-5 business days. I can track it for you.',match:92},
+  {context:'退换',title:'退换货流程',titleEn:'Return Process',content:'请提供订单编号和退换原因，7天内可无条件退换。我马上为您创建退换申请。',contentEn:'Please provide order ID and reason. 7-day unconditional return available. I will create the request.',match:88},
+  {context:'价格',title:'批量采购报价',titleEn:'Bulk Pricing',content:'采购100件以上可享9.5折，500件以上9折。如需更大量采购，我可以安排销售经理为您定制方案。',contentEn:'5% off for 100+ units, 10% off for 500+. For larger orders, I can arrange a sales manager.',match:85},
+  {context:'安装',title:'设备安装指导',titleEn:'Installation Guide',content:'安装环境要求：温度0-40°C，湿度20-80%RH，稳定电源220V。我可以发送详细安装手册给您。',contentEn:'Requirements: 0-40°C, 20-80% RH, stable 220V. I can send the detailed installation manual.',match:90},
+  {context:'故障',title:'故障排查流程',titleEn:'Troubleshooting',content:'请先确认：1.电源连接正常 2.指示灯状态 3.错误代码显示。根据您提供的错误码，我可以精准定位问题。',contentEn:'Please verify: 1. Power connection 2. Indicator lights 3. Error codes. I can diagnose based on codes.',match:93},
+];
+
+// ============ STATE ============
+let state = {
+  currentAgentId: 'a1',
+  currentAgentStatus: 'online',
+  activeConvId: null,
+  waitingQueue: ['c3','c4','c5'],
+  activeConversations: {
+    conv_c1_a1: { convId:'conv_c1_a1', customerId:'c1', agentId:'a1', startTime:Date.now()-1800000, unread:0, messages:[
+      {from:'customer',text:'你好，我们最近采购的传感器模块（订单ORD-2024-0892）安装后发现精度有偏差，能帮忙看一下吗？',time:Date.now()-1700000},
+      {from:'agent',text:'您好李先生，我了解您的情况。请稍等，我查询一下这批传感器的技术参数。',time:Date.now()-1600000},
+      {from:'customer',text:'好的，这批是用于精密测量的，偏差不能超过0.01mm。',time:Date.now()-900000},
+      {from:'agent',text:'明白了。我查到了，这批传感器的出厂精度是0.005mm，按理说应该满足您的要求。可能是安装环境或校准问题，我建议先做一次现场校准。我发一份校准指南给您。',time:Date.now()-600000},
+      {from:'customer',text:'好的，麻烦您发过来。另外我想问一下如果确实有质量问题，退换流程是怎样的？',time:Date.now()-300000},
+      {from:'agent',text:'已发送校准指南到您邮箱。关于退换：收货7天内可无条件退换，您的订单是6月8日签收的，还在7天内。如果校准后仍有问题，我立即为您办理退换。',time:Date.now()-120000},
+    ]},
+    conv_c2_a3: { convId:'conv_c2_a3', customerId:'c2', agentId:'a3', startTime:Date.now()-900000, unread:2, messages:[
+      {from:'customer',text:'您好，我们刚收到精密测量仪器，想确认一下技术规格和安装要求。',time:Date.now()-850000},
+      {from:'agent',text:'您好王女士！请问您需要确认哪些具体规格参数？我可以调出该型号的详细技术文档。',time:Date.now()-750000},
+      {from:'customer',text:'主要是测量精度和环境适应性方面。我们车间温度比较高，夏天能达到35度左右。',time:Date.now()-400000},
+      {from:'customer',text:'另外还想问一下操作培训的事情，我们的工程师不太熟悉这种精密仪器。',time:Date.now()-200000},
+    ]},
+  },
+  internalNotes: {},
+  ticketCounter: 325
+};
+
+// ============ INIT ============
+function init() {
+  // Populate agent dropdown
+  const sel = document.getElementById('agentSelect');
+  agents.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = `${a.name} - ${a.group}`;
+    sel.appendChild(opt);
+  });
+  sel.value = state.currentAgentId;
+
+  updateAgentInfo();
+  renderQueue();
+  renderActiveList();
+  startQueueTimers();
+}
+
+function updateAgentInfo() {
+  const agent = agents.find(a => a.id === state.currentAgentId);
+  if (!agent) return;
+  const isZh = currentLang === 'zh';
+  document.getElementById('agentAvatar').textContent = agent.name.charAt(0);
+  document.getElementById('agentName').textContent = isZh ? agent.name : agent.nameEn;
+  document.getElementById('agentGroup').textContent = (isZh ? agent.group : agent.groupEn) + ' · ' + (isZh ? agent.role : agent.roleEn);
+  document.getElementById('statHandled').textContent = agent.handled;
+  document.getElementById('statResponseTime').textContent = agent.responseTime;
+  document.getElementById('statSatisfaction').textContent = agent.satisfaction;
+  // Status buttons
+  document.querySelectorAll('.agent-status-btn').forEach(b => {
+    b.classList.remove('active');
+    const isOnline = b.textContent.trim() === t('status_online_btn');
+    const isBusy = b.textContent.trim() === t('status_busy_btn');
+    const isOffline = b.textContent.trim() === t('status_offline_btn');
+    if ((isOnline && agent.status==='online')||(isBusy && agent.status==='busy')||(isOffline && agent.status==='offline')) b.classList.add('active');
+  });
+  // Topbar status
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + agent.status;
+  const statusText = document.getElementById('statusToggle').querySelector('span:last-child');
+  statusText.textContent = t('status_'+agent.status);
+  state.currentAgentStatus = agent.status;
+}
+
+function switchAgent(agentId) {
+  state.currentAgentId = agentId;
+  updateAgentInfo();
+}
+
+function cycleStatus() {
+  const statuses = ['online','busy','offline'];
+  const agent = agents.find(a => a.id === state.currentAgentId);
+  const idx = statuses.indexOf(agent.status);
+  agent.status = statuses[(idx+1)%3];
+  updateAgentInfo();
+  showToast(agent.status==='online'?'已切换为在线':'已切换为'+agent.status, 'info');
+}
+
+function setAgentStatus(status) {
+  const agent = agents.find(a => a.id === state.currentAgentId);
+  agent.status = status;
+  updateAgentInfo();
+}
+
+// ============ QUEUE ============
+let queueTimers = {};
+let queueStartTimes = {};
+
+function startQueueTimers() {
+  state.waitingQueue.forEach(cid => {
+    if (!queueStartTimes[cid]) queueStartTimes[cid] = Date.now() - Math.random()*600000;
+  });
+  setInterval(() => {
+    if (state.waitingQueue.length > 0) renderQueue();
+  }, 10000);
+}
+
+function renderQueue() {
+  const container = document.getElementById('queueList');
+  document.getElementById('queueCount').textContent = state.waitingQueue.length;
+
+  if (state.waitingQueue.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✅</div>${currentLang==='zh'?'队列为空':'Queue is empty'}</div>`;
+    return;
+  }
+
+  container.innerHTML = state.waitingQueue.map(cid => {
+    const c = customers[cid];
+    const elapsed = Math.floor((Date.now() - (queueStartTimes[cid] || Date.now())) / 60000);
+    const priority = c.tags.some(t => t.includes('投诉')) ? 'high' : (c.tier === 'vip'||c.tier==='gold') ? 'medium' : 'low';
+    const waitText = elapsed > 0 ? `${elapsed}${t('min_short')}` : t('just_now');
+    return `
+      <div class="queue-item fade-enter">
+        <div class="queue-item-header">
+          <span class="queue-cust-name">${currentLang==='zh'?c.name:c.nameEn}</span>
+          <span class="queue-priority ${priority}">${t('priority_'+priority)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">${currentLang==='zh'?c.company:c.companyEn}</div>
+        <div class="queue-meta">
+          <span class="queue-wait">⏱ ${t('wait_time')}: <span class="wait-time">${waitText}</span></span>
+          <button class="queue-take-btn" onclick="takeCustomer('${cid}')">${t('take_btn')}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function takeCustomer(cid) {
+  if (state.currentAgentStatus === 'offline') {
+    showToast(currentLang==='zh'?'请先切换为在线状态':'Please switch to online first', 'info');
+    return;
+  }
+  // Remove from queue
+  const idx = state.waitingQueue.indexOf(cid);
+  if (idx > -1) state.waitingQueue.splice(idx, 1);
+
+  // Create conversation
+  const convId = `conv_${cid}_${state.currentAgentId}`;
+  const greeting = currentLang==='zh' ? '您好！我是客服' + agents.find(a=>a.id===state.currentAgentId).name + '，请问有什么可以帮您？' : 'Hello! I\'m ' + agents.find(a=>a.id===state.currentAgentId).nameEn + ', how can I help you?';
+
+  state.activeConversations[convId] = {
+    convId,
+    customerId: cid,
+    agentId: state.currentAgentId,
+    startTime: Date.now(),
+    unread: 0,
+    messages: [
+      {from:'system',text:t('system_connected'),time:Date.now()},
+      {from:'agent',text:greeting,time:Date.now()},
+    ]
+  };
+
+  // Select this conversation
+  state.activeConvId = convId;
+
+  renderQueue();
+  renderActiveList();
+  showConversation(convId);
+  showToast(currentLang==='zh'?('已接入客户：'+customers[cid].name):('Connected: '+customers[cid].nameEn), 'success');
+
+  // Simulate customer reply after a delay
+  setTimeout(() => simulateCustomerReply(convId), 5000 + Math.random()*5000);
+}
+
+function simulateCustomerReply(convId) {
+  const conv = state.activeConversations[convId];
+  if (!conv) return;
+  const replies = currentLang==='zh'
+    ? ['好的，谢谢你。','明白了。','还有一个小问题想请教一下。','大概需要多久处理？']
+    : ['OK, thanks.','Got it.','I have one more small question.','How long will it take?'];
+  const text = replies[Math.floor(Math.random()*replies.length)];
+  conv.messages.push({from:'customer',text,time:Date.now()});
+  conv.unread = (conv.unread||0) + 1;
+  if (state.activeConvId === convId) {
+    showConversation(convId);
+    showTypingThenHide();
+  }
+  renderActiveList();
+}
+
+// ============ ACTIVE LIST ============
+function renderActiveList() {
+  const container = document.getElementById('activeList');
+  const convs = Object.values(state.activeConversations);
+
+  if (convs.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">💤</div>${currentLang==='zh'?'暂无进行中会话':'No active conversations'}</div>`;
+    return;
+  }
+
+  container.innerHTML = convs.map(conv => {
+    const c = customers[conv.customerId];
+    const lastMsg = conv.messages[conv.messages.length-1];
+    const elapsed = Math.floor((Date.now()-conv.startTime)/60000);
+    const duration = elapsed > 60 ? `${Math.floor(elapsed/60)}h${elapsed%60}m` : `${elapsed}${t('min_short')}`;
+    const isSelected = state.activeConvId === conv.convId;
+    const preview = lastMsg ? (lastMsg.text.length > 20 ? lastMsg.text.substring(0,20)+'...' : lastMsg.text) : '';
+    return `
+      <div class="active-item ${isSelected?'selected':''}" onclick="selectConversation('${conv.convId}')">
+        <div class="active-avatar">${currentLang==='zh'?c.name.charAt(0):c.nameEn.charAt(0)}</div>
+        <div class="active-info">
+          <div class="active-cust-name">${currentLang==='zh'?c.name:c.nameEn}</div>
+          <div class="active-last-msg">${preview}</div>
+        </div>
+        <div class="active-meta">
+          <div class="active-duration">${duration}</div>
+          ${conv.unread>0?`<div class="active-badge">${conv.unread}</div>`:''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectConversation(convId) {
+  state.activeConvId = convId;
+  // Reset unread
+  if (state.activeConversations[convId]) state.activeConversations[convId].unread = 0;
+  showConversation(convId);
+  renderActiveList();
+}
+
+// ============ CHAT ============
+function showConversation(convId) {
+  const conv = state.activeConversations[convId];
+  if (!conv) return;
+
+  const c = customers[conv.customerId];
+  const agent = agents.find(a => a.id === conv.agentId);
+  const isZh = currentLang === 'zh';
+
+  // Show chat, hide placeholder
+  document.getElementById('noConversation').style.display = 'none';
+  document.getElementById('chatMessages').style.display = 'flex';
+  document.getElementById('chatHeader').style.display = 'flex';
+  document.getElementById('chatInputArea').style.display = 'flex';
+  document.getElementById('quickReplies').style.display = 'flex';
+  document.getElementById('aiSuggestions').style.display = 'flex';
+
+  // Update header
+  document.getElementById('chatCustAvatar').textContent = (isZh?c.name:c.nameEn).charAt(0);
+  document.getElementById('chatCustName').textContent = isZh?c.name:c.nameEn;
+  document.getElementById('chatCustCompany').textContent = (isZh?c.company:c.companyEn) + ' · ' + c.email;
+
+  // Tier badge
+  const tierEl = document.getElementById('chatCustTier');
+  tierEl.textContent = t('tier_'+c.tier);
+  tierEl.className = 'chat-cust-tier tier-'+c.tier;
+
+  // Render messages
+  renderMessages(conv);
+
+  // Scroll to bottom
+  const msgContainer = document.getElementById('chatMessages');
+  setTimeout(() => { msgContainer.scrollTop = msgContainer.scrollHeight; }, 50);
+
+  // Update C360
+  updateC360(c.id);
+
+  // Update AI suggestions
+  updateAISuggestions();
+
+  // Hide typing
+  document.getElementById('typingIndicator').style.display = 'none';
+  document.getElementById('internalNote').style.display = 'none';
+
+  // Update input placeholder
+  document.getElementById('chatInput').placeholder = t('input_placeholder');
+
+  // On mobile, show center
+  if (window.innerWidth <= 768) showMobilePanel('center');
+}
+
+function renderMessages(conv) {
+  const container = document.getElementById('chatMessages');
+  const c = customers[conv.customerId];
+  const agent = agents.find(a=>a.id===conv.agentId);
+  const isZh = currentLang === 'zh';
+
+  container.innerHTML = conv.messages.map((msg,i) => {
+    const timeStr = new Date(msg.time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    if (msg.from === 'system') {
+      return `<div class="msg-row system"><div class="msg-bubble">${msg.text} · ${timeStr}</div></div>`;
+    }
+    const isAgent = msg.from === 'agent';
+    const avatarChar = isAgent ? agent.name.charAt(0) : (isZh?c.name.charAt(0):c.nameEn.charAt(0));
+    return `
+      <div class="msg-row ${isAgent?'agent':'customer'}">
+        <div class="msg-avatar ${isAgent?'agent-avatar':'customer-avatar'}">${avatarChar}</div>
+        <div>
+          <div class="msg-bubble">${msg.text}</div>
+          <div class="msg-time">${timeStr}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !state.activeConvId) return;
+
+  const conv = state.activeConversations[state.activeConvId];
+  if (!conv) return;
+
+  conv.messages.push({from:'agent',text,time:Date.now()});
+  input.value = '';
+  input.style.height = 'auto';
+  renderMessages(conv);
+  renderActiveList();
+
+  // Scroll to bottom
+  const msgContainer = document.getElementById('chatMessages');
+  setTimeout(() => { msgContainer.scrollTop = msgContainer.scrollHeight; }, 50);
+
+  // Update AI suggestions based on conversation
+  updateAISuggestions();
+
+  // Simulate customer reply
+  setTimeout(() => {
+    if (state.activeConversations[state.activeConvId]) {
+      simulateReplyBasedOnContext(conv);
+    }
+  }, 3000 + Math.random()*5000);
+}
+
+function sendQuickReply(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+function simulateReplyBasedOnContext(conv) {
+  const lastAgentMsg = [...conv.messages].reverse().find(m=>m.from==='agent');
+  if (!lastAgentMsg) return;
+
+  const replies = currentLang==='zh' ? [
+    '好的，非常感谢！那我等您的消息。',
+    '明白了，还有其他需要确认的吗？',
+    '谢谢你的帮助，效率很高！',
+    '好的，我这边试一下，有问题再联系你。',
+  ] : [
+    'Great, thank you very much! I\'ll wait for your update.',
+    'Understood, anything else to confirm?',
+    'Thanks for your help, very efficient!',
+    'OK, I\'ll try that and contact you if issues.',
+  ];
+
+  conv.messages.push({from:'customer',text:replies[Math.floor(Math.random()*replies.length)],time:Date.now()});
+  conv.unread = (conv.unread||0) + 1;
+  if (state.activeConvId === conv.convId) {
+    renderMessages(conv);
+    // Show typing briefly
+    showTypingThenHide();
+  }
+  renderActiveList();
+}
+
+function showTypingThenHide() {
+  const indicator = document.getElementById('typingIndicator');
+  indicator.style.display = 'flex';
+  setTimeout(() => {
+    if (indicator) indicator.style.display = 'none';
+  }, 2000);
+}
+
+function handleInputKey(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+  // Auto-resize
+  const input = event.target;
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+}
+
+// ============ AI SUGGESTIONS ============
+function updateAISuggestions() {
+  const container = document.getElementById('aiSuggestionsBody');
+  if (!state.activeConvId) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const conv = state.activeConversations[state.activeConvId];
+  const allText = conv.messages.map(m=>m.text).join(' ');
+
+  // Find matching suggestions
+  let matches = aiSuggestionsDB.filter(s => {
+    return s.context.split('').some(ch => allText.includes(ch));
+  });
+
+  if (matches.length === 0) matches = aiSuggestionsDB.slice(0,3);
+  if (matches.length > 3) matches = matches.slice(0,3);
+
+  container.innerHTML = matches.map(s => `
+    <div class="ai-suggestion-card" onclick="insertAISuggestion('${s.id||s.context}')">
+      <div class="ai-sugg-score">🤖 ${t('ai_match')}: ${s.match}%</div>
+      <div class="ai-sugg-title">${currentLang==='zh'?s.title:s.titleEn}</div>
+      <div class="ai-sugg-preview">${currentLang==='zh'?s.content:s.contentEn}</div>
+      <span class="ai-sugg-insert">${t('ai_insert')} →</span>
+    </div>
+  `).join('');
+}
+
+function insertAISuggestion(id) {
+  const suggestion = aiSuggestionsDB.find(s => s.id===id || s.context===id);
+  if (!suggestion) return;
+  const text = currentLang==='zh'?suggestion.content:suggestion.contentEn;
+  document.getElementById('chatInput').value = text;
+  document.getElementById('chatInput').focus();
+  // Auto-resize
+  const input = document.getElementById('chatInput');
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+}
+
+function toggleAISuggestions() {
+  const body = document.getElementById('aiSuggestionsBody');
+  const toggle = document.querySelector('.ai-suggestions-toggle');
+  if (body.style.display === 'none') {
+    body.style.display = 'flex';
+    toggle.textContent = t('ai_collapse');
+  } else {
+    body.style.display = 'none';
+    toggle.textContent = t('ai_expand');
+  }
+}
+
+function updateQuickReplies() {
+  const container = document.getElementById('quickReplies');
+  if (!container) return;
+  const buttons = container.querySelectorAll('.quick-reply-btn');
+  const texts = currentLang==='zh'
+    ? ['请稍等，我查询一下','正在查询相关信息','已转交相关部门处理','感谢您的耐心等待','还有其他问题可以帮您吗？']
+    : ['One moment, let me check','Checking now...','Transferred to the team','Thanks for your patience','Anything else I can help with?'];
+  buttons.forEach((btn,i) => {
+    btn.textContent = texts[i];
+    btn.onclick = () => sendQuickReply(texts[i]);
+  });
+}
+
+// ============ CUSTOMER 360 ============
+function updateC360(customerId) {
+  const c = customers[customerId];
+  if (!c) return;
+  const isZh = currentLang === 'zh';
+
+  const card = document.getElementById('c360Card');
+  const tierColors = {vip:'#fbbf24',gold:'#d97706',silver:'#94a3b8',normal:'var(--text2)'};
+
+  card.innerHTML = `
+    <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text2)">${t('c360_basic_info')}</div>
+    <div class="c360-row"><span class="c360-label">${t('c360_name')}</span><span class="c360-value">${isZh?c.name:c.nameEn}</span></div>
+    <div class="c360-row"><span class="c360-label">${t('c360_company')}</span><span class="c360-value">${isZh?c.company:c.companyEn}</span></div>
+    <div class="c360-row"><span class="c360-label">${t('c360_email')}</span><span class="c360-value">${c.email}</span></div>
+    <div class="c360-row"><span class="c360-label">${t('c360_phone')}</span><span class="c360-value">${c.phone}</span></div>
+    <div class="c360-row"><span class="c360-label">${t('c360_tier')}</span><span class="c360-value" style="color:${tierColors[c.tier]};font-weight:700">${t('tier_'+c.tier)}</span></div>
+    <div style="margin-top:8px">
+      <span style="font-size:11px;font-weight:700;color:var(--text2)">${t('c360_tags')}</span>
+      <div class="tags-row" style="margin-top:4px">
+        ${(isZh?c.tags:c.tagsEn).map(tag => {
+          let tagClass = 'tag';
+          if (tag.includes('VIP')||tag==='VIP') tagClass += ' tag-vip';
+          else if (tag.includes('新客户')||tag==='New Customer') tagClass += ' tag-new';
+          else if (tag.includes('投诉')||tag==='Complaint') tagClass += ' tag-complaint';
+          else if (tag.includes('高价值')||tag==='High Value') tagClass += ' tag-highvalue';
+          else tagClass += ' tag-enterprise';
+          return `<span class="${tagClass}">${tag}</span>`;
+        }).join('')}
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--text2)">${t('c360_orders')}</div>
+    ${c.orders.slice(0,5).map(o => `
+      <div class="order-item">
+        <div><span class="order-id">${o.id}</span> ${o.name}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;color:var(--text2)">${o.date}</span>
+          <span>${o.amount}</span>
+          <span class="order-status ${o.status}">${o.status}</span>
+        </div>
+      </div>
+    `).join('')}
+    <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--text2)">${t('c360_tickets')}</div>
+    ${c.tickets.slice(0,10).map(t => `
+      <div class="ticket-item">
+        <span>${t.id} ${t.subject}</span>
+        <span style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:10px;color:var(--text3)">${t.date}</span>
+          <span class="ticket-status ${t.status}">${t.status}</span>
+        </span>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ============ KNOWLEDGE BASE ============
+function searchKB(query) {
+  const container = document.getElementById('kbResults');
+  if (!query.trim()) { container.innerHTML = ''; return; }
+
+  const isZh = currentLang === 'zh';
+  const results = knowledgeBase.filter(k => {
+    const searchStr = (isZh?k.title+k.content:k.titleEn+k.contentEn).toLowerCase();
+    return searchStr.includes(query.toLowerCase());
+  });
+
+  container.innerHTML = results.map(k => `
+    <div class="kb-item" onclick="insertKBAnswer('${k.id}')">
+      <div class="kb-item-title">${isZh?k.title:k.titleEn}</div>
+      <div class="kb-item-preview">${(isZh?k.content:k.contentEn).substring(0,60)}...</div>
+    </div>
+  `).join('');
+}
+
+function insertKBAnswer(id) {
+  const kb = knowledgeBase.find(k => k.id === id);
+  if (!kb) return;
+  document.getElementById('chatInput').value = currentLang==='zh'?kb.content:kb.contentEn;
+  document.getElementById('chatInput').focus();
+}
+
+// ============ TICKET ============
+function createTicket() {
+  const title = document.getElementById('ticketTitle').value.trim();
+  const desc = document.getElementById('ticketDesc').value.trim();
+  const priority = document.getElementById('ticketPriority').value;
+
+  if (!title) {
+    showToast(currentLang==='zh'?'请输入工单标题':'Please enter ticket title', 'info');
+    return;
+  }
+
+  state.ticketCounter++;
+  const ticketId = 'TKT-' + state.ticketCounter;
+
+  showToast(`${t('ticket_created')}: ${ticketId}`, 'success');
+
+  // Add to current customer's tickets if active
+  if (state.activeConvId) {
+    const conv = state.activeConversations[state.activeConvId];
+    const c = customers[conv.customerId];
+    if (c) {
+      c.tickets.unshift({id:ticketId,date:new Date().toISOString().split('T')[0],subject:title,status:'open'});
+      updateC360(c.id);
+    }
+  }
+
+  document.getElementById('ticketTitle').value = '';
+  document.getElementById('ticketDesc').value = '';
+}
+
+// ============ TRANSFER ============
+function openTransferModal() {
+  if (!state.activeConvId) return;
+
+  const overlay = document.getElementById('modalOverlay');
+  const content = document.getElementById('modalContent');
+
+  const otherAgents = agents.filter(a => a.id !== state.currentAgentId && a.status !== 'offline');
+
+  content.innerHTML = `
+    <div class="modal-title">${t('transfer_title')}</div>
+    <div style="margin-bottom:8px;font-size:13px;color:var(--text2)">${t('transfer_agent')}:</div>
+    <select id="transferTarget">
+      ${otherAgents.map(a => `<option value="${a.id}">${currentLang==='zh'?a.name:a.nameEn} - ${currentLang==='zh'?a.group:a.groupEn} (${t('status_'+a.status)})</option>`).join('')}
+      ${otherAgents.length===0?`<option disabled>${currentLang==='zh'?'暂无可用客服':'No available agents'}</option>`:''}
+    </select>
+    <textarea id="transferNote" placeholder="${t('transfer_note')}"></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal()">${t('transfer_cancel')}</button>
+      <button class="modal-btn primary" onclick="confirmTransfer()">${t('transfer_confirm')}</button>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+}
+
+function confirmTransfer() {
+  const target = document.getElementById('transferTarget').value;
+  const note = document.getElementById('transferNote').value.trim();
+  if (!target) return;
+
+  const conv = state.activeConversations[state.activeConvId];
+  if (!conv) return;
+
+  // Add system message
+  const targetAgent = agents.find(a=>a.id===target);
+  conv.messages.push({from:'system',text:`${t('system_transferred')} ${currentLang==='zh'?targetAgent.name:targetAgent.nameEn}${note?' - '+note:''}`,time:Date.now()});
+  conv.agentId = target;
+
+  renderMessages(conv);
+  renderActiveList();
+  closeModal();
+  showToast(currentLang==='zh'?'会话已转接':'Conversation transferred', 'info');
+}
+
+// ============ INTERNAL NOTE ============
+function addInternalNote() {
+  if (!state.activeConvId) return;
+
+  const overlay = document.getElementById('modalOverlay');
+  const content = document.getElementById('modalContent');
+
+  const conv = state.activeConversations[state.activeConvId];
+  const existingNote = state.internalNotes[state.activeConvId] || '';
+
+  content.innerHTML = `
+    <div class="modal-title">${t('note_title')}</div>
+    <textarea id="noteContent" placeholder="${t('note_placeholder')}">${existingNote}</textarea>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal()">${t('transfer_cancel')}</button>
+      <button class="modal-btn primary" onclick="saveInternalNote()">${t('note_save')}</button>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+}
+
+function saveInternalNote() {
+  const note = document.getElementById('noteContent').value.trim();
+  if (!state.activeConvId) return;
+
+  state.internalNotes[state.activeConvId] = note;
+
+  if (note) {
+    const container = document.getElementById('internalNote');
+    container.style.display = 'flex';
+    container.innerHTML = `<span class="internal-note-icon">📝</span> ${note}`;
+  } else {
+    document.getElementById('internalNote').style.display = 'none';
+  }
+
+  closeModal();
+}
+
+// ============ END CONVERSATION ============
+function endConversation() {
+  if (!state.activeConvId) return;
+
+  const overlay = document.getElementById('modalOverlay');
+  const content = document.getElementById('modalContent');
+
+  content.innerHTML = `
+    <div class="modal-title">${t('end_title')}</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px">${t('end_confirm_text')}</p>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal()">${t('end_cancel')}</button>
+      <button class="modal-btn danger" onclick="confirmEnd()">${t('end_confirm')}</button>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+}
+
+function confirmEnd() {
+  const convId = state.activeConvId;
+  const conv = state.activeConversations[convId];
+  if (!conv) return;
+
+  conv.messages.push({from:'system',text:t('system_ended'),time:Date.now()});
+  renderMessages(conv);
+
+  // Show survey pop
+  const c = customers[conv.customerId];
+  const pop = document.createElement('div');
+  pop.className = 'pop';
+  pop.innerHTML = `
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px">⭐ ${t('survey_title')}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${t('survey_ask')}</div>
+    <div style="display:flex;gap:4px;justify-content:center;margin-bottom:10px">
+      ${[1,2,3,4,5].map(s=>`<span style="font-size:24px;cursor:pointer" onclick="submitSurvey(${s})">⭐</span>`).join('')}
+    </div>
+    <button style="padding:6px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-xs);cursor:pointer;font-family:var(--font);font-size:12px" onclick="this.closest('.pop').remove()">${t('survey_submit')}</button>
+  `;
+  document.body.appendChild(pop);
+  setTimeout(() => { if (pop.parentNode) pop.remove(); }, 15000);
+
+  // Clean up
+  setTimeout(() => {
+    delete state.activeConversations[convId];
+    delete state.internalNotes[convId];
+    state.activeConvId = null;
+    document.getElementById('noConversation').style.display = 'flex';
+    document.getElementById('chatMessages').style.display = 'none';
+    document.getElementById('chatHeader').style.display = 'none';
+    document.getElementById('chatInputArea').style.display = 'none';
+    document.getElementById('quickReplies').style.display = 'none';
+    document.getElementById('aiSuggestions').style.display = 'none';
+    document.getElementById('typingIndicator').style.display = 'none';
+    document.getElementById('internalNote').style.display = 'none';
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('c360Card').innerHTML = `<div class="empty-state"><div class="empty-state-icon">👆</div>${t('c360_empty')}</div>`;
+    renderActiveList();
+  }, 2000);
+
+  closeModal();
+}
+
+function submitSurvey(score) {
+  showToast(`⭐ ${currentLang==='zh'?'感谢您的评价':'Thanks for rating'} ${score}/5`, 'success');
+  // Remove all pops
+  document.querySelectorAll('.pop').forEach(p => p.remove());
+}
+
+// ============ MODAL ============
+function closeModal(event) {
+  if (event && event.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').style.display = 'none';
+}
+
+// ============ MOBILE ============
+function showMobilePanel(panel) {
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panelLeft').classList.remove('show');
+  document.getElementById('panelRight').classList.remove('show');
+
+  if (panel === 'left') {
+    document.getElementById('panelLeft').classList.add('show');
+    document.querySelectorAll('.mobile-tab')[1].classList.add('active');
+  } else if (panel === 'right') {
+    document.getElementById('panelRight').classList.add('show');
+    document.querySelectorAll('.mobile-tab')[2].classList.add('active');
+  } else {
+    document.getElementById('panelLeft').classList.remove('show');
+    document.getElementById('panelRight').classList.remove('show');
+    document.querySelectorAll('.mobile-tab')[0].classList.add('active');
+  }
+}
+
+// ============ TOAST ============
+function showToast(message, type='info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    toast.style.transition = 'all .3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ============ KEYBOARD ============
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ============ START ============
+init();
+
+// Pre-load one active conversation for demo
+setTimeout(() => {
+  state.activeConvId = 'conv_c1_a1';
+  showConversation('conv_c1_a1');
+  renderActiveList();
+  // Show existing internal note if any
+  const note = state.internalNotes['conv_c1_a1'];
+  if (note) {
+    document.getElementById('internalNote').style.display = 'flex';
+    document.getElementById('internalNote').innerHTML = `<span class="internal-note-icon">📝</span> ${note}`;
+  }
+}, 500);
+</script>
+</body>
+</html>

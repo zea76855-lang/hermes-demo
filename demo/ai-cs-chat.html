@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">AI 客服 - RapidDirect</title>
+<style>
+:root {
+  --brand: #EA5540;
+  --brand-dark: #d14330;
+  --brand-light: #fef0ee;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --bg: #f5f6f8;
+  --card: #fff;
+  --dark: #1a1a2e;
+  --text: #333;
+  --muted: #999;
+  --border: #e8e8e8;
+  --radius-sm: 8px;
+  --radius: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ===== Chat Container ===== */
+.chat-container {
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  max-height: 800px;
+  background: var(--card);
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+@media (min-width: 500px) {
+  body { padding: 20px; }
+  .chat-container {
+    border-radius: var(--radius);
+    height: 90vh;
+  }
+}
+
+/* ===== Top Bar ===== */
+.top-bar {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.top-bar .back-btn {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.top-bar .back-btn:hover { color: #fff; }
+
+.top-bar .avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.top-bar .info { flex: 1; min-width: 0; }
+
+.top-bar .info .name {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-bar .info .status-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-weight: 500;
+}
+
+.status-badge.online {
+  background: var(--success);
+  color: #fff;
+}
+
+.status-badge.offline {
+  background: var(--warn);
+  color: #fff;
+}
+
+.top-bar .info .mode-tag {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 2px;
+}
+
+.top-bar .actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.top-bar .actions button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-bar .actions button:hover { background: rgba(255,255,255,0.2); }
+
+/* ===== Chat Area ===== */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8f9fb;
+  scroll-behavior: smooth;
+}
+
+.chat-area::-webkit-scrollbar { width: 5px; }
+.chat-area::-webkit-scrollbar-track { background: transparent; }
+.chat-area::-webkit-scrollbar-thumb { background: #d0d5dd; border-radius: 10px; }
+
+/* Welcome message */
+.welcome-msg {
+  text-align: center;
+  padding: 30px 10px 10px;
+  animation: fadeInUp 0.4s ease;
+}
+
+.welcome-msg .welcome-icon {
+  width: 60px; height: 60px;
+  background: var(--brand-light);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.welcome-msg h3 { font-size: 16px; color: var(--dark); margin-bottom: 6px; }
+.welcome-msg p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* ===== Message Bubbles ===== */
+.message {
+  display: flex;
+  gap: 10px;
+  max-width: 90%;
+  animation: fadeInUp 0.3s ease;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message.ai { align-self: flex-start; }
+
+.message .msg-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.message.ai .msg-avatar { background: #e8f0fe; color: #4a90d9; }
+.message.user .msg-avatar { background: var(--brand-light); color: var(--brand); }
+
+.message .bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message .bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+  position: relative;
+}
+
+.message.ai .bubble {
+  background: var(--card);
+  color: var(--text);
+  border-top-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.message.user .bubble {
+  background: var(--brand);
+  color: #fff;
+  border-top-right-radius: 4px;
+}
+
+/* Category tag */
+.message.ai .category-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 50px;
+  background: #e8f0fe;
+  color: #4a90d9;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+/* Feedback buttons */
+.message.ai .feedback-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.message.ai .feedback-row button {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--muted);
+}
+
+.message.ai .feedback-row button:hover { border-color: var(--brand); color: var(--brand); }
+.message.ai .feedback-row button.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* Transfer message */
+.message.transfer {
+  align-self: stretch;
+  max-width: 100%;
+}
+
+.message.transfer .transfer-bar {
+  background: #fef9e7;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.message.transfer .transfer-bar .icon { font-size: 18px; }
+
+/* Typing indicator */
+.message.ai.typing .bubble {
+  display: flex;
+  gap: 4px;
+  padding: 14px 16px;
+}
+
+.typing-dot {
+  width: 7px; height: 7px;
+  background: #c0c7d0;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Quick Actions ===== */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.quick-actions button {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.quick-actions button:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-light);
+}
+
+.quick-actions button.transfer-btn {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.quick-actions button.transfer-btn:hover {
+  background: var(--brand-dark);
+}
+
+/* ===== Input Area ===== */
+.input-area {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.input-area input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 10px 18px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  background: #f8f9fb;
+}
+
+.input-area input:focus {
+  border-color: var(--brand);
+  background: #fff;
+}
+
+.input-area input::placeholder { color: #bbb; }
+
+.input-area .send-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.input-area .send-btn:hover { background: var(--brand-dark); }
+.input-area .send-btn:active { transform: scale(0.95); }
+.input-area .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  animation: fadeInUp 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-size: 18px;
+  margin-bottom: 4px;
+  color: var(--dark);
+}
+
+.modal .subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.modal .form-group {
+  margin-bottom: 14px;
+}
+
+.modal .form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.modal .form-group label .required { color: var(--brand); }
+
+.modal .form-group input,
+.modal .form-group textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.modal .form-group input:focus,
+.modal .form-group textarea:focus { border-color: var(--brand); }
+
+.modal .form-group textarea { min-height: 80px; }
+
+.modal .form-group .hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.modal .btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal .btn-secondary {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.modal .btn-secondary:hover { background: #f5f5f5; }
+
+.modal .btn-primary {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.modal .btn-primary:hover { background: var(--brand-dark); }
+.modal .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+/* Offline notice */
+.offline-notice {
+  padding: 12px 16px;
+  background: var(--warn);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  flex-shrink: 0;
+  display: none;
+}
+
+.offline-notice.show { display: block; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dark);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  z-index: 2000;
+  animation: fadeInUp 0.3s ease;
+  pointer-events: none;
+}
+
+/* Clear chat floating button */
+.clear-chat-btn {
+  position: absolute;
+  top: 70px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.clear-chat-btn:hover { color: var(--brand); border-color: var(--brand); }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <a href="ai-cs-index.html" class="back-btn" data-i18n="back" title="返回首页">←</a>
+    <div class="avatar">🤖</div>
+    <div class="info">
+      <div class="name">
+        <span data-i18n="ai_title">AI 客服</span>
+        <span class="status-badge online" id="statusBadge" data-i18n="online">在线</span>
+      </div>
+      <div class="mode-tag" id="modeTag" data-i18n="mode_ai">🤖 AI 智能助手</div>
+    </div>
+    <div class="actions">
+      <button title="清除对话" id="clearBtn" onclick="clearChat()">🗑</button>
+    </div>
+  </div>
+
+  <button class="clear-chat-btn" onclick="clearChat()" data-i18n="clear_chat" style="display:none;">清除对话</button>
+
+  <!-- Offline Notice -->
+  <div class="offline-notice" id="offlineNotice" data-i18n="offline_notice">
+    ⚠️ 当前为非工作时间，客服可能无法及时回复，请留下您的联系方式
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area" id="chatArea">
+    <div class="welcome-msg" id="welcomeMsg">
+      <div class="welcome-icon">🤖</div>
+      <h3 data-i18n="welcome_title">您好！我是 RapidDirect AI 客服</h3>
+      <p data-i18n="welcome_desc">我可以帮您解答制造能力、报价流程、材料选择等问题。请直接输入您的问题，或点击下方快捷按钮。</p>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" id="quickActions">
+    <button onclick="sendQuick('报价流程')" data-i18n="qa_quote">📋 报价流程</button>
+    <button onclick="sendQuick('订单状态')" data-i18n="qa_order">📦 订单状态</button>
+    <button onclick="sendQuick('能做CNC吗')" data-i18n="qa_cnc">🔧 能做CNC吗</button>
+    <button onclick="sendQuick('3D打印')" data-i18n="qa_3dp">🖨 3D打印</button>
+    <button onclick="sendQuick('成为供应商')" data-i18n="qa_supplier">🤝 成为供应商</button>
+    <button onclick="openTransferModal()" class="transfer-btn" data-i18n="qa_human">👤 转人工</button>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-area">
+    <input type="text" id="msgInput" data-i18n-placeholder="input_placeholder" placeholder="输入您的问题..." autocomplete="off" onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="send-btn" onclick="sendMessage()" id="sendBtn">➤</button>
+  </div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal">
+    <h2 data-i18n="modal_title">转接人工客服</h2>
+    <p class="subtitle" data-i18n="modal_subtitle">请填写以下信息，我们的客服团队将尽快与您联系</p>
+
+    <div class="form-group">
+      <label data-i18n="field_name">姓名 <span class="required">*</span></label>
+      <input type="text" id="tfName" data-i18n-placeholder="ph_name" placeholder="请输入您的姓名">
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="field_contact">邮箱/手机 <span class="required">*</span></label>
+      <input type="text" id="tfContact" data-i18n-placeholder="ph_contact" placeholder="请输入邮箱或手机号">
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="field_desc">问题描述</label>
+      <textarea id="tfDesc" data-i18n-placeholder="ph_desc" placeholder="请简要描述您的问题..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeTransferModal()" data-i18n="btn_cancel">取消</button>
+      <button class="btn-primary" onclick="submitTransfer()" id="submitTransferBtn" data-i18n="btn_submit">提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// FAQ ENGINE
+// ============================================================
+const FAQ = [
+  // --- 制造能力 ---
+  {
+    category: { zh: "制造能力", en: "Manufacturing" },
+    keywords: ["cnc", "数控", "加工", "铣削", "车削", "CNC machining", "milling", "turning", "5轴", "5-axis"],
+    answer: {
+      zh: "是的，我们提供全面的CNC加工服务，包括3轴、4轴和5轴CNC铣削、CNC车削、车铣复合等。支持铝、钢、不锈钢、钛合金、黄铜、塑料等多种材料。最大加工尺寸可达2000mm，公差可达±0.005mm。",
+      en: "Yes, we offer comprehensive CNC machining services including 3-axis, 4-axis, and 5-axis CNC milling, CNC turning, and mill-turn combined. We support aluminum, steel, stainless steel, titanium, brass, plastics, and more. Max part size up to 2000mm with tolerances down to ±0.005mm."
+    }
+  },
+  {
+    category: { zh: "制造能力", en: "Manufacturing" },
+    keywords: ["3d打印", "增材制造", "sla", "sls", "fdm", "mjf", "3d print", "additive", "3D print"],
+    answer: {
+      zh: "我们提供多种3D打印技术：SLA（光固化）、SLS（选择性激光烧结）、FDM（熔融沉积）和MJF（多射流熔融）。材料包括光敏树脂、尼龙（PA12、PA11）、ABS、PLA、TPU等。最快24小时可交货。",
+      en: "We offer multiple 3D printing technologies: SLA, SLS, FDM, and MJF. Materials include photopolymer resin, nylon (PA12, PA11), ABS, PLA, TPU, and more. Fastest delivery within 24 hours."
+    }
+  },
+  {
+    category: { zh: "制造能力", en: "Manufacturing" },
+    keywords: ["注塑", "模具", "塑胶", "injection mold", "plastic injection", "塑胶件"],
+    answer: {
+      zh: "我们提供快速模具注塑服务，包括铝模和钢模。适用于小批量和大批量生产。支持热塑性塑料如ABS、PC、PP、PA（尼龙）、POM等。模具制作周期通常为2-4周。",
+      en: "We provide rapid injection molding services including aluminum and steel molds for both low and high volume production. We support thermoplastics like ABS, PC, PP, PA (nylon), POM, and more. Typical mold lead time is 2-4 weeks."
+    }
+  },
+  {
+    category: { zh: "制造能力", en: "Manufacturing" },
+    keywords: ["钣金", "冲压", "折弯", "激光切割", "sheet metal", "stamping", "laser cutting", "bending"],
+    answer: {
+      zh: "我们提供全面的钣金加工服务，包括激光切割、数控冲压、折弯、焊接和表面处理。支持不锈钢、铝板、冷轧钢板等材料。厚度范围0.5mm-20mm。",
+      en: "We offer comprehensive sheet metal fabrication including laser cutting, CNC stamping, bending, welding, and surface finishing. Materials include stainless steel, aluminum, cold-rolled steel. Thickness range: 0.5mm-20mm."
+    }
+  },
+
+  // --- 报价/订单 ---
+  {
+    category: { zh: "报价/订单", en: "Quoting & Orders" },
+    keywords: ["报价", "价格", "多少钱", "quote", "price", "cost", "pricing", "费用", "流程", "报价流程", "how to quote"],
+    answer: {
+      zh: "获取报价很简单：1）上传您的3D图纸（支持STEP、IGES、STL、SLDPRT等格式）；2）选择材料、表面处理和数量；3）我们会在24小时内（通常2-4小时）为您生成详细报价。您也可以直接在平台上实时获取自动报价。",
+      en: "Getting a quote is easy: 1) Upload your 3D CAD file (STEP, IGES, STL, SLDPRT, etc.); 2) Select material, finish, and quantity; 3) We'll provide a detailed quote within 24 hours (typically 2-4 hours). You can also get instant auto-quotes directly on our platform."
+    }
+  },
+  {
+    category: { zh: "报价/订单", en: "Quoting & Orders" },
+    keywords: ["订单", "下单", "order", "place order", "下单流程", "如何下单"],
+    answer: {
+      zh: "下单流程：确认报价后，您可以点击「接受报价」转为订单。我们支持多种付款方式：信用卡/借记卡、PayPal、银行转账（T/T）。订单确认后即开始生产，您可以在订单后台实时跟踪生产进度。",
+      en: "Order process: After confirming your quote, click 'Accept Quote' to convert to an order. We accept credit/debit cards, PayPal, and bank transfer (T/T). Production begins upon order confirmation, and you can track progress in real-time via your order dashboard."
+    }
+  },
+  {
+    category: { zh: "报价/订单", en: "Quoting & Orders" },
+    keywords: ["交期", "交付", "时间", "lead time", "delivery", "多久", "turnaround"],
+    answer: {
+      zh: "标准交期视工艺和数量而定：CNC加工通常3-7个工作日，3D打印1-5个工作日，钣金5-10个工作日，注塑模具2-4周。我们也提供加急服务，最快24-48小时可交货。具体交期会在报价中明确标注。",
+      en: "Standard lead times vary by process and quantity: CNC machining typically 3-7 business days, 3D printing 1-5 days, sheet metal 5-10 days, injection molds 2-4 weeks. We also offer expedited service with delivery as fast as 24-48 hours. Exact lead times are stated in quotes."
+    }
+  },
+
+  // --- 设计/CAD ---
+  {
+    category: { zh: "设计/CAD", en: "Design & CAD" },
+    keywords: ["设计", "cad", "图纸", "格式", "file format", "支持格式", "tolerance", "公差"],
+    answer: {
+      zh: "我们支持主流3D CAD格式：STEP (.stp/.step)、IGES (.igs/.iges)、STL、SolidWorks (.sldprt)、Parasolid (.x_t/.x_b)、IPT、OBJ等。建议提供STEP格式以获得最佳兼容性。请确保图纸包含完整的尺寸和公差信息。",
+      en: "We support major 3D CAD formats: STEP (.stp/.step), IGES (.igs/.iges), STL, SolidWorks (.sldprt), Parasolid (.x_t/.x_b), IPT, OBJ, and more. STEP format is recommended for best compatibility. Please ensure drawings include complete dimension and tolerance information."
+    }
+  },
+
+  // --- 材料 ---
+  {
+    category: { zh: "材料", en: "Materials" },
+    keywords: ["材料", "material", "什么材料", "铝", "钢", "不锈钢", "钛", "塑料", "abs", "aluminum"],
+    answer: {
+      zh: "我们提供200+种材料选择：金属类包括铝合金（6061、7075、5052等）、不锈钢（304、316L）、碳钢、钛合金、黄铜、铜等；塑料类包括ABS、PC、POM、PA（尼龙）、PEEK、PTFE、亚克力等。如需特殊材料，请联系我们咨询。",
+      en: "We offer 200+ material options: Metals include aluminum alloys (6061, 7075, 5052), stainless steel (304, 316L), carbon steel, titanium, brass, copper; Plastics include ABS, PC, POM, PA (nylon), PEEK, PTFE, acrylic, and more. Contact us for specialty materials."
+    }
+  },
+  {
+    category: { zh: "材料", en: "Materials" },
+    keywords: ["表面处理", "阳极氧化", "电镀", "喷漆", "finish", "surface finish", "anodizing", "coating"],
+    answer: {
+      zh: "我们提供广泛的表面处理选项：阳极氧化（本色/黑色/彩色）、喷砂、抛光、电镀（镀锌/镀镍/镀铬）、粉末喷涂、喷漆、发黑、钝化、丝印、激光打标等。报价时您可以选择所需的表面处理方案。",
+      en: "We offer a wide range of surface finishes: anodizing (natural/black/colored), sandblasting, polishing, plating (zinc/nickel/chrome), powder coating, painting, black oxide, passivation, silkscreen, laser marking, and more. Select your desired finish when requesting a quote."
+    }
+  },
+
+  // --- 物流 ---
+  {
+    category: { zh: "物流", en: "Logistics" },
+    keywords: ["物流", "运输", "快递", "ship", "shipping", "delivery", "货运", "国际", "international", "dhl", "fedex"],
+    answer: {
+      zh: "我们支持全球配送，合作物流包括DHL、FedEx、UPS、TNT等国际快递，以及海运和空运选项。国内通常1-3天送达，国际快递3-7天。运费按重量和体积计算，报价时会包含预估运费。",
+      en: "We ship worldwide via DHL, FedEx, UPS, TNT, as well as sea and air freight options. Domestic delivery typically 1-3 days, international express 3-7 days. Shipping costs are calculated by weight and volume, and estimated shipping is included in your quote."
+    }
+  },
+
+  // --- 供应商 ---
+  {
+    category: { zh: "供应商", en: "Suppliers" },
+    keywords: ["供应商", "成为供应商", "入驻", "supplier", "vendor", "合作伙伴", "join"],
+    answer: {
+      zh: "感谢您的关注！如欲成为RapidDirect供应商，请访问我们的官网供应商入驻页面，或发送邮件至 supplier@rapiddirect.com。我们会审核您的资质（设备清单、质量体系证书、产能等），通过后有专门的供应商管理团队对接。",
+      en: "Thank you for your interest! To become a RapidDirect supplier, please visit our supplier onboarding page or email supplier@rapiddirect.com. We'll review your qualifications (equipment list, quality certifications, capacity, etc.). Approved suppliers are onboarded by our dedicated supplier management team."
+    }
+  },
+
+  // --- 账号 ---
+  {
+    category: { zh: "账号", en: "Account" },
+    keywords: ["注册", "登录", "账号", "密码", "account", "register", "login", "password", "sign up", "signup"],
+    answer: {
+      zh: "注册RapidDirect账号完全免费！访问 rapidirect.com 点击「注册」，使用邮箱或手机号即可创建账号。注册后您可以上传图纸获取报价、管理订单、跟踪生产进度。如忘记密码，可使用找回密码功能。",
+      en: "Creating a RapidDirect account is free! Visit rapidirect.com and click 'Sign Up' to register with your email or phone. Once registered, you can upload CAD files for quotes, manage orders, and track production. Use the password recovery feature if needed."
+    }
+  },
+
+  // --- 会员 ---
+  {
+    category: { zh: "会员", en: "Membership" },
+    keywords: ["会员", "vip", "member", "membership", "积分", "优惠", "discount", "等级"],
+    answer: {
+      zh: "RapidDirect提供会员分级体系：普通会员、银牌会员、金牌会员和钻石会员。会员等级根据累计消费金额评定，高级会员享受优先生产、专属客服、折扣优惠（最高9折）等权益。详情请查看会员中心页面。",
+      en: "RapidDirect offers a tiered membership program: Standard, Silver, Gold, and Diamond. Membership tiers are based on cumulative spending. Higher tiers enjoy priority production, dedicated support, and discounts (up to 10% off). Visit the Member Center for details."
+    }
+  },
+
+  // --- 投诉 ---
+  {
+    category: { zh: "投诉", en: "Complaints" },
+    keywords: ["投诉", "退款", "退货", "complaint", "refund", "return", "不满意", "质量", "质量问题", "defect"],
+    answer: {
+      zh: "我们非常重视产品质量和客户满意度。如遇到质量问题，请在收到货物后7天内联系我们并提供照片/检测报告。我们会进行评估并提供解决方案：返工、退款或重新生产。质量是我们的生命线，我们承诺对每一个零件负责。",
+      en: "We take quality and customer satisfaction seriously. If you encounter quality issues, please contact us within 7 days of receipt with photos/inspection reports. We'll evaluate and provide a solution: rework, refund, or remanufacturing. Quality is our lifeline — we stand behind every part."
+    }
+  },
+
+  // --- 综合 ---
+  {
+    category: { zh: "综合", en: "General" },
+    keywords: ["最低起订", "moq", "minimum order", "起订量", "小批量"],
+    answer: {
+      zh: "我们支持小批量生产，最低起订量通常为1件！无论是原型验证还是小批量试产，我们都能满足。当然，大批量订单会享有更优惠的单价。",
+      en: "We support low-volume production with a typical MOQ of just 1 piece! Whether it's for prototyping or small-batch trial production, we've got you covered. Higher volume orders naturally benefit from better unit pricing."
+    }
+  },
+  {
+    category: { zh: "综合", en: "General" },
+    keywords: ["认证", "iso", "certification", "质量体系", "quality system", "资质"],
+    answer: {
+      zh: "RapidDirect已通过ISO 9001:2015质量管理体系认证。我们的制造合作伙伴均经过严格筛选和审核，确保符合国际质量标准。我们还可按需提供材料认证和COC（符合性证书）。",
+      en: "RapidDirect is ISO 9001:2015 certified. All manufacturing partners undergo rigorous screening and auditing to ensure compliance with international quality standards. We can also provide material certifications and COC (Certificate of Conformance) upon request."
+    }
+  },
+  {
+    category: { zh: "综合", en: "General" },
+    keywords: ["你好", "hello", "hi", "您好", "hey", "在吗", "help"],
+    answer: {
+      zh: "您好！👋 我是RapidDirect AI客服助手。我可以帮您解答制造能力、报价流程、材料选择、物流运输等问题。请随时告诉我您需要什么帮助！",
+      en: "Hello! 👋 I'm the RapidDirect AI support assistant. I can help with manufacturing capabilities, quoting processes, material selection, shipping, and more. Please let me know how I can help!"
+    }
+  },
+  {
+    category: { zh: "综合", en: "General" },
+    keywords: ["谢谢", "感谢", "thank", "thanks", "thx", "多谢"],
+    answer: {
+      zh: "不客气！😊 如有其他问题，随时联系我们。祝您有美好的一天！",
+      en: "You're welcome! 😊 Feel free to reach out anytime. Have a great day!"
+    }
+  }
+];
+
+// ============================================================
+// I18N
+// ============================================================
+const I18N = {
+  zh: {
+    title: "AI 客服 - RapidDirect",
+    back: "←",
+    ai_title: "AI 客服",
+    online: "在线",
+    offline_badge: "离线",
+    mode_ai: "🤖 AI 智能助手",
+    mode_human: "👤 人工客服",
+    offline_notice: "⚠️ 当前为非工作时间，客服可能无法及时回复，请留下您的联系方式",
+    welcome_title: "您好！我是 RapidDirect AI 客服",
+    welcome_desc: "我可以帮您解答制造能力、报价流程、材料选择等问题。请直接输入您的问题，或点击下方快捷按钮。",
+    qa_quote: "📋 报价流程",
+    qa_order: "📦 订单状态",
+    qa_cnc: "🔧 能做CNC吗",
+    qa_3dp: "🖨 3D打印",
+    qa_supplier: "🤝 成为供应商",
+    qa_human: "👤 转人工",
+    input_placeholder: "输入您的问题...",
+    clear_chat: "清除对话",
+    modal_title: "转接人工客服",
+    modal_subtitle: "请填写以下信息，我们的客服团队将尽快与您联系",
+    field_name: "姓名",
+    field_contact: "邮箱/手机",
+    field_desc: "问题描述",
+    ph_name: "请输入您的姓名",
+    ph_contact: "请输入邮箱或手机号",
+    ph_desc: "请简要描述您的问题...",
+    btn_cancel: "取消",
+    btn_submit: "提交",
+    transfer_success: "✅ 已成功提交转接请求",
+    transfer_success_desc: "我们的客服团队将在工作时间内尽快与您联系，请保持通讯畅通。",
+    transfer_request: "📞 正在为您转接人工客服...",
+    transfer_done: "🎫 客服工单已创建。我们的团队将在工作时间内尽快联系您。",
+    no_match: "抱歉，我暂时无法准确回答这个问题。我已记录您的问题，如需进一步帮助请转接人工客服。",
+    typing: "正在输入...",
+    chat_cleared: "对话已清除",
+    clear_chat_confirm: "确定要清除所有对话记录吗？",
+    now_is: "现在是",
+    send_fail: "请先输入内容",
+    validate_name: "请填写姓名",
+    validate_contact: "请填写邮箱或手机号"
+  },
+  en: {
+    title: "AI Support - RapidDirect",
+    back: "←",
+    ai_title: "AI Support",
+    online: "Online",
+    offline_badge: "Offline",
+    mode_ai: "🤖 AI Assistant",
+    mode_human: "👤 Human Agent",
+    offline_notice: "⚠️ Currently outside business hours. Responses may be delayed. Please leave your contact info.",
+    welcome_title: "Hello! I'm the RapidDirect AI Support Assistant",
+    welcome_desc: "I can help with manufacturing capabilities, quoting, material selection, and more. Just type your question or tap a quick action below.",
+    qa_quote: "📋 Quoting Process",
+    qa_order: "📦 Order Status",
+    qa_cnc: "🔧 CNC Services?",
+    qa_3dp: "🖨 3D Printing",
+    qa_supplier: "🤝 Become a Supplier",
+    qa_human: "👤 Human Agent",
+    input_placeholder: "Type your question...",
+    clear_chat: "Clear Chat",
+    modal_title: "Transfer to Human Agent",
+    modal_subtitle: "Please fill in your details and our team will contact you shortly",
+    field_name: "Name",
+    field_contact: "Email / Phone",
+    field_desc: "Description",
+    ph_name: "Enter your name",
+    ph_contact: "Enter email or phone number",
+    ph_desc: "Briefly describe your issue...",
+    btn_cancel: "Cancel",
+    btn_submit: "Submit",
+    transfer_success: "✅ Transfer request submitted",
+    transfer_success_desc: "Our support team will contact you during business hours. Please stay reachable.",
+    transfer_request: "📞 Transferring to a human agent...",
+    transfer_done: "🎫 Support ticket created. Our team will reach out during business hours.",
+    no_match: "Sorry, I'm unable to answer that question accurately right now. I've logged your question — please transfer to a human agent for further assistance.",
+    typing: "Typing...",
+    chat_cleared: "Chat cleared",
+    clear_chat_confirm: "Are you sure you want to clear all chat history?",
+    now_is: "It is currently",
+    send_fail: "Please enter a message",
+    validate_name: "Please enter your name",
+    validate_contact: "Please enter your email or phone"
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+const STORAGE_KEY_CHAT = 'rd_ai_chat_history';
+const STORAGE_KEY_MISSED = 'rd_ai_missed_questions';
+const MAX_HISTORY = 500;
+
+let currentLang = 'zh';
+let isOnlineHours = true;
+
+// ============================================================
+// WORKING HOURS
+// ============================================================
+function checkWorkingHours() {
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 6=Sat
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const time = hour + minute / 60;
+
+  // Mon-Fri (1-5), 9:00-18:30
+  const isWorkday = day >= 1 && day <= 5;
+  const isWorkTime = time >= 9 && time <= 18.5;
+
+  isOnlineHours = isWorkday && isWorkTime;
+
+  const badge = document.getElementById('statusBadge');
+  const notice = document.getElementById('offlineNotice');
+  const modeTag = document.getElementById('modeTag');
+
+  if (isOnlineHours) {
+    badge.className = 'status-badge online';
+    badge.textContent = I18N[currentLang].online;
+    notice.classList.remove('show');
+    modeTag.textContent = I18N[currentLang].mode_ai;
+  } else {
+    badge.className = 'status-badge offline';
+    badge.textContent = I18N[currentLang].offline_badge;
+    notice.classList.add('show');
+    modeTag.textContent = I18N[currentLang].mode_ai;
+  }
+}
+
+// ============================================================
+// LANGUAGE DETECTION
+// ============================================================
+function detectLanguage(text) {
+  // Check if text contains Chinese characters
+  const chineseRegex = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+  if (chineseRegex.test(text)) return 'zh';
+
+  // Check for primarily English
+  const englishRegex = /^[a-zA-Z0-9\s\p{P}]+$/u;
+  if (englishRegex.test(text)) return 'en';
+
+  // Default: if mostly Chinese chars, use zh, else en
+  const chineseCount = (text.match(chineseRegex) || []).length;
+  const totalChars = text.replace(/\s/g, '').length;
+  return (totalChars > 0 && chineseCount / totalChars > 0.3) ? 'zh' : 'en';
+}
+
+// ============================================================
+// FAQ MATCHING
+// ============================================================
+function matchFAQ(query) {
+  const lang = detectLanguage(query);
+  currentLang = lang;
+
+  const queryLower = query.toLowerCase();
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const entry of FAQ) {
+    let score = 0;
+    for (const kw of entry.keywords) {
+      const kwLower = kw.toLowerCase();
+      if (queryLower.includes(kwLower)) {
+        score += kwLower.length; // Longer keyword match = higher score
+      }
+      // Check word-level match
+      const words = queryLower.split(/[\s,，。！？!?]+/);
+      for (const w of words) {
+        if (w === kwLower) {
+          score += kwLower.length * 2;
+        }
+      }
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = entry;
+    }
+  }
+
+  // Threshold: need at least some keyword match
+  if (bestScore < 3) return null;
+
+  return {
+    answer: bestMatch.answer[lang] || bestMatch.answer['zh'],
+    category: bestMatch.category[lang] || bestMatch.category['zh'],
+    lang: lang
+  };
+}
+
+// ============================================================
+// MISSED QUESTIONS
+// ============================================================
+function trackMissedQuestion(query) {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_MISSED);
+    const missed = stored ? JSON.parse(stored) : [];
+    missed.push({
+      query: query,
+      timestamp: new Date().toISOString(),
+      lang: currentLang
+    });
+    // Keep last 200
+    const trimmed = missed.slice(-200);
+    localStorage.setItem(STORAGE_KEY_MISSED, JSON.stringify(trimmed));
+  } catch (e) {
+    // localStorage not available
+  }
+}
+
+// ============================================================
+// CHAT HISTORY
+// ============================================================
+function saveChatHistory() {
+  try {
+    const messages = [];
+    const chatArea = document.getElementById('chatArea');
+    const messageEls = chatArea.querySelectorAll('.message');
+    messageEls.forEach(el => {
+      if (el.classList.contains('user')) {
+        const bubble = el.querySelector('.bubble');
+        if (bubble) messages.push({ role: 'user', text: bubble.textContent, time: Date.now() });
+      } else if (el.classList.contains('ai')) {
+        const bubble = el.querySelector('.bubble');
+        const tag = el.querySelector('.category-tag');
+        if (bubble) messages.push({
+          role: 'ai',
+          text: bubble.textContent,
+          category: tag ? tag.textContent : '',
+          time: Date.now()
+        });
+      } else if (el.classList.contains('transfer')) {
+        const bar = el.querySelector('.transfer-bar span:last-child');
+        if (bar) messages.push({ role: 'transfer', text: bar.textContent, time: Date.now() });
+      }
+    });
+    // Trim to last 500
+    const trimmed = messages.slice(-MAX_HISTORY);
+    localStorage.setItem(STORAGE_KEY_CHAT, JSON.stringify(trimmed));
+  } catch (e) {}
+}
+
+function loadChatHistory() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_CHAT);
+    if (!stored) return;
+    const messages = JSON.parse(stored);
+    if (!messages || messages.length === 0) return;
+
+    // Remove welcome message
+    const welcome = document.getElementById('welcomeMsg');
+    if (welcome) welcome.style.display = 'none';
+
+    const chatArea = document.getElementById('chatArea');
+    messages.forEach(msg => {
+      if (msg.role === 'user') {
+        appendMessage('user', msg.text);
+      } else if (msg.role === 'ai') {
+        appendMessage('ai', msg.text, msg.category || '');
+      } else if (msg.role === 'transfer') {
+        appendMessage('transfer', msg.text);
+      }
+    });
+    scrollToBottom();
+  } catch (e) {}
+}
+
+// ============================================================
+// MESSAGE RENDERING
+// ============================================================
+function appendMessage(type, text, category = '') {
+  const chatArea = document.getElementById('chatArea');
+  const welcome = document.getElementById('welcomeMsg');
+  if (welcome) welcome.style.display = 'none';
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${type}`;
+
+  if (type === 'ai') {
+    msgDiv.innerHTML = `
+      <div class="msg-avatar">🤖</div>
+      <div class="bubble-wrap">
+        <div class="bubble">${escapeHtml(text)}</div>
+        ${category ? `<span class="category-tag">${escapeHtml(category)}</span>` : ''}
+        <div class="feedback-row">
+          <button onclick="sendFeedback(this, 'like')" title="有帮助">👍</button>
+          <button onclick="sendFeedback(this, 'dislike')" title="无帮助">👎</button>
+        </div>
+      </div>
+    `;
+  } else if (type === 'user') {
+    msgDiv.innerHTML = `
+      <div class="msg-avatar">👤</div>
+      <div class="bubble-wrap">
+        <div class="bubble">${escapeHtml(text)}</div>
+      </div>
+    `;
+  } else if (type === 'transfer') {
+    msgDiv.innerHTML = `
+      <div class="transfer-bar">
+        <span class="icon">📞</span>
+        <span>${escapeHtml(text)}</span>
+      </div>
+    `;
+  }
+
+  chatArea.appendChild(msgDiv);
+  scrollToBottom();
+  saveChatHistory();
+}
+
+function showTyping() {
+  const chatArea = document.getElementById('chatArea');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'message ai typing';
+  typingDiv.id = 'typingIndicator';
+  typingDiv.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="bubble-wrap">
+      <div class="bubble">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    </div>
+  `;
+  chatArea.appendChild(typingDiv);
+  scrollToBottom();
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+// ============================================================
+// SEND MESSAGE
+// ============================================================
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) {
+    showToast(I18N[currentLang].send_fail);
+    return;
+  }
+
+  input.value = '';
+  input.focus();
+
+  // Append user message
+  appendMessage('user', text);
+
+  // Show typing
+  showTyping();
+
+  // Simulate AI thinking delay
+  const delay = 600 + Math.random() * 800;
+
+  setTimeout(() => {
+    removeTyping();
+
+    const match = matchFAQ(text);
+
+    if (match) {
+      appendMessage('ai', match.answer, match.category);
+    } else {
+      // Track missed question
+      trackMissedQuestion(text);
+      appendMessage('ai', I18N[currentLang].no_match, '');
+    }
+  }, delay);
+}
+
+function sendQuick(text) {
+  const input = document.getElementById('msgInput');
+  input.value = text;
+  sendMessage();
+}
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+function sendFeedback(btn, type) {
+  const row = btn.parentElement;
+  const buttons = row.querySelectorAll('button');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ============================================================
+// TRANSFER MODAL
+// ============================================================
+function openTransferModal() {
+  document.getElementById('transferModal').classList.add('active');
+  document.getElementById('tfName').focus();
+}
+
+function closeTransferModal() {
+  document.getElementById('transferModal').classList.remove('active');
+  document.getElementById('tfName').value = '';
+  document.getElementById('tfContact').value = '';
+  document.getElementById('tfDesc').value = '';
+}
+
+function submitTransfer() {
+  const name = document.getElementById('tfName').value.trim();
+  const contact = document.getElementById('tfContact').value.trim();
+
+  if (!name) {
+    showToast(I18N[currentLang].validate_name);
+    return;
+  }
+  if (!contact) {
+    showToast(I18N[currentLang].validate_contact);
+    return;
+  }
+
+  const desc = document.getElementById('tfDesc').value.trim();
+
+  // Show transfer messages in chat
+  appendMessage('transfer', I18N[currentLang].transfer_request);
+  showTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    appendMessage('transfer', I18N[currentLang].transfer_done);
+
+    // Update mode tag
+    document.getElementById('modeTag').textContent = I18N[currentLang].mode_human;
+
+    // After 3 seconds, revert
+    setTimeout(() => {
+      document.getElementById('modeTag').textContent = I18N[currentLang].mode_ai;
+    }, 3000);
+  }, 1200);
+
+  closeTransferModal();
+  showToast(I18N[currentLang].transfer_success);
+}
+
+// ============================================================
+// CLEAR CHAT
+// ============================================================
+function clearChat() {
+  if (!confirm(I18N[currentLang].clear_chat_confirm)) return;
+
+  const chatArea = document.getElementById('chatArea');
+  chatArea.innerHTML = `
+    <div class="welcome-msg" id="welcomeMsg">
+      <div class="welcome-icon">🤖</div>
+      <h3>${I18N[currentLang].welcome_title}</h3>
+      <p>${I18N[currentLang].welcome_desc}</p>
+    </div>
+  `;
+
+  try { localStorage.removeItem(STORAGE_KEY_CHAT); } catch (e) {}
+  showToast(I18N[currentLang].chat_cleared);
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function scrollToBottom() {
+  const chatArea = document.getElementById('chatArea');
+  requestAnimationFrame(() => {
+    chatArea.scrollTop = chatArea.scrollHeight;
+  });
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  checkWorkingHours();
+  updateI18nPlaceholders();
+  loadChatHistory();
+
+  // Check working hours every minute
+  setInterval(checkWorkingHours, 60000);
+
+  // Focus input
+  document.getElementById('msgInput').focus();
+
+  // Close modal on overlay click
+  document.getElementById('transferModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTransferModal();
+  });
+
+  // ESC to close modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('transferModal');
+      if (modal.classList.contains('active')) closeTransferModal();
+    }
+  });
+}
+
+function updateI18nPlaceholders() {
+  // Handle data-i18n-placeholder attributes
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const text = I18N[currentLang][key];
+    if (text) el.placeholder = text;
+  });
+}
+
+// Start
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
