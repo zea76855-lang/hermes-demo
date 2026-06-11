@@ -25,6 +25,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* ── Top Bar ── */
 .topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-back-link{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:4px;transition:color .2s;white-space:nowrap}
+.topbar-back-link:hover{color:#fff}
 .topbar-logo{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
 .topbar-title{font-size:15px;font-weight:600;letter-spacing:.5px}
 .topbar-right{display:flex;align-items:center;gap:16px}
@@ -215,9 +217,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <!-- ═══ TOP BAR ═══ -->
 <header class="topbar">
   <div class="topbar-left">
-    <div class="topbar-logo">RD</div>
-    <span class="topbar-title" data-i18n="topbar.title">RapidDirect 客户服务中心</span>
-  </div>
+              <a href="ai-cs-index.html" class="topbar-back-link" data-i18n="topbar.back">← 返回首页</a>
+              <div class="topbar-logo">RD</div>
+              <span class="topbar-title" data-i18n="topbar.title">RapidDirect 客户服务中心</span>
+            </div>
   <div class="topbar-right">
     <button class="topbar-lang" onclick="toggleLang()" data-i18n="topbar.lang">EN</button>
     <a href="ai-cs-chat.html" class="topbar-chat-link" data-i18n="topbar.chat">💬 在线客服</a>
@@ -439,7 +442,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 // ── i18n data ──
 const i18n = {
   zh: {
-    'topbar.title':'RapidDirect 客户服务中心','topbar.lang':'EN','topbar.chat':'💬 在线客服',
+    'topbar.title':'RapidDirect 客户服务中心','topbar.back':'← 返回首页','topbar.lang':'EN','topbar.chat':'💬 在线客服',
     'hero.greeting':'您好，有什么可以帮您？','hero.sub':'搜索问题、查看订单或提交工单，我们随时为您服务',
     'search.placeholder':'搜索您的问题...',
     'cat.manufacturing':'🏭 制造能力','cat.quoting':'💰 报价相关','cat.logistics':'📦 订单物流','cat.tech':'🔧 技术支持','cat.account':'👤 账户问题',
@@ -472,7 +475,7 @@ const i18n = {
     'order.processing':'生产中','order.shipping':'运输中','order.delivered':'已交付','order.pending':'待确认',
   },
   en: {
-    'topbar.title':'RapidDirect Customer Service','topbar.lang':'中文','topbar.chat':'💬 Live Chat',
+    'topbar.title':'RapidDirect Customer Service','topbar.back':'← Back to Home','topbar.lang':'中文','topbar.chat':'💬 Live Chat',
     'hero.greeting':'Hello, how can we help you?','hero.sub':'Search FAQs, check orders, or submit a ticket — we\'re here to help',
     'search.placeholder':'Search your question...',
     'cat.manufacturing':'🏭 Manufacturing','cat.quoting':'💰 Quoting','cat.logistics':'📦 Logistics','cat.tech':'🔧 Tech Support','cat.account':'👤 Account',
