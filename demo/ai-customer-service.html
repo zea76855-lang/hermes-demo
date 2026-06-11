@@ -232,10 +232,10 @@
       color: var(--accent);
       border: 1px solid rgba(234,85,64,.2);
     }
-233|    .msg.user .avatar {
-234|      background: var(--accent);
-235|      color: #fff;
-236|    }
+    .msg.user .avatar {
+      background: var(--accent);
+      color: #fff;
+    }
     .msg .bubble {
       padding: 10px 14px;
       border-radius: var(--radius-md);
@@ -500,7 +500,7 @@
       margin-bottom: 14px;
     }
     .tabs button {
-501|      padding: 8px 16px;
+      padding: 8px 16px;
       border: none;
       background: transparent;
       color: var(--muted);
@@ -1000,7 +1000,7 @@ function load(key, dflt) {
 function save(key, val) {
   localStorage.setItem(key, JSON.stringify(val));
 }
-1001|
+
 // =============================================================
 // FAQ / KNOWLEDGE BASE
 // =============================================================
@@ -1500,7 +1500,7 @@ function updateHours() {
     });
   });
 
-1501|  // Language switch
+  // Language switch
   document.querySelectorAll('.lang-switch button').forEach(btn => {
     btn.addEventListener('click', function() {
       setLanguage(this.getAttribute('data-lang'));
