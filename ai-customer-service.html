@@ -4,3 +4,1239 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 客服系统 — RapidDirect</title>
+  <style>
+    /* ===========================================================
+       Agentic Design System tokens — Light theme
+       Matched to RapidDirect reference page palette
+    =========================================================== */
+    :root {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface-warm: #f1f5f9;
+      --fg: #333333;
+      --fg-2: #555555;
+      --muted: #999999;
+      --meta: #4285f4;
+      --border: #e8e8e8;
+      --border-soft: #f0f0f0;
+      --accent: #EA5540;
+      --accent-on: #ffffff;
+      --accent-hover: #d14330;
+      --accent-active: #c0392b;
+      --blue: #4285f4;
+      --dark: #1a1a2e;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --font-display: Inter, system-ui, -apple-system, sans-serif;
+      --font-body: Inter, system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --text-xs: 12px;
+      --text-sm: 13px;
+      --text-base: 15px;
+      --text-lg: 17px;
+      --text-xl: 22px;
+      --text-2xl: 32px;
+      --text-3xl: 48px;
+      --text-4xl: 66px;
+      --leading-body: 1.55;
+      --leading-tight: 1.06;
+      --tracking-display: -0.02em;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+      --section-y-desktop: 96px;
+      --section-y-tablet: 68px;
+      --section-y-phone: 48px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+      --elev-flat: none;
+      --elev-ring: 0 0 0 1px var(--border);
+      --elev-raised: 0 4px 24px rgba(0, 0, 0, 0.10);
+      --focus-ring: 0 0 0 4px rgba(234, 85, 64, 0.28);
+      --motion-fast: 130ms;
+      --motion-base: 220ms;
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+      --container-max: 1200px;
+      --container-gutter-desktop: 36px;
+      --container-gutter-tablet: 24px;
+      --container-gutter-phone: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: var(--leading-body);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       TOP NAVIGATION — dark gradient header matching RapidDirect
+    ============================================================ */
+    .top-nav {
+      background: linear-gradient(135deg, #1a1a2e, #334155);
+      color: #ffffff;
+      padding: 0 var(--container-gutter-desktop);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    .top-nav .brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .top-nav .brand .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .top-nav .nav-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(255,255,255,.1);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .mode-btn {
+      padding: 6px 16px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-standard);
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.02em;
+    }
+
+    .mode-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .mode-btn:hover:not(.active) {
+      color: #ffffff;
+    }
+
+    .lang-switch {
+      padding: 6px 12px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.55);
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      transition: all var(--motion-fast) var(--ease-standard);
+      letter-spacing: 0.02em;
+    }
+
+    .lang-switch:hover {
+      background: rgba(255,255,255,.2);
+      color: #ffffff;
+    }
+
+    .version-tag {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,.25);
+      letter-spacing: 0.06em;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    .main-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: var(--space-6) var(--container-gutter-desktop);
+      display: flex;
+      gap: var(--space-6);
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ============================================================
+       CLIENT MODE — Chat interface
+    ============================================================ */
+    .client-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .chat-panel {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-raised);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .chat-header .agent-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: var(--text-lg);
+    }
+
+    .chat-header .agent-info h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .chat-header .agent-info span {
+      font-size: var(--text-xs);
+      color: var(--muted);
+    }
+
+    .chat-header .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-left: auto;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .msg {
+      display: flex;
+      gap: var(--space-3);
+      max-width: 80%;
+    }
+
+    .msg.agent {
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+      font-size: var(--text-sm);
+      flex-shrink: 0;
+    }
+
+    .msg.agent .avatar {
+      background: #fef2f2;
+      color: var(--accent);
+    }
+
+    .msg.user .avatar {
+      background: var(--blue);
+      color: #ffffff;
+    }
+
+    .msg .bubble {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+    }
+
+    .msg.agent .bubble {
+      background: var(--surface-warm);
+      color: var(--fg);
+      border-top-left-radius: 4px;
+    }
+
+    .msg.user .bubble {
+      background: var(--accent);
+      color: #ffffff;
+      border-top-right-radius: 4px;
+    }
+
+    .msg .time {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      padding: var(--space-2) var(--space-6);
+    }
+
+    .quick-btn {
+      padding: 6px 14px;
+      font-size: var(--text-xs);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--fg-2);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-standard);
+      letter-spacing: 0.01em;
+    }
+
+    .quick-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: #fef2f2;
+    }
+
+    .chat-input-area {
+      padding: var(--space-4) var(--space-6);
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color var(--motion-fast) var(--ease-standard);
+      resize: none;
+      min-height: 40px;
+      max-height: 120px;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+
+    .send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 18px;
+      display: grid;
+      place-items: center;
+      transition: background var(--motion-fast) var(--ease-standard);
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* ============================================================
+       SIDEBAR — Right panel
+    ============================================================ */
+    .side-panel {
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      flex-shrink: 0;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-raised);
+      padding: var(--space-5);
+    }
+
+    .info-card h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      color: var(--fg);
+      letter-spacing: -0.01em;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-2) 0;
+      font-size: var(--text-sm);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .label { color: var(--muted); }
+    .stat-row .value { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .faq-list {
+      list-style: none;
+    }
+
+    .faq-item {
+      padding: var(--space-3);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: background var(--motion-fast) var(--ease-standard);
+      color: var(--fg-2);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-item:hover {
+      background: var(--surface-warm);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       ADMIN MODE
+    ============================================================ */
+    .admin-view {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .admin-view.active { display: flex; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-raised);
+      padding: var(--space-5);
+    }
+
+    .stat-card .stat-label {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-2);
+    }
+
+    .stat-card .stat-value {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--fg);
+    }
+
+    .stat-card .stat-change {
+      font-size: var(--text-xs);
+      margin-top: var(--space-1);
+    }
+
+    .stat-change.up { color: var(--success); }
+    .stat-change.down { color: var(--danger); }
+
+    .admin-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    .admin-table {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--elev-raised);
+      overflow: hidden;
+    }
+
+    .admin-table .table-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-table .table-header h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+
+    .admin-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-xs);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .admin-table td {
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-sm);
+      border-bottom: 1px solid var(--border-soft);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge {
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    .badge-info { background: #dbeafe; color: #1e40af; }
+
+    .admin-tabs {
+      display: flex;
+      gap: var(--space-1);
+      margin-bottom: var(--space-4);
+    }
+
+    .admin-tab {
+      padding: 8px 20px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      transition: all var(--motion-fast) var(--ease-standard);
+      letter-spacing: 0.01em;
+    }
+
+    .admin-tab.active {
+      background: var(--surface);
+      color: var(--fg);
+      box-shadow: var(--elev-raised);
+    }
+
+    .admin-tab:hover:not(.active) {
+      color: var(--fg);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .filter-row input,
+    .filter-row select {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color var(--motion-fast) var(--ease-standard);
+    }
+
+    .filter-row input:focus,
+    .filter-row select:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ============================================================
+       MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      place-items: center;
+      z-index: 200;
+    }
+
+    .modal-overlay.active { display: grid; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 72px rgba(0,0,0,0.25);
+      padding: var(--space-8);
+      width: 90%;
+      max-width: 480px;
+    }
+
+    .modal h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .modal p {
+      font-size: var(--text-sm);
+      color: var(--muted);
+      margin-bottom: var(--space-6);
+      line-height: 1.6;
+    }
+
+    .modal .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .modal label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+      color: var(--fg);
+    }
+
+    .modal textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+    }
+
+    .modal textarea:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+
+    .modal .btn-row {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: flex-end;
+      margin-top: var(--space-6);
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-standard);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface-warm);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-soft);
+    }
+
+    .transfer-alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: #991b1b;
+    }
+
+    .transfer-alert .alert-title {
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+      color: var(--danger);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .main-container {
+        flex-direction: column;
+        padding: var(--space-4) var(--container-gutter-tablet);
+      }
+      .side-panel { width: 100%; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .admin-panels { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav { padding: 0 var(--container-gutter-phone); }
+      .main-container { padding: var(--space-3) var(--container-gutter-phone); }
+      .stats-grid { grid-template-columns: 1fr; }
+      .chat-messages { padding: var(--space-3) var(--space-4); }
+      .chat-input-area { padding: var(--space-3) var(--space-4); }
+    }
+
+    .hidden { display: none !important; }
+    .no-active { display: none; }
+    .client-view.no-active { display: none; }
+    .admin-view.no-active { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP NAVIGATION
+  ============================================================ -->
+  <nav class="top-nav">
+    <div class="brand">
+      <span class="dot"></span>
+      RapidDirect <span style="font-weight:400;font-size:13px;opacity:.6;">AI 客服</span>
+    </div>
+    <div class="nav-right">
+      <div class="mode-switch">
+        <button class="mode-btn active" data-mode="client" id="modeClient">Client</button>
+        <button class="mode-btn" data-mode="admin" id="modeAdmin">Admin</button>
+      </div>
+      <button class="lang-switch" id="langSwitch">EN</button>
+      <span class="version-tag">v2.0</span>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <div class="main-container">
+
+    <!-- CLIENT VIEW -->
+    <div class="client-view" id="clientView">
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div class="agent-avatar">RD</div>
+          <div class="agent-info">
+            <h3 data-zh="RapidDirect AI 助手" data-en="RapidDirect AI Assistant">RapidDirect AI 助手</h3>
+            <span data-zh="在线 · 通常 30 秒内回复" data-en="Online · Usually replies in 30s">在线 · 通常 30 秒内回复</span>
+          </div>
+          <div class="status-dot"></div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <!-- Welcome message -->
+          <div class="msg agent">
+            <div class="avatar">RD</div>
+            <div>
+              <div class="bubble" data-zh="您好！我是 RapidDirect 的 AI 客服助手。我可以帮您查询订单状态、解答产品问题、处理报价请求。请问有什么可以帮您的？" data-en="Hello! I'm RapidDirect's AI customer service assistant. I can help with order status, product questions, and quote requests. How can I help you?">
+                您好！我是 RapidDirect 的 AI 客服助手。我可以帮您查询订单状态、解答产品问题、处理报价请求。请问有什么可以帮您的？
+              </div>
+              <div class="time">10:30</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions" id="quickActions">
+          <button class="quick-btn" data-zh="📦 查询订单" data-en="📦 Track Order" data-query="查询订单">📦 查询订单</button>
+          <button class="quick-btn" data-zh="💰 获取报价" data-en="💰 Get Quote" data-query="获取报价">💰 获取报价</button>
+          <button class="quick-btn" data-zh="📋 产品咨询" data-en="📋 Product Info" data-query="产品咨询">📋 产品咨询</button>
+          <button class="quick-btn" data-zh="🔄 退换货" data-en="🔄 Returns" data-query="退换货">🔄 退换货</button>
+        </div>
+
+        <div class="chat-input-area">
+          <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入您的问题..." data-zh-placeholder="输入您的问题..." data-en-placeholder="Type your question..."></textarea>
+          <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="side-panel" id="sidePanel">
+      <div class="info-card">
+        <h3 data-zh="📊 我的概览" data-en="📊 My Overview">📊 我的概览</h3>
+        <div class="stat-row">
+          <span class="label" data-zh="进行中订单" data-en="Active Orders">进行中订单</span>
+          <span class="value">3</span>
+        </div>
+        <div class="stat-row">
+          <span class="label" data-zh="已完成订单" data-en="Completed">已完成订单</span>
+          <span class="value">47</span>
+        </div>
+        <div class="stat-row">
+          <span class="label" data-zh="待处理工单" data-en="Open Tickets">待处理工单</span>
+          <span class="value" style="color: var(--warn);">2</span>
+        </div>
+        <div class="stat-row">
+          <span class="label" data-zh="账户余额" data-en="Balance">账户余额</span>
+          <span class="value">¥128,500</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3 data-zh="💬 常见问题" data-en="💬 FAQ">💬 常见问题</h3>
+        <ul class="faq-list" id="faqList">
+          <li class="faq-item" data-zh="如何查询我的订单进度？" data-en="How to check my order status?" data-query="如何查询订单进度">如何查询我的订单进度？</li>
+          <li class="faq-item" data-zh="报价流程需要多长时间？" data-en="How long does quoting take?" data-query="报价流程时间">报价流程需要多长时间？</li>
+          <li class="faq-item" data-zh="支持哪些文件格式上传？" data-en="What file formats are supported?" data-query="支持的文件格式">支持哪些文件格式上传？</li>
+          <li class="faq-item" data-zh="如何申请退换货？" data-en="How to request a return?" data-query="退换货流程">如何申请退换货？</li>
+          <li class="faq-item" data-zh="付款方式有哪些？" data-en="What payment methods are accepted?" data-query="付款方式">付款方式有哪些？</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <button class="btn btn-primary" style="width:100%;" id="transferBtn" data-zh="📞 转人工客服" data-en="📞 Transfer to Human">📞 转人工客服</button>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div class="admin-view" id="adminView">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label" data-zh="今日会话" data-en="Today Sessions">今日会话</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-change up">↑ 12.5%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-zh="解决率" data-en="Resolution Rate">解决率</div>
+          <div class="stat-value">94.8%</div>
+          <div class="stat-change up">↑ 2.1%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-zh="平均响应" data-en="Avg Response">平均响应</div>
+          <div class="stat-value">8.2s</div>
+          <div class="stat-change down">↓ 1.3s</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-zh="转人工率" data-en="Transfer Rate">转人工率</div>
+          <div class="stat-value">3.2%</div>
+          <div class="stat-change up">↑ 0.3%</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="sessions" data-zh="会话记录" data-en="Conversations">会话记录</button>
+        <button class="admin-tab" data-tab="tickets" data-zh="工单管理" data-en="Tickets">工单管理</button>
+        <button class="admin-tab" data-tab="faq" data-zh="FAQ 管理" data-en="FAQ Admin">FAQ 管理</button>
+        <button class="admin-tab" data-tab="analytics" data-zh="数据分析" data-en="Analytics">数据分析</button>
+      </div>
+
+      <!-- Filter -->
+      <div class="filter-row">
+        <input type="text" placeholder="搜索关键词..." data-zh-placeholder="搜索关键词..." data-en-placeholder="Search keywords...">
+        <select>
+          <option data-zh="全部状态" data-en="All Status">全部状态</option>
+          <option data-zh="已完成" data-en="Resolved">已完成</option>
+          <option data-zh="进行中" data-en="In Progress">进行中</option>
+          <option data-zh="待处理" data-en="Pending">待处理</option>
+        </select>
+        <select>
+          <option data-zh="全部时间" data-en="All Time">全部时间</option>
+          <option data-zh="今天" data-en="Today">今天</option>
+          <option data-zh="本周" data-en="This Week">本周</option>
+          <option data-zh="本月" data-en="This Month">本月</option>
+        </select>
+      </div>
+
+      <!-- Data panels -->
+      <div class="admin-panels">
+        <div class="admin-table">
+          <div class="table-header">
+            <h3 data-zh="会话记录" data-en="Conversations">会话记录</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th data-zh="客户" data-en="Customer">客户</th>
+                <th data-zh="主题" data-en="Topic">主题</th>
+                <th data-zh="状态" data-en="Status">状态</th>
+                <th data-zh="时间" data-en="Time">时间</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TechCorp Ltd</td>
+                <td>PCB 报价咨询</td>
+                <td><span class="badge badge-success">已完成</span></td>
+                <td>10:42</td>
+              </tr>
+              <tr>
+                <td>Shenzhen Elec</td>
+                <td>订单 #RD-2847 进度</td>
+                <td><span class="badge badge-info">进行中</span></td>
+                <td>10:38</td>
+              </tr>
+              <tr>
+                <td>Global Mfg</td>
+                <td>退换货申请</td>
+                <td><span class="badge badge-warn">待处理</span></td>
+                <td>10:35</td>
+              </tr>
+              <tr>
+                <td>Precision Parts</td>
+                <td>文件上传问题</td>
+                <td><span class="badge badge-danger">已转人工</span></td>
+                <td>10:30</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-table">
+          <div class="table-header">
+            <h3 data-zh="工单管理" data-en="Tickets">工单管理</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th data-zh="客户" data-en="Customer">客户</th>
+                <th data-zh="优先级" data-en="Priority">优先级</th>
+                <th data-zh="状态" data-en="Status">状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-family:var(--font-mono);">#TK-1042</td>
+                <td>TechCorp Ltd</td>
+                <td><span class="badge badge-danger">高</span></td>
+                <td><span class="badge badge-warn">处理中</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:var(--font-mono);">#TK-1041</td>
+                <td>Shenzhen Elec</td>
+                <td><span class="badge badge-info">中</span></td>
+                <td><span class="badge badge-info">待分配</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:var(--font-mono);">#TK-1040</td>
+                <td>Global Mfg</td>
+                <td><span class="badge badge-info">低</span></td>
+                <td><span class="badge badge-success">已解决</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TRANSFER MODAL
+  ============================================================ -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal">
+      <h2 data-zh="转人工客服" data-en="Transfer to Human Agent">转人工客服</h2>
+      <div class="transfer-alert">
+        <div class="alert-title" data-zh="⚠️ 提示" data-en="⚠️ Notice">⚠️ 提示</div>
+        <p data-zh="AI 助手未能完全解决您的问题，系统将为您转接人工客服。预计等待时间：2 分钟" data-en="The AI assistant couldn't fully resolve your issue. We'll connect you to a human agent. Estimated wait: 2 minutes">
+          AI 助手未能完全解决您的问题，系统将为您转接人工客服。预计等待时间：2 分钟
+        </p>
+      </div>
+      <div class="form-group">
+        <label data-zh="问题描述" data-en="Issue Description">问题描述</label>
+        <textarea placeholder="请简要描述您的问题..." data-zh-placeholder="请简要描述您的问题..." data-en-placeholder="Briefly describe your issue..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="closeTransfer()" data-zh="取消" data-en="Cancel">取消</button>
+        <button class="btn btn-primary" onclick="confirmTransfer()" data-zh="确认转接" data-en="Confirm Transfer">确认转接</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var currentLang = 'zh';
+    var currentMode = 'client';
+
+    // ============================================================
+    //  ANSWERS DATABASE
+    // ============================================================
+    var answers = {
+      '订单查询': { zh: '请提供您的订单号（格式：RD-XXXX），我可以立即为您查询最新状态。', en: 'Please provide your order number (format: RD-XXXX), and I can check the latest status for you.' },
+      '查询订单': { zh: '请提供您的订单号（格式：RD-XXXX），我可以立即为您查询最新状态。', en: 'Please provide your order number (format: RD-XXXX), and I can check the latest status for you.' },
+      '获取报价': { zh: '您可以上传 3D 文件（支持 STEP、IGES、STL 格式），我们的工程师将在 24 小时内为您提供报价。', en: 'You can upload your 3D files (STEP, IGES, STL supported). Our engineers will provide a quote within 24 hours.' },
+      '产品咨询': { zh: 'RapidDirect 提供 CNC 加工、3D 打印、注塑成型、钣金加工等服务。您对哪种工艺感兴趣？', en: 'RapidDirect offers CNC machining, 3D printing, injection molding, and sheet metal fabrication. Which process are you interested in?' },
+      '退换货': { zh: '如产品存在质量问题，请在收到货物后 7 天内提交退换货申请。您需要提供订单号和问题照片。需要我帮您提交申请吗？', en: 'If there are quality issues, please submit a return request within 7 days of delivery. You\'ll need your order number and photos. Would you like me to help you submit a request?' },
+      '文件格式': { zh: '我们支持 STEP (.stp)、IGES (.igs)、STL、OBJ、SolidWorks (.sldprt) 等主流 3D 格式，以及 PDF 图纸。', en: 'We support STEP (.stp), IGES (.igs), STL, OBJ, SolidWorks (.sldprt), and PDF drawings.' },
+      '付款方式': { zh: '我们支持银行转账（T/T）、信用证（L/C）、PayPal 和信用卡付款。大额订单建议使用 T/T。', en: 'We accept bank transfer (T/T), letter of credit (L/C), PayPal, and credit cards. T/T is recommended for large orders.' },
+      '报价流程': { zh: '报价流程：上传文件 → 选择工艺和材料 → 工程师审核 → 24 小时内发送报价 → 确认下单。', en: 'Quote process: Upload files → Select process & material → Engineer review → Quote within 24h → Confirm order.' },
+      'default': { zh: '感谢您的咨询！让我为您查询更详细的信息。如果问题紧急，您可以点击右侧「转人工客服」按钮直接联系我们的客服团队。', en: 'Thanks for reaching out! Let me look up more details for you. If urgent, you can click the "Transfer to Human" button to reach our support team directly.' }
+    };
+
+    // ============================================================
+    //  LANGUAGE SWITCHING
+    // ============================================================
+    function setLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      document.getElementById('langSwitch').textContent = lang === 'zh' ? 'EN' : '中文';
+
+      // All elements with data-zh/data-en
+      document.querySelectorAll('[data-zh]').forEach(function(el) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          var phKey = lang === 'zh' ? 'data-zh-placeholder' : 'data-en-placeholder';
+          var ph = el.getAttribute(phKey);
+          if (ph) el.placeholder = ph;
+        } else {
+          var text = el.getAttribute(lang === 'zh' ? 'data-zh' : 'data-en');
+          if (text) el.textContent = text;
+        }
+      });
+
+      // Update chat messages
+      updateMessageLanguage();
+    }
+
+    function updateMessageLanguage() {
+      document.querySelectorAll('#chatMessages .bubble[data-zh]').forEach(function(el) {
+        var text = el.getAttribute(currentLang === 'zh' ? 'data-zh' : 'data-en');
+        if (text) el.textContent = text;
+      });
+    }
+
+    // ============================================================
+    //  MODE SWITCHING
+    // ============================================================
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('modeClient').classList.toggle('active', mode === 'client');
+      document.getElementById('modeAdmin').classList.toggle('active', mode === 'admin');
+
+      var clientView = document.getElementById('clientView');
+      var adminView = document.getElementById('adminView');
+      var sidePanel = document.getElementById('sidePanel');
+
+      if (mode === 'client') {
+        clientView.style.display = '';
+        clientView.classList.remove('no-active');
+        adminView.style.display = 'none';
+        adminView.classList.add('no-active');
+        sidePanel.style.display = '';
+      } else {
+        clientView.style.display = 'none';
+        clientView.classList.add('no-active');
+        adminView.style.display = '';
+        adminView.classList.remove('no-active');
+        sidePanel.style.display = 'none';
+      }
+    }
+
+    // ============================================================
+    //  CHAT FUNCTIONS
+    // ============================================================
+    function addMessage(type, text, zhText, enText) {
+      var container = document.getElementById('chatMessages');
+      var div = document.createElement('div');
+      div.className = 'msg ' + type;
+
+      var zh = zhText || text;
+      var en = enText || text;
+
+      div.innerHTML =
+        '<div class="avatar">' + (type === 'agent' ? 'RD' : 'U') + '</div>' +
+        '<div>' +
+          '<div class="bubble" data-zh="' + escapeHTML(zh) + '" data-en="' + escapeHTML(en) + '">' + (currentLang === 'zh' ? zh : en) + '</div>' +
+          '<div class="time">' + getTime() + '</div>' +
+        '</div>';
+
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getTime() {
+      var d = new Date();
+      return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+
+    function getAnswer(query) {
+      var q = query.toLowerCase();
+      for (var key in answers) {
+        if (key === 'default') continue;
+        if (q.indexOf(key) !== -1) return answers[key];
+      }
+      return answers['default'];
+    }
+
+    function sendMessage(text) {
+      if (!text || !text.trim()) return;
+      text = text.trim();
+
+      addMessage('user', text);
+
+      var answer = getAnswer(text);
+      setTimeout(function() {
+        addMessage('agent', answer.zh, answer.zh, answer.en);
+      }, 600 + Math.random() * 800);
+    }
+
+    // ============================================================
+    //  EVENT BINDINGS
+    // ============================================================
+    document.getElementById('sendBtn').addEventListener('click', function() {
+      var input = document.getElementById('chatInput');
+      sendMessage(input.value);
+      input.value = '';
+      input.style.height = 'auto';
+    });
+
+    document.getElementById('chatInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(this.value);
+        this.value = '';
+        this.style.height = 'auto';
+      }
+    });
+
+    // Auto-resize textarea
+    document.getElementById('chatInput').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Quick action buttons
+    document.querySelectorAll('.quick-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var query = this.getAttribute('data-query');
+        sendMessage(query);
+      });
+    });
+
+    // FAQ items
+    document.querySelectorAll('.faq-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var query = this.getAttribute('data-query');
+        sendMessage(query);
+      });
+    });
+
+    // Language switch
+    document.getElementById('langSwitch').addEventListener('click', function() {
+      setLang(currentLang === 'zh' ? 'en' : 'zh');
+    });
+
+    // Mode switch
+    document.getElementById('modeClient').addEventListener('click', function() { setMode('client'); });
+    document.getElementById('modeAdmin').addEventListener('click', function() { setMode('admin'); });
+
+    // Admin tabs
+    document.querySelectorAll('.admin-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // Transfer button
+    document.getElementById('transferBtn').addEventListener('click', function() {
+      document.getElementById('transferModal').classList.add('active');
+    });
+
+    // Close modal on overlay click
+    document.getElementById('transferModal').addEventListener('click', function(e) {
+      if (e.target === this) closeTransfer();
+    });
+  })();
+
+  function closeTransfer() {
+    document.getElementById('transferModal').classList.remove('active');
+  }
+
+  function confirmTransfer() {
+    closeTransfer();
+    var zhMsg = '已为您转接人工客服，请稍候。客服人员将很快为您服务。';
+    var enMsg = 'You have been transferred to a human agent. Please hold — someone will be with you shortly.';
+
+    var container = document.getElementById('chatMessages');
+    var div = document.createElement('div');
+    div.className = 'msg agent';
+    var d = new Date();
+    var time = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    var lang = document.documentElement.lang === 'en' ? 'en' : 'zh';
+    div.innerHTML =
+      '<div class="avatar">RD</div>' +
+      '<div>' +
+        '<div class="bubble" data-zh="' + zhMsg + '" data-en="' + enMsg + '">' + (lang === 'en' ? enMsg : zhMsg) + '</div>' +
+        '<div class="time">' + time + '</div>' +
+      '</div>';
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+
+    // Also switch to client mode
+    document.getElementById('modeClient').click();
+  }
+  </script>
+</body>
+</html>
