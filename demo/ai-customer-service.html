@@ -1,1522 +1,1523 @@
-1|<!DOCTYPE html>
-2|<html lang="zh-CN">
-3|<head>
-4|  <meta charset="UTF-8">
-5|  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-6|  <title>AI 客服系统 — RapidDirect</title>
-7|  <style>
-8|    /* ===========================================================
-9|       Agentic Design System Tokens — Light Theme Foundation
-10|       =========================================================== */
-11|    :root {
-12|      --bg: #f5f6f8;
-13|      --surface: #ffffff;
-14|      --surface-warm: #f0f0f0;
-15|      --fg: #333;
-16|      --fg-2: #666;
-17|      --muted: #999;
-18|      --meta: #EA5540;
-19|      --border: #e8e8e8;
-20|      --border-soft: #f0f0f0;
-21|      --accent: #EA5540;
-22|      --accent-on: #ffffff;
-23|      --accent-hover: color-mix(in oklab, var(--accent), black 8%);
-24|      --success: #22c55e;
-25|      --success-light: rgba(22,163,74,.12);
-26|      --warn: #f59e0b;
-27|      --warn-light: rgba(217,119,6,.12);
-28|      --danger: #dc2626;
-29|      --danger-light: rgba(220,38,38,.12);
-30|      --purple: #7c3aed;
-31|      
-32|      --radius-sm: 8px;
-33|      --radius-md: 12px;
-34|      --radius-lg: 20px;
-35|      --radius-pill: 9999px;
-36|      --elev-raised: 0 4px 24px rgba(0,0,0,.10);
-37|      --elev-ring: 0 0 0 1px var(--border);
-38|      --motion-fast: 130ms;
-39|      --motion-base: 220ms;
-40|      --ease-standard: cubic-bezier(0.2,0,0,1);
-41|      
-42|      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-43|      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-44|      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
-45|    }
-46|
-47|    * { margin: 0; padding: 0; box-sizing: border-box; }
-48|    body {
-49|      font-family: var(--font-body);
-50|      background: var(--bg);
-51|      color: var(--fg);
-52|      height: 100vh;
-53|      display: flex;
-54|      flex-direction: column;
-55|      overflow: hidden;
-56|      -webkit-font-smoothing: antialiased;
-57|    }
-58|
-59|    /* ===== TOP BAR ===== */
-60|    .top-bar {
-61|      background: var(--surface);
-62|      border-bottom: 1px solid var(--border);
-63|      padding: 10px 20px;
-64|      display: flex;
-65|      align-items: center;
-66|      justify-content: space-between;
-67|      flex-shrink: 0;
-68|      gap: 16px;
-69|      z-index: 100;
-70|    }
-71|    .top-bar-left {
-72|      display: flex;
-73|      align-items: center;
-74|      gap: 12px;
-75|    }
-76|    .top-bar h1 {
-77|      font-size: 15px;
-78|      font-weight: 700;
-79|      color: var(--fg);
-80|      display: flex;
-81|      align-items: center;
-82|      gap: 8px;
-83|    }
-84|    .top-bar h1 .dot {
-85|      width: 8px; height: 8px;
-86|      border-radius: 50%;
-87|      background: var(--accent);
-88|      box-shadow: 0 0 8px var(--accent);
-89|    }
-90|    .top-bar .version-badge {
-91|      font-size: 10px;
-92|      background: rgba(234,85,64,.15);
-93|      color: var(--accent);
-94|      padding: 2px 8px;
-95|      border-radius: var(--radius-pill);
-96|      font-weight: 600;
-97|    }
-98|    
-99|    /* Language Switch */
-100|    .lang-switch {
-101|      display: flex;
-102|      gap: 2px;
-103|      background: var(--border-soft);
-104|      border-radius: 6px;
-105|      overflow: hidden;
-106|    }
-107|    .lang-switch button {
-108|      padding: 4px 10px;
-109|      border: none;
-110|      background: transparent;
-111|      color: var(--muted);
-112|      font-size: 10px;
-113|      font-weight: 600;
-114|      cursor: pointer;
-115|      transition: var(--motion-fast) var(--ease-standard);
-116|    }
-117|    .lang-switch button.active {
-118|      background: var(--accent);
-119|      color: var(--accent-on);
-120|    }
-121|    .lang-switch button:hover:not(.active) { color: var(--fg); }
-122|
-123|    /* Mode Switch */
-124|    .mode-switch {
-125|      display: flex;
-126|      gap: 2px;
-127|      background: var(--border-soft);
-128|      border-radius: 6px;
-129|      overflow: hidden;
-130|    }
-131|    .mode-switch button {
-132|      padding: 6px 14px;
-133|      border: none;
-134|      background: transparent;
-135|      color: var(--muted);
-136|      font-size: 11px;
-137|      font-weight: 600;
-138|      cursor: pointer;
-139|      transition: var(--motion-fast) var(--ease-standard);
-140|      white-space: nowrap;
-141|    }
-142|    .mode-switch button.active {
-143|      background: var(--accent);
-144|      color: var(--accent-on);
-145|    }
-146|    .mode-switch button:hover:not(.active) { color: var(--fg); }
-147|
-148|    .hours-indicator {
-149|      display: flex;
-150|      align-items: center;
-151|      gap: 6px;
-152|      font-size: 10px;
-153|      font-weight: 600;
-154|      padding: 4px 10px;
-155|      border-radius: var(--radius-pill);
-156|    }
-157|    .hours-on {
-158|      color: var(--success);
-159|      background: var(--success-light);
-160|    }
-161|    .hours-off {
-162|      color: var(--warn);
-163|      background: var(--warn-light);
-164|    }
-165|    .hours-dot {
-166|      width: 7px; height: 7px;
-167|      border-radius: 50%;
-168|    }
-169|    .hours-on .hours-dot { background: var(--success); }
-170|    .hours-off .hours-dot { background: var(--warn); }
-171|
-172|    /* ===== MAIN CONTENT ===== */
-173|    .main-wrap {
-174|      flex: 1;
-175|      overflow: hidden;
-176|      display: flex;
-177|      flex-direction: column;
-178|    }
-179|
-180|    /* ===== CLIENT MODE ===== */
-181|    .client-mode {
-182|      display: flex;
-183|      flex-direction: column;
-184|      height: 100%;
-185|    }
-186|    .client-mode.hidden { display: none; }
-187|
-188|    .chat-area {
-189|      flex: 1;
-190|      overflow-y: auto;
-191|      padding: 16px 20px;
-192|      display: flex;
-193|      flex-direction: column;
-194|      gap: 12px;
-195|      max-width: 820px;
-196|      width: 100%;
-197|      margin: 0 auto;
-198|    }
-199|    .chat-area::-webkit-scrollbar { width: 4px; }
-200|    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-201|
-202|    /* Messages */
-203|    .msg {
-204|      display: flex;
-205|      gap: 10px;
-206|      animation: msgIn .25s var(--ease-standard);
-207|      max-width: 85%;
-208|    }
-209|    @keyframes msgIn {
-210|      from { opacity: 0; transform: translateY(6px); }
-211|      to { opacity: 1; transform: translateY(0); }
-212|    }
-213|    .msg.ai { align-self: flex-start; }
-214|    .msg.user {
-215|      align-self: flex-end;
-216|      flex-direction: row-reverse;
-217|    }
-218|    .msg .avatar {
-219|      width: 36px; height: 36px;
-220|      border-radius: var(--radius-md);
-221|      display: flex;
-222|      align-items: center;
-223|      justify-content: center;
-224|      font-size: 15px;
-225|      flex-shrink: 0;
-226|      font-weight: 600;
-227|    }
-228|    .msg.ai .avatar {
-229|      background: rgba(234,85,64,.15);
-230|      color: var(--accent);
-231|      border: 1px solid rgba(234,85,64,.2);
-232|    }
-    .msg.user .avatar {
-      background: var(--accent);
-      color: #fff;
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 客服系统 — RapidDirect</title>
+  <style>
+    /* ===========================================================
+       Agentic Design System Tokens — Light Theme Foundation
+       =========================================================== */
+    :root {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface-warm: #f0f0f0;
+      --fg: #333;
+      --fg-2: #666;
+      --muted: #999;
+      --meta: #EA5540;
+      --border: #e8e8e8;
+      --border-soft: #f0f0f0;
+      --accent: #EA5540;
+      --accent-on: #ffffff;
+      --accent-hover: color-mix(in oklab, var(--accent), black 8%);
+      --success: #22c55e;
+      --success-light: rgba(22,163,74,.12);
+      --warn: #f59e0b;
+      --warn-light: rgba(217,119,6,.12);
+      --danger: #dc2626;
+      --danger-light: rgba(220,38,38,.12);
+      --purple: #7c3aed;
+      --blue: #4285f4;
+      --dark: #1a1a2e;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+      --elev-raised: 0 4px 24px rgba(0,0,0,.10);
+      --elev-ring: 0 0 0 1px var(--border);
+      --motion-fast: 130ms;
+      --motion-base: 220ms;
+      --ease-standard: cubic-bezier(0.2,0,0,1);
+      
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
     }
-237|    .msg .bubble {
-238|      padding: 10px 14px;
-239|      border-radius: var(--radius-md);
-240|      font-size: 13px;
-241|      line-height: 1.6;
-242|    }
-243|    .msg.ai .bubble {
-244|      background: var(--surface);
-245|      border: 1px solid var(--border-soft);
-246|      border-bottom-left-radius: 4px;
-247|    }
-248|    .msg.user .bubble {
-249|      background: var(--accent);
-250|      color: var(--accent-on);
-251|      border-bottom-right-radius: 4px;
-252|    }
-253|    .msg .meta-row {
-254|      display: flex;
-255|      align-items: center;
-256|      gap: 10px;
-257|      margin-top: 4px;
-258|      font-size: 10px;
-259|      color: var(--muted);
-260|    }
-261|    .msg .category-tag {
-262|      font-size: 9px;
-263|      padding: 1px 7px;
-264|      border-radius: var(--radius-pill);
-265|      background: rgba(234,85,64,.1);
-266|      color: var(--accent);
-267|      font-weight: 600;
-268|    }
-269|
-270|    /* Rate buttons */
-271|    .rate-btn {
-272|      cursor: pointer;
-273|      padding: 2px 8px;
-274|      border-radius: var(--radius-pill);
-275|      border: 1px solid var(--border);
-276|      background: transparent;
-277|      color: var(--muted);
-278|      font-size: 10px;
-279|      transition: var(--motion-fast) var(--ease-standard);
-280|    }
-281|    .rate-btn:hover { border-color: var(--accent); color: var(--accent); }
-282|    .rate-btn.selected { background: var(--success-light); border-color: var(--success); color: var(--success); }
-283|
-284|    /* Typing indicator */
-285|    .typing-dots {
-286|      display: flex;
-287|      gap: 4px;
-288|      padding: 4px 0;
-289|    }
-290|    .typing-dots span {
-291|      width: 7px; height: 7px;
-292|      border-radius: 50%;
-293|      background: var(--muted);
-294|      animation: bounce 1.2s infinite;
-295|    }
-296|    .typing-dots span:nth-child(2) { animation-delay: .15s; }
-297|    .typing-dots span:nth-child(3) { animation-delay: .3s; }
-298|    @keyframes bounce {
-299|      0%, 60%, 100% { transform: translateY(0); opacity: .4; }
-300|      30% { transform: translateY(-6px); opacity: 1; }
-301|    }
-302|
-303|    /* Transfer alert */
-304|    .transfer-alert {
-305|      background: rgba(245,158,11,.08);
-306|      border: 1px solid rgba(245,158,11,.2);
-307|      border-radius: var(--radius-md);
-308|      padding: 12px 16px;
-309|      display: flex;
-310|      align-items: center;
-311|      justify-content: space-between;
-312|      gap: 12px;
-313|      font-size: 12px;
-314|      color: var(--warn);
-315|      max-width: 820px;
-316|      margin: 0 auto;
-317|      width: calc(100% - 40px);
-318|    }
-319|    .transfer-alert button {
-320|      background: var(--warn);
-321|      color: #ffffff;
-322|      border: none;
-323|      padding: 8px 16px;
-324|      border-radius: var(--radius-pill);
-325|      font-size: 11px;
-326|      font-weight: 600;
-327|      cursor: pointer;
-328|      white-space: nowrap;
-329|      transition: var(--motion-fast) var(--ease-standard);
-330|    }
-331|    .transfer-alert button:hover { filter: brightness(1.1); }
-332|
-333|    /* ===== INPUT BAR (Client) ===== */
-334|    .input-bar {
-335|      flex-shrink: 0;
-336|      padding: 10px 20px;
-337|      background: var(--surface);
-338|      border-top: 1px solid var(--border);
-339|      max-width: 820px;
-340|      width: 100%;
-341|      margin: 0 auto;
-342|    }
-343|    .quick-chips {
-344|      display: flex;
-345|      gap: 6px;
-346|      margin-bottom: 8px;
-347|      overflow-x: auto;
-348|      flex-wrap: wrap;
-349|      padding-bottom: 2px;
-350|    }
-351|    .quick-chips::-webkit-scrollbar { height: 0; }
-352|    .quick-chips button {
-353|      padding: 5px 12px;
-354|      border: 1px solid var(--border);
-355|      background: var(--surface-warm);
-356|      color: var(--fg-2);
-357|      border-radius: var(--radius-pill);
-358|      font-size: 11px;
-359|      cursor: pointer;
-360|      white-space: nowrap;
-361|      transition: var(--motion-fast) var(--ease-standard);
-362|      flex-shrink: 0;
-363|    }
-364|    .quick-chips button:hover {
-365|      border-color: var(--accent);
-366|      color: var(--accent);
-367|      background: rgba(234,85,64,.08);
-368|    }
-369|    .input-row {
-370|      display: flex;
-371|      gap: 8px;
-372|      align-items: center;
-373|    }
-374|    .input-row input {
-375|      flex: 1;
-376|      padding: 10px 16px;
-377|      border: 1px solid var(--border);
-378|      border-radius: var(--radius-pill);
-379|      background: var(--bg);
-380|      color: var(--fg);
-381|      font-size: 13px;
-382|      outline: none;
-383|      transition: var(--motion-fast) var(--ease-standard);
-384|      font-family: inherit;
-385|    }
-386|    .input-row input:focus {
-387|      border-color: var(--accent);
-388|      box-shadow: 0 0 0 3px rgba(234,85,64,.15);
-389|    }
-390|    .input-row input::placeholder { color: var(--muted); }
-391|    .input-row .send-btn {
-392|      padding: 10px 20px;
-393|      border: none;
-394|      background: var(--accent);
-395|      color: var(--accent-on);
-396|      border-radius: var(--radius-pill);
-397|      font-size: 13px;
-398|      font-weight: 600;
-399|      cursor: pointer;
-400|      transition: var(--motion-fast) var(--ease-standard);
-401|      white-space: nowrap;
-402|    }
-403|    .input-row .send-btn:hover { filter: brightness(1.1); }
-404|    .input-row .send-btn:active { transform: scale(.97); }
-405|
-406|    /* ===== ADMIN MODE ===== */
-407|    .admin-mode {
-408|      display: none;
-409|      height: 100%;
-410|      overflow-y: auto;
-411|      padding: 16px 20px;
-412|      max-width: 1280px;
-413|      width: 100%;
-414|      margin: 0 auto;
-415|    }
-416|    .admin-mode.visible { display: block; }
-417|    .admin-mode::-webkit-scrollbar { width: 4px; }
-418|    .admin-mode::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-419|
-420|    /* Stat Cards */
-421|    .stat-grid {
-422|      display: grid;
-423|      grid-template-columns: repeat(4, 1fr);
-424|      gap: 12px;
-425|      margin-bottom: 16px;
-426|    }
-427|    .stat-card {
-428|      background: var(--surface);
-429|      border: 1px solid var(--border-soft);
-430|      border-radius: var(--radius-md);
-431|      padding: 16px;
-432|      display: flex;
-433|      align-items: center;
-434|      gap: 14px;
-435|      transition: var(--motion-fast) var(--ease-standard);
-436|    }
-437|    .stat-card:hover { border-color: var(--border); }
-438|    .stat-icon {
-439|      width: 44px; height: 44px;
-440|      border-radius: var(--radius-sm);
-441|      display: flex;
-442|      align-items: center;
-443|      justify-content: center;
-444|      font-size: 20px;
-445|      flex-shrink: 0;
-446|    }
-447|    .stat-value {
-448|      font-size: 24px;
-449|      font-weight: 700;
-450|      color: var(--fg);
-451|      font-family: var(--font-mono);
-452|      line-height: 1.1;
-453|    }
-454|    .stat-label {
-455|      font-size: 11px;
-456|      color: var(--muted);
-457|      margin-top: 2px;
-458|    }
-459|    .stat-trend {
-460|      font-size: 10px;
-461|      font-weight: 600;
-462|      margin-top: 4px;
-463|    }
-464|    .trend-up { color: var(--success); }
-465|    .trend-down { color: var(--danger); }
-466|
-467|    /* Panels / Cards */
-468|    .panel {
-469|      background: var(--surface);
-470|      border: 1px solid var(--border-soft);
-471|      border-radius: var(--radius-md);
-472|      overflow: hidden;
-473|      margin-bottom: 14px;
-474|    }
-475|    .panel-head {
-476|      padding: 12px 16px;
-477|      border-bottom: 1px solid var(--border-soft);
-478|      display: flex;
-479|      justify-content: space-between;
-480|      align-items: center;
-481|      background: var(--surface-warm);
-482|    }
-483|    .panel-head h3 {
-484|      font-size: 13px;
-485|      font-weight: 700;
-486|      color: var(--fg);
-487|      display: flex;
-488|      align-items: center;
-489|      gap: 8px;
-490|    }
-491|    .panel-body { padding: 14px 16px; }
-492|
-493|    /* Tabs */
-494|    .tabs {
-495|      display: flex;
-496|      gap: 0;
-497|      border-bottom: 2px solid var(--border-soft);
-498|      margin-bottom: 14px;
-499|    }
-500|    .tabs button {
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      background: linear-gradient(135deg, var(--dark), #334155);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 16px;
+      z-index: 100;
+    }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .top-bar h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-bar h1 .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .top-bar .version-badge {
+      font-size: 10px;
+      background: rgba(234,85,64,.25);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+    }
+    
+    /* Language Switch */
+    .lang-switch {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .lang-switch button {
+      padding: 4px 10px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .lang-switch button.active {
+      background: var(--accent);
+      color: var(--accent-on);
+    }
+    .lang-switch button:hover:not(.active) { color: #fff; }
+
+    /* Mode Switch */
+    .mode-switch {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .mode-switch button {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+      white-space: nowrap;
+    }
+    .mode-switch button.active {
+      background: var(--accent);
+      color: var(--accent-on);
+    }
+    .mode-switch button:hover:not(.active) { color: #fff; }
+
+    .hours-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .hours-on {
+      color: var(--success);
+      background: var(--success-light);
+    }
+    .hours-off {
+      color: var(--warn);
+      background: var(--warn-light);
+    }
+    .hours-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .hours-on .hours-dot { background: var(--success); }
+    .hours-off .hours-dot { background: var(--warn); }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-wrap {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== CLIENT MODE ===== */
+    .client-mode {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .client-mode.hidden { display: none; }
+
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+    /* Messages */
+    .msg {
+      display: flex;
+      gap: 10px;
+      animation: msgIn .25s var(--ease-standard);
+      max-width: 85%;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.ai { align-self: flex-start; }
+    .msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+    .msg .avatar {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+    .msg.ai .avatar {
+      background: rgba(234,85,64,.15);
+      color: var(--accent);
+      border: 1px solid rgba(234,85,64,.2);
+    }
+233|    .msg.user .avatar {
+234|      background: var(--accent);
+235|      color: #fff;
+236|    }
+    .msg .bubble {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg.ai .bubble {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user .bubble {
+      background: var(--accent);
+      color: var(--accent-on);
+      border-bottom-right-radius: 4px;
+    }
+    .msg .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .msg .category-tag {
+      font-size: 9px;
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(234,85,64,.1);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Rate buttons */
+    .rate-btn {
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .rate-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .rate-btn.selected { background: var(--success-light); border-color: var(--success); color: var(--success); }
+
+    /* Typing indicator */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 4px 0;
+    }
+    .typing-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .15s; }
+    .typing-dots span:nth-child(3) { animation-delay: .3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* Transfer alert */
+    .transfer-alert {
+      background: rgba(245,158,11,.08);
+      border: 1px solid rgba(245,158,11,.2);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--warn);
+      max-width: 820px;
+      margin: 0 auto;
+      width: calc(100% - 40px);
+    }
+    .transfer-alert button {
+      background: var(--warn);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .transfer-alert button:hover { filter: brightness(1.1); }
+
+    /* ===== INPUT BAR (Client) ===== */
+    .input-bar {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .quick-chips {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      overflow-x: auto;
+      flex-wrap: wrap;
+      padding-bottom: 2px;
+    }
+    .quick-chips::-webkit-scrollbar { height: 0; }
+    .quick-chips button {
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-warm);
+      color: var(--fg-2);
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--motion-fast) var(--ease-standard);
+      flex-shrink: 0;
+    }
+    .quick-chips button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(234,85,64,.08);
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .input-row input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 13px;
+      outline: none;
+      transition: var(--motion-fast) var(--ease-standard);
+      font-family: inherit;
+    }
+    .input-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(234,85,64,.15);
+    }
+    .input-row input::placeholder { color: var(--muted); }
+    .input-row .send-btn {
+      padding: 10px 20px;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-on);
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--motion-fast) var(--ease-standard);
+      white-space: nowrap;
+    }
+    .input-row .send-btn:hover { filter: brightness(1.1); }
+    .input-row .send-btn:active { transform: scale(.97); }
+
+    /* ===== ADMIN MODE ===== */
+    .admin-mode {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: 16px 20px;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .admin-mode.visible { display: block; }
+    .admin-mode::-webkit-scrollbar { width: 4px; }
+    .admin-mode::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+    /* Stat Cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .stat-card:hover { border-color: var(--border); }
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .stat-trend {
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .trend-up { color: var(--success); }
+    .trend-down { color: var(--danger); }
+
+    /* Panels / Cards */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .panel-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface-warm);
+    }
+    .panel-head h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-body { padding: 14px 16px; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border-soft);
+      margin-bottom: 14px;
+    }
+    .tabs button {
 501|      padding: 8px 16px;
-502|      border: none;
-503|      background: transparent;
-504|      color: var(--muted);
-505|      font-size: 11px;
-506|      font-weight: 600;
-507|      cursor: pointer;
-508|      border-bottom: 2px solid transparent;
-509|      margin-bottom: -2px;
-510|      transition: var(--motion-fast) var(--ease-standard);
-511|    }
-512|    .tabs button.active {
-513|      color: var(--accent);
-514|      border-bottom-color: var(--accent);
-515|    }
-516|    .tabs button:hover:not(.active) { color: var(--fg-2); }
-517|    .tab-content { display: none; }
-518|    .tab-content.active { display: block; }
-519|
-520|    /* Tables */
-521|    .data-table {
-522|      width: 100%;
-523|      border-collapse: collapse;
-524|      font-size: 11px;
-525|    }
-526|    .data-table th {
-527|      text-align: left;
-528|      padding: 10px 12px;
-529|      background: var(--surface-warm);
-530|      color: var(--muted);
-531|      font-size: 10px;
-532|      font-weight: 700;
-533|      text-transform: uppercase;
-534|      letter-spacing: .04em;
-535|      border-bottom: 2px solid var(--border);
-536|    }
-537|    .data-table td {
-538|      padding: 9px 12px;
-539|      border-bottom: 1px solid var(--border-soft);
-540|      color: var(--fg-2);
-541|    }
-542|    .data-table tr:hover td { background: rgba(234,85,64,.04); }
-543|
-544|    /* Tags */
-545|    .tag {
-546|      display: inline-flex;
-547|      padding: 2px 9px;
-548|      border-radius: var(--radius-pill);
-549|      font-size: 9px;
-550|      font-weight: 700;
-551|      letter-spacing: .02em;
-552|    }
-553|    .tag-ai { background: rgba(234,85,64,.12); color: var(--accent); }
-554|    .tag-human { background: var(--warn-light); color: var(--warn); }
-555|    .tag-done { background: var(--success-light); color: var(--success); }
-556|    .tag-pending { background: var(--warn-light); color: var(--warn); }
-557|    .tag-online { background: var(--success-light); color: var(--success); }
-558|    .tag-offline { background: rgba(100,116,139,.1); color: var(--muted); }
-559|
-560|    /* Buttons */
-561|    .btn {
-562|      padding: 6px 14px;
-563|      border-radius: var(--radius-sm);
-564|      font-size: 11px;
-565|      font-weight: 600;
-566|      cursor: pointer;
-567|      border: none;
-568|      transition: var(--motion-fast) var(--ease-standard);
-569|      font-family: inherit;
-570|      display: inline-flex;
-571|      align-items: center;
-572|      gap: 4px;
-573|    }
-574|    .btn-primary { background: var(--accent); color: var(--accent-on); }
-575|    .btn-primary:hover { filter: brightness(1.1); }
-576|    .btn-secondary { background: transparent; color: var(--fg-2); border: 1px solid var(--border); }
-577|    .btn-secondary:hover { border-color: var(--fg-2); color: var(--fg); }
-578|    .btn-ghost { background: transparent; color: var(--muted); }
-579|    .btn-ghost:hover { color: var(--fg); }
-580|    .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-581|    .btn-danger:hover { background: var(--danger-light); }
-582|
-583|    /* Forms */
-584|    .form-group { margin-bottom: 10px; }
-585|    .form-group label {
-586|      display: block;
-587|      font-size: 10px;
-588|      font-weight: 700;
-589|      color: var(--muted);
-590|      margin-bottom: 4px;
-591|      text-transform: uppercase;
-592|      letter-spacing: .04em;
-593|    }
-594|    .form-group input, .form-group textarea, .form-group select {
-595|      width: 100%;
-596|      padding: 8px 12px;
-597|      border: 1px solid var(--border);
-598|      border-radius: var(--radius-sm);
-599|      background: var(--bg);
-600|      color: var(--fg);
-601|      font-size: 12px;
-602|      font-family: inherit;
-603|      outline: none;
-604|      transition: var(--motion-fast) var(--ease-standard);
-605|    }
-606|    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-607|      border-color: var(--accent);
-608|      box-shadow: 0 0 0 3px rgba(234,85,64,.12);
-609|    }
-610|    .form-group textarea { resize: vertical; min-height: 60px; }
-611|
-612|    /* Modal */
-613|    .modal-overlay {
-614|      position: fixed;
-615|      inset: 0;
-616|      background: rgba(0,0,0,.6);
-617|      backdrop-filter: blur(4px);
-618|      z-index: 200;
-619|      display: none;
-620|      align-items: center;
-621|      justify-content: center;
-622|    }
-623|    .modal-overlay.open { display: flex; }
-624|    .modal-box {
-625|      background: var(--surface);
-626|      border: 1px solid var(--border);
-627|      border-radius: var(--radius-lg);
-628|      padding: 24px;
-629|      width: 460px;
-630|      max-height: 85vh;
-631|      overflow-y: auto;
-632|      box-shadow: var(--elev-raised);
-633|    }
-634|    .modal-box h3 {
-635|      font-size: 16px;
-636|      font-weight: 700;
-637|      margin-bottom: 16px;
-638|      color: var(--fg);
-639|    }
-640|    .modal-actions {
-641|      display: flex;
-642|      gap: 8px;
-643|      justify-content: flex-end;
-644|      margin-top: 16px;
-645|    }
-646|
-647|    /* Missed item */
-648|    .missed-item {
-649|      display: flex;
-650|      align-items: center;
-651|      justify-content: space-between;
-652|      padding: 8px 10px;
-653|      background: var(--bg);
-654|      border-radius: var(--radius-sm);
-655|      margin-bottom: 4px;
-656|      gap: 10px;
-657|    }
-658|    .missed-item .text {
-659|      flex: 1;
-660|      overflow: hidden;
-661|      text-overflow: ellipsis;
-662|      white-space: nowrap;
-663|      font-size: 12px;
-664|      color: var(--fg-2);
-665|    }
-666|    .missed-item .count {
-667|      color: var(--warn);
-668|      font-weight: 700;
-669|      font-size: 11px;
-670|      font-family: var(--font-mono);
-671|    }
-672|    .missed-item .actions {
-673|      display: flex;
-674|      gap: 6px;
-675|      flex-shrink: 0;
-676|    }
-677|
-678|    /* FAQ list */
-679|    .faq-item {
-680|      display: flex;
-681|      justify-content: space-between;
-682|      align-items: center;
-683|      padding: 8px 0;
-684|      border-bottom: 1px solid var(--border-soft);
-685|      font-size: 11px;
-686|      gap: 10px;
-687|    }
-688|    .faq-item .keywords { color: var(--accent); font-weight: 600; }
-689|    .faq-item .cat { color: var(--muted); font-size: 10px; }
-690|    .faq-item .actions { display: flex; gap: 4px; flex-shrink: 0; }
-691|
-692|    /* Search/Filter bar */
-693|    .filter-bar {
-694|      display: flex;
-695|      gap: 8px;
-696|      margin-bottom: 12px;
-697|      flex-wrap: wrap;
-698|    }
-699|    .filter-bar input, .filter-bar select {
-700|      padding: 6px 10px;
-701|      border: 1px solid var(--border);
-702|      border-radius: var(--radius-sm);
-703|      background: var(--bg);
-704|      color: var(--fg);
-705|      font-size: 11px;
-706|      outline: none;
-707|      font-family: inherit;
-708|    }
-709|    .filter-bar input:focus, .filter-bar select:focus {
-710|      border-color: var(--accent);
-711|    }
-712|
-713|    /* Responsive */
-714|    @media (max-width: 900px) {
-715|      .stat-grid { grid-template-columns: repeat(2, 1fr); }
-716|      .top-bar { flex-wrap: wrap; }
-717|      .mode-switch button { padding: 5px 10px; font-size: 10px; }
-718|    }
-719|    @media (max-width: 600px) {
-720|      .stat-grid { grid-template-columns: 1fr; }
-721|      .chat-area { padding: 10px 12px; }
-722|      .input-bar { padding: 10px 12px; }
-723|      .msg { max-width: 92%; }
-724|      .modal-box { width: 92vw; margin: 0 10px; }
-725|    }
-726|  </style>
-727|</head>
-728|<body>
-729|
-730|<!-- ===== TOP BAR ===== -->
-731|<div class="top-bar">
-732|  <div class="top-bar-left">
-733|    <h1>
-734|      <span class="dot"></span>
-735|      <span data-i18n="app.title">AI 客服系统</span>
-736|      <span class="version-badge">v2.0</span>
-737|    </h1>
-738|  </div>
-739|  <div style="display:flex;align-items:center;gap:12px;">
-740|    <div class="hours-indicator hours-on" id="hoursBadge">
-741|      <span class="hours-dot"></span>
-742|      <span id="hoursText">工作时间 · 人工在线</span>
-743|    </div>
-744|    <div class="mode-switch" id="modeSwitch">
-745|      <button class="active" data-mode="client" data-i18n="mode.client">💬 客户端</button>
-746|      <button data-mode="admin" data-i18n="mode.admin">📊 管理端</button>
-747|    </div>
-748|    <div class="lang-switch">
-749|      <button class="active" data-lang="zh">中文</button>
-750|      <button data-lang="en">EN</button>
-751|    </div>
-752|  </div>
-753|</div>
-754|
-755|<!-- ===== MAIN ===== -->
-756|<div class="main-wrap">
-757|
-758|  <!-- ============ CLIENT MODE ============ -->
-759|  <div class="client-mode" id="clientMode">
-760|    <div class="chat-area" id="chatArea">
-761|      <!-- Welcome -->
-762|      <div class="msg ai">
-763|        <div class="avatar">AI</div>
-764|        <div class="bubble">
-765|          <span data-i18n="welcome">你好！我是 AI 客服助手 👋</span><br>
-766|          <span style="font-size:11px;color:var(--muted);margin-top:4px;display:block;" data-i18n="welcome.desc">
-767|            可回答制造能力、报价、材料、设计等问题。输入「<b>转人工</b>」接入真人客服。
-768|          </span>
-769|        </div>
-770|      </div>
-771|
-772|      <!-- Transfer prompt -->
-773|      <div class="transfer-alert" id="transferAlert">
-774|        <span data-i18n="transfer.hint">👩‍💼 需要人工客服协助？</span>
-775|        <button onclick="openTransfer()" data-i18n="transfer.btn">转人工客服</button>
-776|      </div>
-777|    </div>
-778|
-779|    <!-- Input Bar -->
-780|    <div class="input-bar">
-781|      <div class="quick-chips" id="quickChips"></div>
-782|      <div class="input-row">
-783|        <input type="text" id="chatInput" data-i18n-placeholder="input.ph" placeholder="输入问题…" onkeydown="if(event.key==='Enter')ask()">
-784|        <button class="send-btn" onclick="ask()" data-i18n="send">发送</button>
-785|      </div>
-786|    </div>
-787|  </div>
-788|
-789|  <!-- ============ ADMIN MODE ============ -->
-790|  <div class="admin-mode" id="adminMode">
-791|    
-792|    <!-- Stats -->
-793|    <div class="stat-grid">
-794|      <div class="stat-card">
-795|        <div class="stat-icon" style="background:#fff0ed;color:var(--accent);">💬</div>
-796|        <div>
-797|          <div class="stat-value" id="sTotal">0</div>
-798|          <div class="stat-label" data-i18n="stat.today">今日咨询量</div>
-799|          <div class="stat-trend trend-up" id="sTotalTrend">↑ 12% vs 昨日</div>
-800|        </div>
-801|      </div>
-802|      <div class="stat-card">
-803|        <div class="stat-icon" style="background:#fff8e1;color:var(--warn);">↗️</div>
-804|        <div>
-805|          <div class="stat-value" id="sTransfer">0%</div>
-806|          <div class="stat-label" data-i18n="stat.transfer">转人工率</div>
-807|          <div class="stat-trend trend-down" id="sTransferTrend">↓ 3% vs 昨日</div>
-808|        </div>
-809|      </div>
-810|      <div class="stat-card">
-811|        <div class="stat-icon" style="background:#e8f5e9;color:var(--success);">🎯</div>
-812|        <div>
-813|          <div class="stat-value" id="sMatch">0%</div>
-814|          <div class="stat-label" data-i18n="stat.match">知识库命中率</div>
-815|          <div class="stat-trend trend-up" id="sMatchTrend">↑ 5% vs 昨日</div>
-816|        </div>
-817|      </div>
-818|      <div class="stat-card">
-819|        <div class="stat-icon" style="background:#e3f2fd;color:var(--blue);">⏱</div>
-820|        <div>
-821|          <div class="stat-value" id="sSatisfaction">0%</div>
-822|          <div class="stat-label" data-i18n="stat.satisfaction">客户满意度</div>
-823|          <div class="stat-trend trend-up" id="sSatTrend">↑ 2% vs 昨日</div>
-824|        </div>
-825|      </div>
-826|    </div>
-827|
-828|    <!-- Tabs -->
-829|    <div class="tabs" id="adminTabs">
-830|      <button class="active" data-tab="missed" data-i18n="tab.missed">🔍 缺失问题</button>
-831|      <button data-tab="qa" data-i18n="tab.qa">📋 问答明细</button>
-832|      <button data-tab="faq" data-i18n="tab.faq">📚 知识库</button>
-833|      <button data-tab="agents" data-i18n="tab.agents">👥 客服管理</button>
-834|      <button data-tab="tickets" data-i18n="tab.tickets">🎫 留言工单</button>
-835|    </div>
-836|
-837|    <!-- Tab: Missed Questions -->
-838|    <div class="tab-content active" id="tab-missed">
-839|      <div class="panel">
-840|        <div class="panel-head">
-841|          <h3><span data-i18n="missed.title">未命中问题</span> <span style="color:var(--warn);font-family:var(--font-mono);" id="missedCnt">0</span> <span style="font-size:10px;font-weight:400;color:var(--muted);" data-i18n="missed.pending">条待处理</span></h3>
-842|          <button class="btn btn-secondary" onclick="markAllMissed()" style="font-size:10px;" data-i18n="missed.clearAll">全部标记已处理</button>
-843|        </div>
-844|        <div class="panel-body" id="missedList">
-845|          <span style="color:var(--muted);font-size:11px;">暂无未命中问题 ✅</span>
-846|        </div>
-847|      </div>
-848|    </div>
-849|
-850|    <!-- Tab: QA Log -->
-851|    <div class="tab-content" id="tab-qa">
-852|      <div class="filter-bar">
-853|        <input type="text" id="fKeyword" data-i18n-placeholder="qa.search" placeholder="搜索关键词…" style="width:160px;">
-854|        <select id="fType">
-855|          <option value="all" data-i18n="qa.allTypes">全部类型</option>
-856|          <option value="ai">AI 回答</option>
-857|          <option value="human">转人工</option>
-858|        </select>
-859|        <select id="fRate">
-860|          <option value="all" data-i18n="qa.allRates">全部评价</option>
-861|          <option value="good">👍 满意</option>
-862|          <option value="bad">👎 不满意</option>
-863|        </select>
-864|        <button class="btn btn-secondary" onclick="refreshAdmin()" style="font-size:10px;">刷新</button>
-865|      </div>
-866|      <div class="panel" style="overflow-x:auto;">
-867|        <table class="data-table">
-868|          <thead>
-869|            <tr><th data-i18n="qa.col.time">时间</th><th data-i18n="qa.col.question">问题</th><th data-i18n="qa.col.answer">回答</th><th data-i18n="qa.col.type">类型</th><th data-i18n="qa.col.rate">评价</th><th data-i18n="qa.col.cat">匹配类别</th></tr>
-870|          </thead>
-871|          <tbody id="qaLog"></tbody>
-872|        </table>
-873|      </div>
-874|    </div>
-875|
-876|    <!-- Tab: FAQ -->
-877|    <div class="tab-content" id="tab-faq">
-878|      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-879|        <div class="panel">
-880|          <div class="panel-head">
-881|            <h3 data-i18n="faq.add">➕ 新增 / 编辑知识条目</h3>
-882|          </div>
-883|          <div class="panel-body">
-884|            <div class="form-group">
-885|              <label data-i18n="faq.kw">关键词（逗号分隔）</label>
-886|              <input type="text" id="newKw" placeholder="CNC, 加工, machining…">
-887|            </div>
-888|            <div class="form-group">
-889|              <label data-i18n="faq.cat">分类</label>
-890|              <input type="text" id="newCat" placeholder="制造能力 / 报价 / 账号…">
-891|            </div>
-892|            <div class="form-group">
-893|              <label data-i18n="faq.zh">中文回答</label>
-894|              <textarea id="newZh" placeholder="中文回复内容…"></textarea>
-895|            </div>
-896|            <div class="form-group">
-897|              <label data-i18n="faq.en">English Answer</label>
-898|              <textarea id="newEn" placeholder="English reply…"></textarea>
-899|            </div>
-900|            <div style="display:flex;gap:8px;justify-content:flex-end;">
-901|              <button class="btn btn-secondary" onclick="exportFAQ()" data-i18n="faq.export">导出题库</button>
-902|              <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" data-i18n="faq.import">批量导入</button>
-903|              <button class="btn btn-primary" onclick="addFAQ()" data-i18n="faq.save">保存</button>
-904|              <input type="file" id="importFile" accept=".json" style="display:none" onchange="importFAQ(this)">
-905|            </div>
-906|          </div>
-907|        </div>
-908|        <div class="panel">
-909|          <div class="panel-head">
-910|            <h3 data-i18n="faq.list">知识库列表 (<span id="faqCount">0</span>)</h3>
-911|            <input type="text" id="fFaqSearch" data-i18n-placeholder="faq.search" placeholder="搜索…" style="width:140px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--fg);font-size:11px;outline:none;" oninput="refreshAdmin()">
-912|          </div>
-913|          <div class="panel-body" id="faqList" style="max-height:420px;overflow-y:auto;"></div>
-914|        </div>
-915|      </div>
-916|    </div>
-917|
-918|    <!-- Tab: Agents -->
-919|    <div class="tab-content" id="tab-agents">
-920|      <div class="panel">
-921|        <div class="panel-head">
-922|          <h3 data-i18n="agents.title">客服列表</h3>
-923|          <button class="btn btn-primary" onclick="addAgent()" data-i18n="agents.add">添加客服</button>
-924|        </div>
-925|        <div class="panel-body" style="overflow-x:auto;">
-926|          <table class="data-table">
-927|            <thead>
-928|              <tr><th data-i18n="agents.col.name">姓名</th><th data-i18n="agents.col.email">邮箱</th><th data-i18n="agents.col.skill">技能组</th><th data-i18n="agents.col.status">状态</th><th data-i18n="agents.col.today">今日处理</th></tr>
-929|            </thead>
-930|            <tbody id="agentList"></tbody>
-931|          </table>
-932|        </div>
-933|      </div>
-934|    </div>
-935|
-936|    <!-- Tab: Tickets -->
-937|    <div class="tab-content" id="tab-tickets">
-938|      <div class="panel">
-939|        <div class="panel-head">
-940|          <h3 data-i18n="tickets.title">留言工单</h3>
-941|        </div>
-942|        <div class="panel-body" style="overflow-x:auto;">
-943|          <table class="data-table">
-944|            <thead>
-945|              <tr><th data-i18n="tickets.col.time">提交时间</th><th data-i18n="tickets.col.customer">客户</th><th data-i18n="tickets.col.contact">联系方式</th><th data-i18n="tickets.col.desc">问题描述</th><th data-i18n="tickets.col.status">状态</th><th data-i18n="tickets.col.action">操作</th></tr>
-946|            </thead>
-947|            <tbody id="ticketList"></tbody>
-948|          </table>
-949|        </div>
-950|      </div>
-951|    </div>
-952|
-953|  </div>
-954|</div>
-955|
-956|<!-- ===== Transfer Modal ===== -->
-957|<div class="modal-overlay" id="transferModal">
-958|  <div class="modal-box">
-959|    <h3 data-i18n="transfer.title">👩‍💼 转接人工客服</h3>
-960|    <div id="transferNote" style="font-size:11px;color:var(--warn);margin-bottom:14px;padding:8px 12px;background:var(--warn-light);border-radius:var(--radius-sm);"></div>
-961|    <div class="form-group">
-962|      <label data-i18n="transfer.name">姓名 <span style="color:var(--danger)">*</span></label>
-963|      <input type="text" id="tfName" placeholder="John / 张三">
-964|    </div>
-965|    <div class="form-group">
-966|      <label data-i18n="transfer.contact">邮箱或电话 <span style="color:var(--danger)">*</span></label>
-967|      <input type="text" id="tfContact" placeholder="email / +86 138…">
-968|    </div>
-969|    <div class="form-group">
-970|      <label data-i18n="transfer.desc">问题描述</label>
-971|      <textarea id="tfDesc" placeholder="简单描述您的问题…"></textarea>
-972|    </div>
-973|    <div class="modal-actions">
-974|      <button class="btn btn-secondary" onclick="closeTransfer()" data-i18n="transfer.cancel">取消</button>
-975|      <button class="btn btn-primary" onclick="submitTransfer()" data-i18n="transfer.submit">提交</button>
-976|    </div>
-977|  </div>
-978|</div>
-979|
-980|<script>
-981|// =============================================================
-982|// CORE UTILITIES
-983|// =============================================================
-984|function workingHours() {
-985|  const n = new Date();
-986|  const b = new Date(n.toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
-987|  const h = b.getHours(), m = b.getMinutes(), d = b.getDay();
-988|  return d >= 1 && d <= 5 && h >= 9 && (h < 18 || (h === 18 && m <= 30));
-989|}
-990|function workingNote() {
-991|  return workingHours()
-992|    ? '🟢 客服在线，提交后 2 小时内联系你。'
-993|    : '🟡 非工作时间，客服将在下一个工作日 9:00 回复。';
-994|}
-995|function load(key, dflt) {
-996|  try { return JSON.parse(localStorage.getItem(key)) || dflt; } catch(e) { return dflt; }
-997|}
-998|function save(key, val) {
-999|  localStorage.setItem(key, JSON.stringify(val));
-1000|}
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .tabs button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tabs button:hover:not(.active) { color: var(--fg-2); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--surface-warm);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border-bottom: 2px solid var(--border);
+    }
+    .data-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--fg-2);
+    }
+    .data-table tr:hover td { background: rgba(234,85,64,.04); }
+
+    /* Tags */
+    .tag {
+      display: inline-flex;
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .tag-ai { background: rgba(234,85,64,.12); color: var(--accent); }
+    .tag-human { background: var(--warn-light); color: var(--warn); }
+    .tag-done { background: var(--success-light); color: var(--success); }
+    .tag-pending { background: var(--warn-light); color: var(--warn); }
+    .tag-online { background: var(--success-light); color: var(--success); }
+    .tag-offline { background: rgba(100,116,139,.1); color: var(--muted); }
+
+    /* Buttons */
+    .btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--motion-fast) var(--ease-standard);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-on); }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-secondary { background: transparent; color: var(--fg-2); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--fg-2); color: var(--fg); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--fg); }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover { background: var(--danger-light); }
+
+    /* Forms */
+    .form-group { margin-bottom: 10px; }
+    .form-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: var(--motion-fast) var(--ease-standard);
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(234,85,64,.12);
+    }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 460px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--elev-raised);
+    }
+    .modal-box h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--fg);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    /* Missed item */
+    .missed-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      margin-bottom: 4px;
+      gap: 10px;
+    }
+    .missed-item .text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      color: var(--fg-2);
+    }
+    .missed-item .count {
+      color: var(--warn);
+      font-weight: 700;
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+    .missed-item .actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* FAQ list */
+    .faq-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 11px;
+      gap: 10px;
+    }
+    .faq-item .keywords { color: var(--accent); font-weight: 600; }
+    .faq-item .cat { color: var(--muted); font-size: 10px; }
+    .faq-item .actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+    /* Search/Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-bar input, .filter-bar select {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 11px;
+      outline: none;
+      font-family: inherit;
+    }
+    .filter-bar input:focus, .filter-bar select:focus {
+      border-color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .top-bar { flex-wrap: wrap; }
+      .mode-switch button { padding: 5px 10px; font-size: 10px; }
+    }
+    @media (max-width: 600px) {
+      .stat-grid { grid-template-columns: 1fr; }
+      .chat-area { padding: 10px 12px; }
+      .input-bar { padding: 10px 12px; }
+      .msg { max-width: 92%; }
+      .modal-box { width: 92vw; margin: 0 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <h1>
+      <span class="dot"></span>
+      <span data-i18n="app.title">AI 客服系统</span>
+      <span class="version-badge">v2.0</span>
+    </h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="hours-indicator hours-on" id="hoursBadge">
+      <span class="hours-dot"></span>
+      <span id="hoursText">工作时间 · 人工在线</span>
+    </div>
+    <div class="mode-switch" id="modeSwitch">
+      <button class="active" data-mode="client" data-i18n="mode.client">💬 客户端</button>
+      <button data-mode="admin" data-i18n="mode.admin">📊 管理端</button>
+    </div>
+    <div class="lang-switch">
+      <button class="active" data-lang="zh">中文</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap">
+
+  <!-- ============ CLIENT MODE ============ -->
+  <div class="client-mode" id="clientMode">
+    <div class="chat-area" id="chatArea">
+      <!-- Welcome -->
+      <div class="msg ai">
+        <div class="avatar">AI</div>
+        <div class="bubble">
+          <span data-i18n="welcome">你好！我是 AI 客服助手 👋</span><br>
+          <span style="font-size:11px;color:var(--muted);margin-top:4px;display:block;" data-i18n="welcome.desc">
+            可回答制造能力、报价、材料、设计等问题。输入「<b>转人工</b>」接入真人客服。
+          </span>
+        </div>
+      </div>
+
+      <!-- Transfer prompt -->
+      <div class="transfer-alert" id="transferAlert">
+        <span data-i18n="transfer.hint">👩‍💼 需要人工客服协助？</span>
+        <button onclick="openTransfer()" data-i18n="transfer.btn">转人工客服</button>
+      </div>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar">
+      <div class="quick-chips" id="quickChips"></div>
+      <div class="input-row">
+        <input type="text" id="chatInput" data-i18n-placeholder="input.ph" placeholder="输入问题…" onkeydown="if(event.key==='Enter')ask()">
+        <button class="send-btn" onclick="ask()" data-i18n="send">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN MODE ============ -->
+  <div class="admin-mode" id="adminMode">
+    
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fff0ed;color:var(--accent);">💬</div>
+        <div>
+          <div class="stat-value" id="sTotal">0</div>
+          <div class="stat-label" data-i18n="stat.today">今日咨询量</div>
+          <div class="stat-trend trend-up" id="sTotalTrend">↑ 12% vs 昨日</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fff8e1;color:var(--warn);">↗️</div>
+        <div>
+          <div class="stat-value" id="sTransfer">0%</div>
+          <div class="stat-label" data-i18n="stat.transfer">转人工率</div>
+          <div class="stat-trend trend-down" id="sTransferTrend">↓ 3% vs 昨日</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#e8f5e9;color:var(--success);">🎯</div>
+        <div>
+          <div class="stat-value" id="sMatch">0%</div>
+          <div class="stat-label" data-i18n="stat.match">知识库命中率</div>
+          <div class="stat-trend trend-up" id="sMatchTrend">↑ 5% vs 昨日</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#e3f2fd;color:var(--blue);">⏱</div>
+        <div>
+          <div class="stat-value" id="sSatisfaction">0%</div>
+          <div class="stat-label" data-i18n="stat.satisfaction">客户满意度</div>
+          <div class="stat-trend trend-up" id="sSatTrend">↑ 2% vs 昨日</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="adminTabs">
+      <button class="active" data-tab="missed" data-i18n="tab.missed">🔍 缺失问题</button>
+      <button data-tab="qa" data-i18n="tab.qa">📋 问答明细</button>
+      <button data-tab="faq" data-i18n="tab.faq">📚 知识库</button>
+      <button data-tab="agents" data-i18n="tab.agents">👥 客服管理</button>
+      <button data-tab="tickets" data-i18n="tab.tickets">🎫 留言工单</button>
+    </div>
+
+    <!-- Tab: Missed Questions -->
+    <div class="tab-content active" id="tab-missed">
+      <div class="panel">
+        <div class="panel-head">
+          <h3><span data-i18n="missed.title">未命中问题</span> <span style="color:var(--warn);font-family:var(--font-mono);" id="missedCnt">0</span> <span style="font-size:10px;font-weight:400;color:var(--muted);" data-i18n="missed.pending">条待处理</span></h3>
+          <button class="btn btn-secondary" onclick="markAllMissed()" style="font-size:10px;" data-i18n="missed.clearAll">全部标记已处理</button>
+        </div>
+        <div class="panel-body" id="missedList">
+          <span style="color:var(--muted);font-size:11px;">暂无未命中问题 ✅</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: QA Log -->
+    <div class="tab-content" id="tab-qa">
+      <div class="filter-bar">
+        <input type="text" id="fKeyword" data-i18n-placeholder="qa.search" placeholder="搜索关键词…" style="width:160px;">
+        <select id="fType">
+          <option value="all" data-i18n="qa.allTypes">全部类型</option>
+          <option value="ai">AI 回答</option>
+          <option value="human">转人工</option>
+        </select>
+        <select id="fRate">
+          <option value="all" data-i18n="qa.allRates">全部评价</option>
+          <option value="good">👍 满意</option>
+          <option value="bad">👎 不满意</option>
+        </select>
+        <button class="btn btn-secondary" onclick="refreshAdmin()" style="font-size:10px;">刷新</button>
+      </div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr><th data-i18n="qa.col.time">时间</th><th data-i18n="qa.col.question">问题</th><th data-i18n="qa.col.answer">回答</th><th data-i18n="qa.col.type">类型</th><th data-i18n="qa.col.rate">评价</th><th data-i18n="qa.col.cat">匹配类别</th></tr>
+          </thead>
+          <tbody id="qaLog"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab: FAQ -->
+    <div class="tab-content" id="tab-faq">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="panel">
+          <div class="panel-head">
+            <h3 data-i18n="faq.add">➕ 新增 / 编辑知识条目</h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label data-i18n="faq.kw">关键词（逗号分隔）</label>
+              <input type="text" id="newKw" placeholder="CNC, 加工, machining…">
+            </div>
+            <div class="form-group">
+              <label data-i18n="faq.cat">分类</label>
+              <input type="text" id="newCat" placeholder="制造能力 / 报价 / 账号…">
+            </div>
+            <div class="form-group">
+              <label data-i18n="faq.zh">中文回答</label>
+              <textarea id="newZh" placeholder="中文回复内容…"></textarea>
+            </div>
+            <div class="form-group">
+              <label data-i18n="faq.en">English Answer</label>
+              <textarea id="newEn" placeholder="English reply…"></textarea>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end;">
+              <button class="btn btn-secondary" onclick="exportFAQ()" data-i18n="faq.export">导出题库</button>
+              <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" data-i18n="faq.import">批量导入</button>
+              <button class="btn btn-primary" onclick="addFAQ()" data-i18n="faq.save">保存</button>
+              <input type="file" id="importFile" accept=".json" style="display:none" onchange="importFAQ(this)">
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 data-i18n="faq.list">知识库列表 (<span id="faqCount">0</span>)</h3>
+            <input type="text" id="fFaqSearch" data-i18n-placeholder="faq.search" placeholder="搜索…" style="width:140px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--fg);font-size:11px;outline:none;" oninput="refreshAdmin()">
+          </div>
+          <div class="panel-body" id="faqList" style="max-height:420px;overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Agents -->
+    <div class="tab-content" id="tab-agents">
+      <div class="panel">
+        <div class="panel-head">
+          <h3 data-i18n="agents.title">客服列表</h3>
+          <button class="btn btn-primary" onclick="addAgent()" data-i18n="agents.add">添加客服</button>
+        </div>
+        <div class="panel-body" style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr><th data-i18n="agents.col.name">姓名</th><th data-i18n="agents.col.email">邮箱</th><th data-i18n="agents.col.skill">技能组</th><th data-i18n="agents.col.status">状态</th><th data-i18n="agents.col.today">今日处理</th></tr>
+            </thead>
+            <tbody id="agentList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Tickets -->
+    <div class="tab-content" id="tab-tickets">
+      <div class="panel">
+        <div class="panel-head">
+          <h3 data-i18n="tickets.title">留言工单</h3>
+        </div>
+        <div class="panel-body" style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr><th data-i18n="tickets.col.time">提交时间</th><th data-i18n="tickets.col.customer">客户</th><th data-i18n="tickets.col.contact">联系方式</th><th data-i18n="tickets.col.desc">问题描述</th><th data-i18n="tickets.col.status">状态</th><th data-i18n="tickets.col.action">操作</th></tr>
+            </thead>
+            <tbody id="ticketList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== Transfer Modal ===== -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal-box">
+    <h3 data-i18n="transfer.title">👩‍💼 转接人工客服</h3>
+    <div id="transferNote" style="font-size:11px;color:var(--warn);margin-bottom:14px;padding:8px 12px;background:var(--warn-light);border-radius:var(--radius-sm);"></div>
+    <div class="form-group">
+      <label data-i18n="transfer.name">姓名 <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="tfName" placeholder="John / 张三">
+    </div>
+    <div class="form-group">
+      <label data-i18n="transfer.contact">邮箱或电话 <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="tfContact" placeholder="email / +86 138…">
+    </div>
+    <div class="form-group">
+      <label data-i18n="transfer.desc">问题描述</label>
+      <textarea id="tfDesc" placeholder="简单描述您的问题…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeTransfer()" data-i18n="transfer.cancel">取消</button>
+      <button class="btn btn-primary" onclick="submitTransfer()" data-i18n="transfer.submit">提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================================
+// CORE UTILITIES
+// =============================================================
+function workingHours() {
+  const n = new Date();
+  const b = new Date(n.toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
+  const h = b.getHours(), m = b.getMinutes(), d = b.getDay();
+  return d >= 1 && d <= 5 && h >= 9 && (h < 18 || (h === 18 && m <= 30));
+}
+function workingNote() {
+  return workingHours()
+    ? '🟢 客服在线，提交后 2 小时内联系你。'
+    : '🟡 非工作时间，客服将在下一个工作日 9:00 回复。';
+}
+function load(key, dflt) {
+  try { return JSON.parse(localStorage.getItem(key)) || dflt; } catch(e) { return dflt; }
+}
+function save(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
 1001|
-1002|// =============================================================
-1003|// FAQ / KNOWLEDGE BASE
-1004|// =============================================================
-1005|let FAQ = [
-1006|  { kw: ['能做','cnc','machining','加工','铝','aluminum','5轴','精度','tolerance'], cat: '制造能力', reply: { zh: '我们专注 CNC 精密加工，支持铝/钢/铜/钛等材料，3/4/5 轴加工，精度 ±0.01mm。上传 STEP 文件即时报价，4h 内完成。', en: 'CNC machining — aluminum, steel, copper, titanium. 3/4/5-axis, ±0.01mm. Upload STEP for instant quote within 4h.' }},
-1007|  { kw: ['注塑','injection','mold','塑料','plastic','overmolding','模具'], cat: '制造能力', reply: { zh: '注塑成型、包覆成型和嵌件成型。原型铝模 5K-10K 模次。上传 3D 文件 4h 内评估可行性。', en: 'Injection molding, overmolding, insert molding. Prototype molds 5K-10K shots. Upload 3D for 4h review.' }},
-1008|  { kw: ['3d打印','3d print','SLA','SLS','SLM','FDM','printing','打印'], cat: '制造能力', reply: { zh: 'SLA/SLS/SLM/FDM/MJF 3D 打印，支持塑料和金属材料。上传 STL/STEP 即可报价。', en: 'SLA, SLS, SLM, FDM, MJF 3D printing. Upload STL/STEP for quote.' }},
-1009|  { kw: ['钣金','sheet metal','laser','折弯','焊接','粉末','bending'], cat: '制造能力', reply: { zh: '激光切割、折弯、焊接、粉末喷涂。上传 DXF/STEP 报价。', en: 'Laser cutting, bending, welding, powder coating. Upload DXF/STEP.' }},
-1010|  { kw: ['表面处理','anodiz','阳极','电镀','抛光','喷砂','finish','surface'], cat: '制造能力', reply: { zh: '阳极氧化、电镀、粉末喷涂、喷砂、电解抛光（Ra≤0.4μm）。', en: 'Anodizing, electroplating, powder coating, bead blasting, electropolishing.' }},
-1011|  { kw: ['报价','quote','price','cost','how much','多长时间','pricing','费用'], cat: '报价/订单', reply: { zh: '标准报价 4h 内完成（工作日 9:00-18:30），复杂件 ≤24h。完成后邮件通知。', en: 'Standard quotes within 4h (business hours). Complex parts up to 24h. Email when ready.' }},
-1012|  { kw: ['没回复','no reply','waiting','提交','submitted','npi','无响应'], cat: '报价/订单', reply: { zh: '抱歉延迟！发 info@rapiddirect.com，2h 内优先处理。WhatsApp +86 18123729083。', en: 'Apologies! Email info@rapiddirect.com — priority 2h. WhatsApp +86 18123729083.' }},
-1013|  { kw: ['设计','design','cad','不会画','建模','sketch','草图','文件太大','drawing'], cat: '设计/CAD', reply: { zh: '发送草图或描述需求，工程师帮你创建 STEP 文件。设计费 $100 起，1-3 工作日。', en: 'Send sketches — engineers create STEP file. Design from $100, 1-3 days.' }},
-1014|  { kw: ['登录','login','password','密码','锁','reset','退订','账号'], cat: '账号', reply: { zh: '清除缓存 → Chrome/Edge → 忘记密码。仍不行发 info@rapiddirect.com，2h 内重置。', en: 'Clear cache → Chrome/Edge → Forgot Password. Email info@rapiddirect.com for reset.' }},
-1015|  { kw: ['supplier','供应商','partner','合作','become','入驻','接单','成为'], cat: '供应商', reply: { zh: '欢迎！发公司介绍 + 能力清单到 supplier@rapiddirect.com，1-3 工作日审核。', en: 'Welcome! Send company intro + capability list to supplier@rapiddirect.com.' }},
-1016|  { kw: ['质量','quality','cert','ISO','检验','inspection','退货','defect'], cat: '质量', reply: { zh: '通过 ISO 9001 / ISO 13485 认证。每批次附带全尺寸检测报告。不良率 < 0.3%。', en: 'ISO 9001 / ISO 13485 certified. Full dimensional inspection report per batch. Defect rate < 0.3%.' }},
-1017|  { kw: ['物流','shipping','delivery','快递','交货','运费','海关','DDP'], cat: '物流', reply: { zh: '支持 DDP/DAP/FOB 条款。FedEx/UPS/DHL 3-7 天全球送达。运费按体积/重量实时计算。', en: 'DDP/DAP/FOB supported. FedEx/UPS/DHL 3-7 days worldwide. Freight calculated real-time.' }},
-1018|  { kw: ['支付','payment','付款','invoice','发票','pi','proforma'], cat: '支付', reply: { zh: '支持电汇、信用卡、PayPal。新客户预付 50%+50% 发货前。月结客户 Net 30。', en: 'Wire transfer, credit card, PayPal. New clients: 50% upfront + 50% before shipment. Net 30 for credit accounts.' }},
-1019|  { kw: ['材料','material','certificate','证明','铝材','钢材','copper','titanium'], cat: '材料', reply: { zh: '提供材料证明 (MTC)。常用材料：AL6061/7075, SS304/316L, 铜 C110, 钛 Ti-6Al-4V。', en: 'Material certs (MTC) provided. Common: AL6061/7075, SS304/316L, Copper C110, Ti-6Al-4V.' }},
-1020|  { kw: ['最小起订','moq','minimum','最低','起订量','min order'], cat: '报价/订单', reply: { zh: 'CNC 加工 1 件起订，注塑模具 1 套起订。无最低订单金额限制。', en: 'CNC: 1 pc MOQ. Injection molds: 1 set MOQ. No minimum order value.' }},
-1021|];
-1022|try { const c = load('customFAQ', []); if (c.length) FAQ = FAQ.concat(c); } catch(e) {}
-1023|
-1024|function isZH(text) {
-1025|  return /[\u4e00-\u9fff]/.test(text) || !/[a-zA-Z]{3,}/.test(text);
-1026|}
-1027|
-1028|function matchFAQ(text) {
-1029|  let best = null, bestScore = 0;
-1030|  const l = text.toLowerCase();
-1031|  for (const f of FAQ) {
-1032|    if (!f.kw.length) continue;
-1033|    let score = 0;
-1034|    for (const k of f.kw) { if (l.includes(k.toLowerCase())) score += k.length; }
-1035|    if (score > bestScore) { bestScore = score; best = f; }
-1036|  }
-1037|  const maxScore = Math.max(...FAQ.filter(f => f.kw.length).map(f => Math.max(...f.kw.map(k => k.length))));
-1038|  return { faq: best, score: best ? Math.min(100, Math.round(bestScore / maxScore * 100)) : 0 };
-1039|}
-1040|
-1041|// =============================================================
-1042|// CLIENT — CHAT
-1043|// =============================================================
-1044|let msgId = 0;
-1045|
-1046|function addMsg(role, text, cat, matched) {
-1047|  const area = document.getElementById('chatArea');
-1048|  const isAI = role === 'ai';
-1049|  const div = document.createElement('div');
-1050|  div.className = 'msg ' + role;
-1051|  const mid = msgId++;
-1052|  const catTag = cat && cat !== '转人工' ? `<span class="category-tag">${cat}</span>` : '';
-1053|  const metaHTML = isAI
-1054|    ? `<div class="meta-row">${catTag}${cat !== '转人工' ? `<button class="rate-btn" onclick="rateMsg(${mid},'good',this)" data-i18n="rate.good">👍</button><button class="rate-btn" onclick="rateMsg(${mid},'bad',this)" data-i18n="rate.bad">👎</button>` : ''}</div>`
-1055|    : '';
-1056|  div.innerHTML = `<div class="avatar">${isAI ? 'AI' : 'U'}</div><div class="bubble">${text}${metaHTML}</div>`;
-1057|  div.setAttribute('data-mid', mid);
-1058|  area.appendChild(div);
-1059|  area.scrollTop = area.scrollHeight;
-1060|
-1061|  let log = load('chatLog', []);
-1062|  log.push({
-1063|    id: mid, time: new Date().toLocaleString('zh-CN'),
-1064|    q: isAI ? '' : (document.getElementById('chatInput').value || text),
-1065|    a: isAI ? text : '', cat: cat || '-', matched, rate: null,
-1066|    type: cat === '转人工' ? 'human' : 'ai'
-1067|  });
-1068|  if (log.length > 500) log = log.slice(-500);
-1069|  save('chatLog', log);
-1070|}
-1071|
-1072|function rateMsg(mid, val, btn) {
-1073|  const log = load('chatLog', []);
-1074|  const item = log.find(x => x.id === mid);
-1075|  if (item) { item.rate = val; save('chatLog', log); }
-1076|  btn.classList.add('selected');
-1077|  const sibling = val === 'good' ? btn.nextElementSibling : btn.previousElementSibling;
-1078|  if (sibling) sibling.classList.remove('selected');
-1079|}
-1080|
-1081|function recordMiss(text) {
-1082|  let m = load('missedQuestions', {});
-1083|  let k = text.toLowerCase().trim();
-1084|  if (m[k]) { m[k].count++; m[k].time = Date.now(); }
-1085|  else { m[k] = { text, count: 1, time: Date.now(), status: 'pending' }; }
-1086|  save('missedQuestions', m);
-1087|}
-1088|
-1089|function showTyping() {
-1090|  const area = document.getElementById('chatArea');
-1091|  const div = document.createElement('div');
-1092|  div.className = 'msg ai';
-1093|  div.id = 'typingMsg';
-1094|  div.innerHTML = '<div class="avatar">AI</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-1095|  area.appendChild(div);
-1096|  area.scrollTop = area.scrollHeight;
-1097|}
-1098|
-1099|function hideTyping() {
-1100|  const t = document.getElementById('typingMsg');
-1101|  if (t) t.remove();
-1102|}
-1103|
-1104|function ask(q) {
-1105|  if (!q) {
-1106|    q = document.getElementById('chatInput').value.trim();
-1107|    if (!q) return;
-1108|    document.getElementById('chatInput').value = '';
-1109|  }
-1110|  addMsg('user', q, '', true);
-1111|  showTyping();
-1112|
-1113|  const zh = isZH(q);
-1114|  const { faq, score } = matchFAQ(q);
-1115|
-1116|  if (q.includes('转人工') || (!faq || score < 40)) {
-1117|    if (!q.includes('转人工')) recordMiss(q);
-1118|    const note = workingNote();
-1119|    setTimeout(() => {
-1120|      hideTyping();
-1121|      addMsg('ai', '抱歉，我暂时还无法回答这个问题。即将为您转接人工客服。<br><br>' + note + '<br>📧 info@rapiddirect.com<br>📱 WhatsApp +86 18123729083', '转人工', false);
-1122|    }, 700);
-1123|    return;
-1124|  }
-1125|  setTimeout(() => {
-1126|    hideTyping();
-1127|    addMsg('ai', zh ? faq.reply.zh : faq.reply.en, faq.cat, true);
-1128|  }, 500 + Math.random() * 400);
-1129|}
-1130|
-1131|function openTransfer() {
-1132|  document.getElementById('transferNote').textContent = workingNote();
-1133|  document.getElementById('transferModal').classList.add('open');
-1134|}
-1135|
-1136|function closeTransfer() {
-1137|  document.getElementById('transferModal').classList.remove('open');
-1138|}
-1139|
-1140|function submitTransfer() {
-1141|  const name = document.getElementById('tfName').value.trim();
-1142|  const contact = document.getElementById('tfContact').value.trim();
-1143|  const desc = document.getElementById('tfDesc').value.trim();
-1144|  if (!name || !contact) { alert('请填写姓名和联系方式'); return; }
-1145|  closeTransfer();
-1146|  const byWhat = contact.includes('@') ? '邮箱' : '电话';
-1147|  addMsg('ai', '✅ 已提交！客服将通过 ' + byWhat + ' <b>' + contact + '</b> 联系 <b>' + name + '</b>。<br>' + workingNote(), '转人工', false);
-1148|  if (!workingHours()) {
-1149|    let tks = load('tickets', []);
-1150|    tks.push({ time: new Date().toLocaleString('zh-CN'), name, contact, desc: desc || '-', status: '待处理' });
-1151|    save('tickets', tks);
-1152|  }
-1153|}
-1154|
-1155|// =============================================================
-1156|// MODE SWITCHING
-1157|// =============================================================
-1158|function switchMode(mode) {
-1159|  document.querySelectorAll('#modeSwitch button').forEach(b => b.classList.remove('active'));
-1160|  document.querySelector(`#modeSwitch button[data-mode="${mode}"]`).classList.add('active');
-1161|  const clientMode = document.getElementById('clientMode');
-1162|  const adminMode = document.getElementById('adminMode');
-1163|  if (mode === 'client') {
-1164|    clientMode.classList.remove('hidden');
-1165|    adminMode.classList.remove('visible');
-1166|  } else {
-1167|    clientMode.classList.add('hidden');
-1168|    adminMode.classList.add('visible');
-1169|    refreshAdmin();
-1170|  }
-1171|}
-1172|
-1173|// =============================================================
-1174|// ADMIN
-1175|// =============================================================
-1176|let adminCurTab = 'missed';
-1177|
-1178|function switchAdminTab(tab, btn) {
-1179|  document.querySelectorAll('#adminTabs button').forEach(b => b.classList.remove('active'));
-1180|  btn.classList.add('active');
-1181|  adminCurTab = tab;
-1182|  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
-1183|  document.getElementById('tab-' + tab).classList.add('active');
-1184|  refreshAdmin();
-1185|}
-1186|
-1187|function refreshAdmin() {
-1188|  const log = load('chatLog', []);
-1189|  const m = load('missedQuestions', {});
-1190|
-1191|  // Stats
-1192|  const todayDate = new Date().toLocaleDateString('zh-CN');
-1193|  const today = log.filter(l => l.time.includes(todayDate));
-1194|  document.getElementById('sTotal').textContent = today.length;
-1195|  const transferCount = today.filter(l => l.type === 'human').length;
-1196|  document.getElementById('sTransfer').textContent = today.length ? Math.round(transferCount / today.length * 100) + '%' : '0%';
-1197|  const matchedCount = today.filter(l => l.matched).length;
-1198|  document.getElementById('sMatch').textContent = today.length ? Math.round(matchedCount / today.length * 100) + '%' : '0%';
-1199|  const satCount = today.filter(l => l.rate === 'good').length;
-1200|  const ratedCount = today.filter(l => l.rate).length;
-1201|  document.getElementById('sSatisfaction').textContent = ratedCount ? Math.round(satCount / ratedCount * 100) + '%' : '—';
-1202|
-1203|  // Missed
-1204|  const items = Object.values(m).filter(x => x.status === 'pending').sort((a, b) => b.time - a.time);
-1205|  document.getElementById('missedCnt').textContent = items.length;
-1206|  const ml = document.getElementById('missedList');
-1207|  if (!items.length) {
-1208|    ml.innerHTML = '<span style="color:var(--muted);font-size:11px;">暂无未命中问题 ✅</span>';
-1209|  } else {
-1210|    ml.innerHTML = items.slice(0, 30).map(mx =>
-1211|      `<div class="missed-item">
-1212|        <span class="text" title="${mx.text}">${mx.text.substring(0, 50)}${mx.text.length > 50 ? '…' : ''}</span>
-1213|        <span class="count">×${mx.count}</span>
-1214|        <span style="font-size:9px;color:var(--muted);">${new Date(mx.time).toLocaleDateString('zh-CN')}</span>
-1215|        <div class="actions">
-1216|          <button class="btn btn-ghost" style="font-size:9px;padding:2px 8px;" onclick="fillMissed('${mx.text.replace(/'/g, "\\'")}')">补录</button>
-1217|          <button class="btn btn-ghost" style="font-size:9px;padding:2px 8px;color:var(--muted);" onclick="markMissed('${mx.text.replace(/'/g, "\\'")}')">忽略</button>
-1218|        </div>
-1219|      </div>`
-1220|    ).join('');
-1221|  }
-1222|
-1223|  // QA Log
-1224|  const fKw = (document.getElementById('fKeyword')?.value || '').toLowerCase();
-1225|  const fTr = (document.getElementById('fType')?.value || 'all');
-1226|  const fRt = (document.getElementById('fRate')?.value || 'all');
-1227|  let filtered = log.filter(l => {
-1228|    if (fKw && !l.q.toLowerCase().includes(fKw) && !l.a.toLowerCase().includes(fKw)) return false;
-1229|    if (fTr !== 'all' && l.type !== fTr) return false;
-1230|    if (fRt !== 'all' && l.rate !== (fRt === 'good' ? 'good' : 'bad')) return false;
-1231|    return true;
-1232|  });
-1233|  document.getElementById('qaLog').innerHTML = filtered.slice(-40).reverse().map(l =>
-1234|    `<tr>
-1235|      <td style="color:var(--muted);font-size:10px;">${l.time}</td>
-1236|      <td title="${l.q}">${l.q.substring(0, 30)}</td>
-1237|      <td title="${l.a}">${l.a.substring(0, 40)}</td>
-1238|      <td>${l.type === 'human' ? '<span class="tag tag-human">转人工</span>' : '<span class="tag tag-ai">AI</span>'}</td>
-1239|      <td>${l.rate === 'good' ? '👍' : l.rate === 'bad' ? '👎' : '—'}</td>
-1240|      <td>${l.cat}</td>
-1241|    </tr>`
-1242|  ).join('');
-1243|
-1244|  // FAQ
-1245|  document.getElementById('faqCount').textContent = FAQ.length;
-1246|  const fqKw = (document.getElementById('fFaqSearch')?.value || '').toLowerCase();
-1247|  document.getElementById('faqList').innerHTML = FAQ.filter(f =>
-1248|    !fqKw || f.kw.some(k => k.toLowerCase().includes(fqKw)) || f.cat.includes(fqKw)
-1249|  ).map((f, i) =>
-1250|    `<div class="faq-item">
-1251|      <div>
-1252|        <span class="keywords">${f.cat}:</span>
-1253|        <span style="color:var(--fg-2);">${f.kw.slice(0, 4).join(', ')}${f.kw.length > 4 ? '…' : ''}</span>
-1254|      </div>
-1255|      <div class="actions">
-1256|        ${i >= 16 ? `<button class="btn btn-ghost" style="font-size:9px;padding:2px 6px;color:var(--accent);" onclick="editFAQ(${i})">✏️</button><button class="btn btn-ghost" style="font-size:9px;padding:2px 6px;color:var(--muted);" onclick="delFAQ(${i})">🗑</button>` : '<span style="font-size:9px;color:var(--muted);">系统</span>'}
-1257|      </div>
-1258|    </div>`
-1259|  ).join('');
-1260|
-1261|  // Agents
-1262|  const agents = load('agents', [
-1263|    { name: '张工程师', email: 'zhang@rapiddirect.com', skill: 'CNC 组', status: 'online', today: 15 },
-1264|    { name: '李工程师', email: 'li@rapiddirect.com', skill: '注塑组', status: 'online', today: 8 },
-1265|    { name: '王工程师', email: 'wang@rapiddirect.com', skill: '钣金组', status: 'offline', today: 0 },
-1266|    { name: '陈工程师', email: 'chen@rapiddirect.com', skill: '3D 打印组', status: 'online', today: 6 },
-1267|  ]);
-1268|  document.getElementById('agentList').innerHTML = agents.map(a =>
-1269|    `<tr>
-1270|      <td>${a.name}</td>
-1271|      <td style="color:var(--muted);">${a.email}</td>
-1272|      <td>${a.skill}</td>
-1273|      <td><span class="tag ${a.status === 'online' ? 'tag-online' : 'tag-offline'}">${a.status === 'online' ? '在线' : '离线'}</span></td>
-1274|      <td style="font-family:var(--font-mono);">${a.today}</td>
-1275|    </tr>`
-1276|  ).join('');
-1277|
-1278|  // Tickets
-1279|  const tickets = load('tickets', []);
-1280|  document.getElementById('ticketList').innerHTML = tickets.slice(-10).reverse().map(t =>
-1281|    `<tr>
-1282|      <td style="color:var(--muted);font-size:10px;">${t.time}</td>
-1283|      <td>${t.name}</td>
-1284|      <td style="color:var(--muted);">${t.contact}</td>
-1285|      <td>${(t.desc || '-').substring(0, 25)}</td>
-1286|      <td><span class="tag ${t.status === '待处理' ? 'tag-pending' : 'tag-done'}">${t.status}</span></td>
-1287|      <td><button class="btn btn-primary" style="font-size:9px;padding:3px 10px;" onclick="resolveTicket('${t.time}')">处理</button></td>
-1288|    </tr>`
-1289|  ).join('');
-1290|}
-1291|
-1292|function fillMissed(text) {
-1293|  switchMode('admin');
-1294|  const kwInput = document.getElementById('newKw');
-1295|  if (kwInput) kwInput.value = text;
-1296|  const faqTabBtn = document.querySelector('#adminTabs button[data-tab="faq"]');
-1297|  if (faqTabBtn) switchAdminTab('faq', faqTabBtn);
-1298|}
-1299|
-1300|function markMissed(text) {
-1301|  let m = load('missedQuestions', {});
-1302|  let k = text.toLowerCase().trim();
-1303|  if (m[k]) m[k].status = 'done';
-1304|  save('missedQuestions', m);
-1305|  refreshAdmin();
-1306|}
-1307|
-1308|function markAllMissed() {
-1309|  let m = load('missedQuestions', {});
-1310|  Object.values(m).forEach(x => x.status = 'done');
-1311|  save('missedQuestions', m);
-1312|  refreshAdmin();
-1313|}
-1314|
-1315|function resolveTicket(time) {
-1316|  let tks = load('tickets', []);
-1317|  const item = tks.find(x => x.time === time);
-1318|  if (item) item.status = '已处理';
-1319|  save('tickets', tks);
-1320|  refreshAdmin();
-1321|}
-1322|
-1323|function addFAQ() {
-1324|  const kw = document.getElementById('newKw').value.trim();
-1325|  const cat = document.getElementById('newCat').value.trim() || '自定义';
-1326|  const zh = document.getElementById('newZh').value.trim();
-1327|  const en = document.getElementById('newEn').value.trim() || zh;
-1328|  if (!kw || !zh) { alert('关键词和中文回答必填'); return; }
-1329|  FAQ.push({ kw: kw.split(',').map(k => k.trim()).filter(k => k), cat, reply: { zh, en } });
-1330|  save('customFAQ', FAQ.slice(16));
-1331|  ['newKw', 'newCat', 'newZh', 'newEn'].forEach(id => document.getElementById(id).value = '');
-1332|  refreshAdmin();
-1333|}
-1334|
-1335|function editFAQ(i) {
-1336|  if (i < 16) { alert('默认题库不可编辑'); return; }
-1337|  const f = FAQ[i];
-1338|  document.getElementById('newKw').value = f.kw.join(', ');
-1339|  document.getElementById('newCat').value = f.cat;
-1340|  document.getElementById('newZh').value = f.reply.zh;
-1341|  document.getElementById('newEn').value = f.reply.en;
-1342|  FAQ.splice(i, 1);
-1343|  save('customFAQ', FAQ.slice(16));
-1344|  refreshAdmin();
-1345|}
-1346|
-1347|function delFAQ(i) {
-1348|  if (i < 16) { alert('默认题库不可删除'); return; }
-1349|  if (!confirm('确认删除？')) return;
-1350|  FAQ.splice(i, 1);
-1351|  save('customFAQ', FAQ.slice(16));
-1352|  refreshAdmin();
-1353|}
-1354|
-1355|function addAgent() {
-1356|  const n = prompt('客服姓名：');
-1357|  if (!n) return;
-1358|  let a = load('agents', []);
-1359|  a.push({ name: n, email: '', skill: '', status: 'offline', today: 0 });
-1360|  save('agents', a);
-1361|  refreshAdmin();
-1362|}
-1363|
-1364|function exportFAQ() {
-1365|  const data = FAQ.slice(16).map(f => ({ kw: f.kw.join(','), cat: f.cat, zh: f.reply.zh, en: f.reply.en }));
-1366|  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-1367|  const a = document.createElement('a');
-1368|  a.href = URL.createObjectURL(blob);
-1369|  a.download = 'faq-export.json';
-1370|  a.click();
-1371|}
-1372|
-1373|function importFAQ(input) {
-1374|  const file = input.files[0];
-1375|  if (!file) return;
-1376|  const reader = new FileReader();
-1377|  reader.onload = function(e) {
-1378|    try {
-1379|      const data = JSON.parse(e.target.result);
-1380|      if (Array.isArray(data)) {
-1381|        data.forEach(d => {
-1382|          if (d.kw && d.zh) FAQ.push({ kw: d.kw.split(',').map(k => k.trim()), cat: d.cat || '导入', reply: { zh: d.zh, en: d.en || d.zh } });
-1383|        });
-1384|        save('customFAQ', FAQ.slice(16));
-1385|        refreshAdmin();
-1386|        alert('✅ 导入 ' + data.length + ' 条');
-1387|      }
-1388|    } catch(ex) { alert('格式错误，请使用 JSON 格式'); }
-1389|  };
-1390|  reader.readAsText(file);
-1391|}
-1392|
-1393|// =============================================================
-1394|// LANGUAGE SWITCH
-1395|// =============================================================
-1396|const i18n = {
-1397|  zh: {
-1398|    'app.title': 'AI 客服系统',
-1399|    'mode.client': '💬 客户端', 'mode.admin': '📊 管理端',
-1400|    'welcome': '你好！我是 AI 客服助手 👋',
-1401|    'welcome.desc': '可回答制造能力、报价、材料、设计等问题。输入「转人工」接入真人客服。',
-1402|    'transfer.hint': '👩‍💼 需要人工客服协助？', 'transfer.btn': '转人工客服',
-1403|    'transfer.title': '👩‍💼 转接人工客服',
-1404|    'transfer.name': '姓名', 'transfer.contact': '邮箱或电话', 'transfer.desc': '问题描述',
-1405|    'transfer.cancel': '取消', 'transfer.submit': '提交',
-1406|    'input.ph': '输入问题…', 'send': '发送',
-1407|    'rate.good': '👍 有用', 'rate.bad': '👎 无用',
-1408|    'stat.today': '今日咨询量', 'stat.transfer': '转人工率', 'stat.match': '知识库命中率', 'stat.satisfaction': '客户满意度',
-1409|    'tab.missed': '🔍 缺失问题', 'tab.qa': '📋 问答明细', 'tab.faq': '📚 知识库', 'tab.agents': '👥 客服管理', 'tab.tickets': '🎫 留言工单',
-1410|    'missed.title': '未命中问题', 'missed.pending': '条待处理', 'missed.clearAll': '全部标记已处理',
-1411|    'qa.search': '搜索关键词…', 'qa.allTypes': '全部类型', 'qa.allRates': '全部评价',
-1412|    'qa.col.time': '时间', 'qa.col.question': '问题', 'qa.col.answer': '回答', 'qa.col.type': '类型', 'qa.col.rate': '评价', 'qa.col.cat': '匹配类别',
-1413|    'faq.add': '➕ 新增 / 编辑知识条目', 'faq.kw': '关键词（逗号分隔）', 'faq.cat': '分类', 'faq.zh': '中文回答', 'faq.en': 'English Answer',
-1414|    'faq.export': '导出题库', 'faq.import': '批量导入', 'faq.save': '保存', 'faq.list': '知识库列表', 'faq.search': '搜索…',
-1415|    'agents.title': '客服列表', 'agents.add': '添加客服',
-1416|    'agents.col.name': '姓名', 'agents.col.email': '邮箱', 'agents.col.skill': '技能组', 'agents.col.status': '状态', 'agents.col.today': '今日处理',
-1417|    'tickets.title': '留言工单',
-1418|    'tickets.col.time': '提交时间', 'tickets.col.customer': '客户', 'tickets.col.contact': '联系方式', 'tickets.col.desc': '问题描述', 'tickets.col.status': '状态', 'tickets.col.action': '操作',
-1419|  },
-1420|  en: {
-1421|    'app.title': 'AI Customer Service',
-1422|    'mode.client': '💬 Client', 'mode.admin': '📊 Admin',
-1423|    'welcome': "Hello! I'm your AI assistant 👋",
-1424|    'welcome.desc': 'Ask about manufacturing, quoting, materials, design. Type "human" to reach a live agent.',
-1425|    'transfer.hint': '👩‍💼 Need a human agent?', 'transfer.btn': 'Transfer to Agent',
-1426|    'transfer.title': '👩‍💼 Transfer to Human Agent',
-1427|    'transfer.name': 'Name', 'transfer.contact': 'Email or Phone', 'transfer.desc': 'Issue Description',
-1428|    'transfer.cancel': 'Cancel', 'transfer.submit': 'Submit',
-1429|    'input.ph': 'Type your question…', 'send': 'Send',
-1430|    'rate.good': '👍 Helpful', 'rate.bad': '👎 Not Helpful',
-1431|    'stat.today': "Today's Inquiries", 'stat.transfer': 'Transfer Rate', 'stat.match': 'KB Match Rate', 'stat.satisfaction': 'CSAT',
-1432|    'tab.missed': '🔍 Missed', 'tab.qa': '📋 QA Log', 'tab.faq': '📚 Knowledge Base', 'tab.agents': '👥 Agents', 'tab.tickets': '🎫 Tickets',
-1433|    'missed.title': 'Missed Questions', 'missed.pending': 'pending', 'missed.clearAll': 'Mark All Resolved',
-1434|    'qa.search': 'Search…', 'qa.allTypes': 'All Types', 'qa.allRates': 'All Ratings',
-1435|    'qa.col.time': 'Time', 'qa.col.question': 'Question', 'qa.col.answer': 'Answer', 'qa.col.type': 'Type', 'qa.col.rate': 'Rating', 'qa.col.cat': 'Category',
-1436|    'faq.add': '➕ Add / Edit Entry', 'faq.kw': 'Keywords (comma-separated)', 'faq.cat': 'Category', 'faq.zh': 'Chinese Reply', 'faq.en': 'English Reply',
-1437|    'faq.export': 'Export', 'faq.import': 'Import', 'faq.save': 'Save', 'faq.list': 'Knowledge Base', 'faq.search': 'Search…',
-1438|    'agents.title': 'Agent List', 'agents.add': 'Add Agent',
-1439|    'agents.col.name': 'Name', 'agents.col.email': 'Email', 'agents.col.skill': 'Skill Group', 'agents.col.status': 'Status', 'agents.col.today': "Today's Chats",
-1440|    'tickets.title': 'Support Tickets',
-1441|    'tickets.col.time': 'Submitted', 'tickets.col.customer': 'Customer', 'tickets.col.contact': 'Contact', 'tickets.col.desc': 'Description', 'tickets.col.status': 'Status', 'tickets.col.action': 'Action',
-1442|  }
-1443|};
-1444|let currentLang = 'zh';
-1445|
-1446|function setLanguage(lang) {
-1447|  currentLang = lang;
-1448|  document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
-1449|  document.querySelector(`.lang-switch button[data-lang="${lang}"]`).classList.add('active');
-1450|  document.querySelectorAll('[data-i18n]').forEach(el => {
-1451|    const key = el.getAttribute('data-i18n');
-1452|    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
-1453|  });
-1454|  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-1455|    const key = el.getAttribute('data-i18n-placeholder');
-1456|    if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
-1457|  });
-1458|  document.querySelectorAll('.hours-on .hours-indicator span:last-child, .hours-off .hours-indicator span:last-child').forEach(el => {
-1459|    updateHours();
-1460|  });
-1461|}
-1462|
-1463|function updateHours() {
-1464|  const badge = document.getElementById('hoursBadge');
-1465|  const text = document.getElementById('hoursText');
-1466|  const isOn = workingHours();
-1467|  badge.className = 'hours-indicator ' + (isOn ? 'hours-on' : 'hours-off');
-1468|  text.textContent = isOn
-1469|    ? (currentLang === 'zh' ? '工作时间 · 人工在线' : 'Business Hours · Live')
-1470|    : (currentLang === 'zh' ? '非工作时间' : 'After Hours');
-1471|}
-1472|
-1473|// =============================================================
-1474|// INIT
-1475|// =============================================================
-1476|(function() {
-1477|  // Hours
-1478|  updateHours();
-1479|  setInterval(updateHours, 60000);
-1480|
-1481|  // Quick chips
-1482|  document.getElementById('quickChips').innerHTML = [
-1483|    '报价流程', '订单状态', '能做 CNC 吗', '3D 打印材料',
-1484|    '如何成为供应商', '设计支持', '最小起订量', '转人工'
-1485|  ].map(q => `<button onclick="ask('${q}')">${q}</button>`).join('');
-1486|
-1487|  // Mode switch
-1488|  document.querySelectorAll('#modeSwitch button').forEach(btn => {
-1489|    btn.addEventListener('click', function() {
-1490|      switchMode(this.getAttribute('data-mode'));
-1491|    });
-1492|  });
-1493|
-1494|  // Admin tabs
-1495|  document.querySelectorAll('#adminTabs button').forEach(btn => {
-1496|    btn.addEventListener('click', function() {
-1497|      switchAdminTab(this.getAttribute('data-tab'), this);
-1498|    });
-1499|  });
-1500|
+// =============================================================
+// FAQ / KNOWLEDGE BASE
+// =============================================================
+let FAQ = [
+  { kw: ['能做','cnc','machining','加工','铝','aluminum','5轴','精度','tolerance'], cat: '制造能力', reply: { zh: '我们专注 CNC 精密加工，支持铝/钢/铜/钛等材料，3/4/5 轴加工，精度 ±0.01mm。上传 STEP 文件即时报价，4h 内完成。', en: 'CNC machining — aluminum, steel, copper, titanium. 3/4/5-axis, ±0.01mm. Upload STEP for instant quote within 4h.' }},
+  { kw: ['注塑','injection','mold','塑料','plastic','overmolding','模具'], cat: '制造能力', reply: { zh: '注塑成型、包覆成型和嵌件成型。原型铝模 5K-10K 模次。上传 3D 文件 4h 内评估可行性。', en: 'Injection molding, overmolding, insert molding. Prototype molds 5K-10K shots. Upload 3D for 4h review.' }},
+  { kw: ['3d打印','3d print','SLA','SLS','SLM','FDM','printing','打印'], cat: '制造能力', reply: { zh: 'SLA/SLS/SLM/FDM/MJF 3D 打印，支持塑料和金属材料。上传 STL/STEP 即可报价。', en: 'SLA, SLS, SLM, FDM, MJF 3D printing. Upload STL/STEP for quote.' }},
+  { kw: ['钣金','sheet metal','laser','折弯','焊接','粉末','bending'], cat: '制造能力', reply: { zh: '激光切割、折弯、焊接、粉末喷涂。上传 DXF/STEP 报价。', en: 'Laser cutting, bending, welding, powder coating. Upload DXF/STEP.' }},
+  { kw: ['表面处理','anodiz','阳极','电镀','抛光','喷砂','finish','surface'], cat: '制造能力', reply: { zh: '阳极氧化、电镀、粉末喷涂、喷砂、电解抛光（Ra≤0.4μm）。', en: 'Anodizing, electroplating, powder coating, bead blasting, electropolishing.' }},
+  { kw: ['报价','quote','price','cost','how much','多长时间','pricing','费用'], cat: '报价/订单', reply: { zh: '标准报价 4h 内完成（工作日 9:00-18:30），复杂件 ≤24h。完成后邮件通知。', en: 'Standard quotes within 4h (business hours). Complex parts up to 24h. Email when ready.' }},
+  { kw: ['没回复','no reply','waiting','提交','submitted','npi','无响应'], cat: '报价/订单', reply: { zh: '抱歉延迟！发 info@rapiddirect.com，2h 内优先处理。WhatsApp +86 18123729083。', en: 'Apologies! Email info@rapiddirect.com — priority 2h. WhatsApp +86 18123729083.' }},
+  { kw: ['设计','design','cad','不会画','建模','sketch','草图','文件太大','drawing'], cat: '设计/CAD', reply: { zh: '发送草图或描述需求，工程师帮你创建 STEP 文件。设计费 $100 起，1-3 工作日。', en: 'Send sketches — engineers create STEP file. Design from $100, 1-3 days.' }},
+  { kw: ['登录','login','password','密码','锁','reset','退订','账号'], cat: '账号', reply: { zh: '清除缓存 → Chrome/Edge → 忘记密码。仍不行发 info@rapiddirect.com，2h 内重置。', en: 'Clear cache → Chrome/Edge → Forgot Password. Email info@rapiddirect.com for reset.' }},
+  { kw: ['supplier','供应商','partner','合作','become','入驻','接单','成为'], cat: '供应商', reply: { zh: '欢迎！发公司介绍 + 能力清单到 supplier@rapiddirect.com，1-3 工作日审核。', en: 'Welcome! Send company intro + capability list to supplier@rapiddirect.com.' }},
+  { kw: ['质量','quality','cert','ISO','检验','inspection','退货','defect'], cat: '质量', reply: { zh: '通过 ISO 9001 / ISO 13485 认证。每批次附带全尺寸检测报告。不良率 < 0.3%。', en: 'ISO 9001 / ISO 13485 certified. Full dimensional inspection report per batch. Defect rate < 0.3%.' }},
+  { kw: ['物流','shipping','delivery','快递','交货','运费','海关','DDP'], cat: '物流', reply: { zh: '支持 DDP/DAP/FOB 条款。FedEx/UPS/DHL 3-7 天全球送达。运费按体积/重量实时计算。', en: 'DDP/DAP/FOB supported. FedEx/UPS/DHL 3-7 days worldwide. Freight calculated real-time.' }},
+  { kw: ['支付','payment','付款','invoice','发票','pi','proforma'], cat: '支付', reply: { zh: '支持电汇、信用卡、PayPal。新客户预付 50%+50% 发货前。月结客户 Net 30。', en: 'Wire transfer, credit card, PayPal. New clients: 50% upfront + 50% before shipment. Net 30 for credit accounts.' }},
+  { kw: ['材料','material','certificate','证明','铝材','钢材','copper','titanium'], cat: '材料', reply: { zh: '提供材料证明 (MTC)。常用材料：AL6061/7075, SS304/316L, 铜 C110, 钛 Ti-6Al-4V。', en: 'Material certs (MTC) provided. Common: AL6061/7075, SS304/316L, Copper C110, Ti-6Al-4V.' }},
+  { kw: ['最小起订','moq','minimum','最低','起订量','min order'], cat: '报价/订单', reply: { zh: 'CNC 加工 1 件起订，注塑模具 1 套起订。无最低订单金额限制。', en: 'CNC: 1 pc MOQ. Injection molds: 1 set MOQ. No minimum order value.' }},
+];
+try { const c = load('customFAQ', []); if (c.length) FAQ = FAQ.concat(c); } catch(e) {}
+
+function isZH(text) {
+  return /[\u4e00-\u9fff]/.test(text) || !/[a-zA-Z]{3,}/.test(text);
+}
+
+function matchFAQ(text) {
+  let best = null, bestScore = 0;
+  const l = text.toLowerCase();
+  for (const f of FAQ) {
+    if (!f.kw.length) continue;
+    let score = 0;
+    for (const k of f.kw) { if (l.includes(k.toLowerCase())) score += k.length; }
+    if (score > bestScore) { bestScore = score; best = f; }
+  }
+  const maxScore = Math.max(...FAQ.filter(f => f.kw.length).map(f => Math.max(...f.kw.map(k => k.length))));
+  return { faq: best, score: best ? Math.min(100, Math.round(bestScore / maxScore * 100)) : 0 };
+}
+
+// =============================================================
+// CLIENT — CHAT
+// =============================================================
+let msgId = 0;
+
+function addMsg(role, text, cat, matched) {
+  const area = document.getElementById('chatArea');
+  const isAI = role === 'ai';
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const mid = msgId++;
+  const catTag = cat && cat !== '转人工' ? `<span class="category-tag">${cat}</span>` : '';
+  const metaHTML = isAI
+    ? `<div class="meta-row">${catTag}${cat !== '转人工' ? `<button class="rate-btn" onclick="rateMsg(${mid},'good',this)" data-i18n="rate.good">👍</button><button class="rate-btn" onclick="rateMsg(${mid},'bad',this)" data-i18n="rate.bad">👎</button>` : ''}</div>`
+    : '';
+  div.innerHTML = `<div class="avatar">${isAI ? 'AI' : 'U'}</div><div class="bubble">${text}${metaHTML}</div>`;
+  div.setAttribute('data-mid', mid);
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+
+  let log = load('chatLog', []);
+  log.push({
+    id: mid, time: new Date().toLocaleString('zh-CN'),
+    q: isAI ? '' : (document.getElementById('chatInput').value || text),
+    a: isAI ? text : '', cat: cat || '-', matched, rate: null,
+    type: cat === '转人工' ? 'human' : 'ai'
+  });
+  if (log.length > 500) log = log.slice(-500);
+  save('chatLog', log);
+}
+
+function rateMsg(mid, val, btn) {
+  const log = load('chatLog', []);
+  const item = log.find(x => x.id === mid);
+  if (item) { item.rate = val; save('chatLog', log); }
+  btn.classList.add('selected');
+  const sibling = val === 'good' ? btn.nextElementSibling : btn.previousElementSibling;
+  if (sibling) sibling.classList.remove('selected');
+}
+
+function recordMiss(text) {
+  let m = load('missedQuestions', {});
+  let k = text.toLowerCase().trim();
+  if (m[k]) { m[k].count++; m[k].time = Date.now(); }
+  else { m[k] = { text, count: 1, time: Date.now(), status: 'pending' }; }
+  save('missedQuestions', m);
+}
+
+function showTyping() {
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typingMsg';
+  div.innerHTML = '<div class="avatar">AI</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('typingMsg');
+  if (t) t.remove();
+}
+
+function ask(q) {
+  if (!q) {
+    q = document.getElementById('chatInput').value.trim();
+    if (!q) return;
+    document.getElementById('chatInput').value = '';
+  }
+  addMsg('user', q, '', true);
+  showTyping();
+
+  const zh = isZH(q);
+  const { faq, score } = matchFAQ(q);
+
+  if (q.includes('转人工') || (!faq || score < 40)) {
+    if (!q.includes('转人工')) recordMiss(q);
+    const note = workingNote();
+    setTimeout(() => {
+      hideTyping();
+      addMsg('ai', '抱歉，我暂时还无法回答这个问题。即将为您转接人工客服。<br><br>' + note + '<br>📧 info@rapiddirect.com<br>📱 WhatsApp +86 18123729083', '转人工', false);
+    }, 700);
+    return;
+  }
+  setTimeout(() => {
+    hideTyping();
+    addMsg('ai', zh ? faq.reply.zh : faq.reply.en, faq.cat, true);
+  }, 500 + Math.random() * 400);
+}
+
+function openTransfer() {
+  document.getElementById('transferNote').textContent = workingNote();
+  document.getElementById('transferModal').classList.add('open');
+}
+
+function closeTransfer() {
+  document.getElementById('transferModal').classList.remove('open');
+}
+
+function submitTransfer() {
+  const name = document.getElementById('tfName').value.trim();
+  const contact = document.getElementById('tfContact').value.trim();
+  const desc = document.getElementById('tfDesc').value.trim();
+  if (!name || !contact) { alert('请填写姓名和联系方式'); return; }
+  closeTransfer();
+  const byWhat = contact.includes('@') ? '邮箱' : '电话';
+  addMsg('ai', '✅ 已提交！客服将通过 ' + byWhat + ' <b>' + contact + '</b> 联系 <b>' + name + '</b>。<br>' + workingNote(), '转人工', false);
+  if (!workingHours()) {
+    let tks = load('tickets', []);
+    tks.push({ time: new Date().toLocaleString('zh-CN'), name, contact, desc: desc || '-', status: '待处理' });
+    save('tickets', tks);
+  }
+}
+
+// =============================================================
+// MODE SWITCHING
+// =============================================================
+function switchMode(mode) {
+  document.querySelectorAll('#modeSwitch button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`#modeSwitch button[data-mode="${mode}"]`).classList.add('active');
+  const clientMode = document.getElementById('clientMode');
+  const adminMode = document.getElementById('adminMode');
+  if (mode === 'client') {
+    clientMode.classList.remove('hidden');
+    adminMode.classList.remove('visible');
+  } else {
+    clientMode.classList.add('hidden');
+    adminMode.classList.add('visible');
+    refreshAdmin();
+  }
+}
+
+// =============================================================
+// ADMIN
+// =============================================================
+let adminCurTab = 'missed';
+
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('#adminTabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  adminCurTab = tab;
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  refreshAdmin();
+}
+
+function refreshAdmin() {
+  const log = load('chatLog', []);
+  const m = load('missedQuestions', {});
+
+  // Stats
+  const todayDate = new Date().toLocaleDateString('zh-CN');
+  const today = log.filter(l => l.time.includes(todayDate));
+  document.getElementById('sTotal').textContent = today.length;
+  const transferCount = today.filter(l => l.type === 'human').length;
+  document.getElementById('sTransfer').textContent = today.length ? Math.round(transferCount / today.length * 100) + '%' : '0%';
+  const matchedCount = today.filter(l => l.matched).length;
+  document.getElementById('sMatch').textContent = today.length ? Math.round(matchedCount / today.length * 100) + '%' : '0%';
+  const satCount = today.filter(l => l.rate === 'good').length;
+  const ratedCount = today.filter(l => l.rate).length;
+  document.getElementById('sSatisfaction').textContent = ratedCount ? Math.round(satCount / ratedCount * 100) + '%' : '—';
+
+  // Missed
+  const items = Object.values(m).filter(x => x.status === 'pending').sort((a, b) => b.time - a.time);
+  document.getElementById('missedCnt').textContent = items.length;
+  const ml = document.getElementById('missedList');
+  if (!items.length) {
+    ml.innerHTML = '<span style="color:var(--muted);font-size:11px;">暂无未命中问题 ✅</span>';
+  } else {
+    ml.innerHTML = items.slice(0, 30).map(mx =>
+      `<div class="missed-item">
+        <span class="text" title="${mx.text}">${mx.text.substring(0, 50)}${mx.text.length > 50 ? '…' : ''}</span>
+        <span class="count">×${mx.count}</span>
+        <span style="font-size:9px;color:var(--muted);">${new Date(mx.time).toLocaleDateString('zh-CN')}</span>
+        <div class="actions">
+          <button class="btn btn-ghost" style="font-size:9px;padding:2px 8px;" onclick="fillMissed('${mx.text.replace(/'/g, "\\'")}')">补录</button>
+          <button class="btn btn-ghost" style="font-size:9px;padding:2px 8px;color:var(--muted);" onclick="markMissed('${mx.text.replace(/'/g, "\\'")}')">忽略</button>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  // QA Log
+  const fKw = (document.getElementById('fKeyword')?.value || '').toLowerCase();
+  const fTr = (document.getElementById('fType')?.value || 'all');
+  const fRt = (document.getElementById('fRate')?.value || 'all');
+  let filtered = log.filter(l => {
+    if (fKw && !l.q.toLowerCase().includes(fKw) && !l.a.toLowerCase().includes(fKw)) return false;
+    if (fTr !== 'all' && l.type !== fTr) return false;
+    if (fRt !== 'all' && l.rate !== (fRt === 'good' ? 'good' : 'bad')) return false;
+    return true;
+  });
+  document.getElementById('qaLog').innerHTML = filtered.slice(-40).reverse().map(l =>
+    `<tr>
+      <td style="color:var(--muted);font-size:10px;">${l.time}</td>
+      <td title="${l.q}">${l.q.substring(0, 30)}</td>
+      <td title="${l.a}">${l.a.substring(0, 40)}</td>
+      <td>${l.type === 'human' ? '<span class="tag tag-human">转人工</span>' : '<span class="tag tag-ai">AI</span>'}</td>
+      <td>${l.rate === 'good' ? '👍' : l.rate === 'bad' ? '👎' : '—'}</td>
+      <td>${l.cat}</td>
+    </tr>`
+  ).join('');
+
+  // FAQ
+  document.getElementById('faqCount').textContent = FAQ.length;
+  const fqKw = (document.getElementById('fFaqSearch')?.value || '').toLowerCase();
+  document.getElementById('faqList').innerHTML = FAQ.filter(f =>
+    !fqKw || f.kw.some(k => k.toLowerCase().includes(fqKw)) || f.cat.includes(fqKw)
+  ).map((f, i) =>
+    `<div class="faq-item">
+      <div>
+        <span class="keywords">${f.cat}:</span>
+        <span style="color:var(--fg-2);">${f.kw.slice(0, 4).join(', ')}${f.kw.length > 4 ? '…' : ''}</span>
+      </div>
+      <div class="actions">
+        ${i >= 16 ? `<button class="btn btn-ghost" style="font-size:9px;padding:2px 6px;color:var(--accent);" onclick="editFAQ(${i})">✏️</button><button class="btn btn-ghost" style="font-size:9px;padding:2px 6px;color:var(--muted);" onclick="delFAQ(${i})">🗑</button>` : '<span style="font-size:9px;color:var(--muted);">系统</span>'}
+      </div>
+    </div>`
+  ).join('');
+
+  // Agents
+  const agents = load('agents', [
+    { name: '张工程师', email: 'zhang@rapiddirect.com', skill: 'CNC 组', status: 'online', today: 15 },
+    { name: '李工程师', email: 'li@rapiddirect.com', skill: '注塑组', status: 'online', today: 8 },
+    { name: '王工程师', email: 'wang@rapiddirect.com', skill: '钣金组', status: 'offline', today: 0 },
+    { name: '陈工程师', email: 'chen@rapiddirect.com', skill: '3D 打印组', status: 'online', today: 6 },
+  ]);
+  document.getElementById('agentList').innerHTML = agents.map(a =>
+    `<tr>
+      <td>${a.name}</td>
+      <td style="color:var(--muted);">${a.email}</td>
+      <td>${a.skill}</td>
+      <td><span class="tag ${a.status === 'online' ? 'tag-online' : 'tag-offline'}">${a.status === 'online' ? '在线' : '离线'}</span></td>
+      <td style="font-family:var(--font-mono);">${a.today}</td>
+    </tr>`
+  ).join('');
+
+  // Tickets
+  const tickets = load('tickets', []);
+  document.getElementById('ticketList').innerHTML = tickets.slice(-10).reverse().map(t =>
+    `<tr>
+      <td style="color:var(--muted);font-size:10px;">${t.time}</td>
+      <td>${t.name}</td>
+      <td style="color:var(--muted);">${t.contact}</td>
+      <td>${(t.desc || '-').substring(0, 25)}</td>
+      <td><span class="tag ${t.status === '待处理' ? 'tag-pending' : 'tag-done'}">${t.status}</span></td>
+      <td><button class="btn btn-primary" style="font-size:9px;padding:3px 10px;" onclick="resolveTicket('${t.time}')">处理</button></td>
+    </tr>`
+  ).join('');
+}
+
+function fillMissed(text) {
+  switchMode('admin');
+  const kwInput = document.getElementById('newKw');
+  if (kwInput) kwInput.value = text;
+  const faqTabBtn = document.querySelector('#adminTabs button[data-tab="faq"]');
+  if (faqTabBtn) switchAdminTab('faq', faqTabBtn);
+}
+
+function markMissed(text) {
+  let m = load('missedQuestions', {});
+  let k = text.toLowerCase().trim();
+  if (m[k]) m[k].status = 'done';
+  save('missedQuestions', m);
+  refreshAdmin();
+}
+
+function markAllMissed() {
+  let m = load('missedQuestions', {});
+  Object.values(m).forEach(x => x.status = 'done');
+  save('missedQuestions', m);
+  refreshAdmin();
+}
+
+function resolveTicket(time) {
+  let tks = load('tickets', []);
+  const item = tks.find(x => x.time === time);
+  if (item) item.status = '已处理';
+  save('tickets', tks);
+  refreshAdmin();
+}
+
+function addFAQ() {
+  const kw = document.getElementById('newKw').value.trim();
+  const cat = document.getElementById('newCat').value.trim() || '自定义';
+  const zh = document.getElementById('newZh').value.trim();
+  const en = document.getElementById('newEn').value.trim() || zh;
+  if (!kw || !zh) { alert('关键词和中文回答必填'); return; }
+  FAQ.push({ kw: kw.split(',').map(k => k.trim()).filter(k => k), cat, reply: { zh, en } });
+  save('customFAQ', FAQ.slice(16));
+  ['newKw', 'newCat', 'newZh', 'newEn'].forEach(id => document.getElementById(id).value = '');
+  refreshAdmin();
+}
+
+function editFAQ(i) {
+  if (i < 16) { alert('默认题库不可编辑'); return; }
+  const f = FAQ[i];
+  document.getElementById('newKw').value = f.kw.join(', ');
+  document.getElementById('newCat').value = f.cat;
+  document.getElementById('newZh').value = f.reply.zh;
+  document.getElementById('newEn').value = f.reply.en;
+  FAQ.splice(i, 1);
+  save('customFAQ', FAQ.slice(16));
+  refreshAdmin();
+}
+
+function delFAQ(i) {
+  if (i < 16) { alert('默认题库不可删除'); return; }
+  if (!confirm('确认删除？')) return;
+  FAQ.splice(i, 1);
+  save('customFAQ', FAQ.slice(16));
+  refreshAdmin();
+}
+
+function addAgent() {
+  const n = prompt('客服姓名：');
+  if (!n) return;
+  let a = load('agents', []);
+  a.push({ name: n, email: '', skill: '', status: 'offline', today: 0 });
+  save('agents', a);
+  refreshAdmin();
+}
+
+function exportFAQ() {
+  const data = FAQ.slice(16).map(f => ({ kw: f.kw.join(','), cat: f.cat, zh: f.reply.zh, en: f.reply.en }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'faq-export.json';
+  a.click();
+}
+
+function importFAQ(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        data.forEach(d => {
+          if (d.kw && d.zh) FAQ.push({ kw: d.kw.split(',').map(k => k.trim()), cat: d.cat || '导入', reply: { zh: d.zh, en: d.en || d.zh } });
+        });
+        save('customFAQ', FAQ.slice(16));
+        refreshAdmin();
+        alert('✅ 导入 ' + data.length + ' 条');
+      }
+    } catch(ex) { alert('格式错误，请使用 JSON 格式'); }
+  };
+  reader.readAsText(file);
+}
+
+// =============================================================
+// LANGUAGE SWITCH
+// =============================================================
+const i18n = {
+  zh: {
+    'app.title': 'AI 客服系统',
+    'mode.client': '💬 客户端', 'mode.admin': '📊 管理端',
+    'welcome': '你好！我是 AI 客服助手 👋',
+    'welcome.desc': '可回答制造能力、报价、材料、设计等问题。输入「转人工」接入真人客服。',
+    'transfer.hint': '👩‍💼 需要人工客服协助？', 'transfer.btn': '转人工客服',
+    'transfer.title': '👩‍💼 转接人工客服',
+    'transfer.name': '姓名', 'transfer.contact': '邮箱或电话', 'transfer.desc': '问题描述',
+    'transfer.cancel': '取消', 'transfer.submit': '提交',
+    'input.ph': '输入问题…', 'send': '发送',
+    'rate.good': '👍 有用', 'rate.bad': '👎 无用',
+    'stat.today': '今日咨询量', 'stat.transfer': '转人工率', 'stat.match': '知识库命中率', 'stat.satisfaction': '客户满意度',
+    'tab.missed': '🔍 缺失问题', 'tab.qa': '📋 问答明细', 'tab.faq': '📚 知识库', 'tab.agents': '👥 客服管理', 'tab.tickets': '🎫 留言工单',
+    'missed.title': '未命中问题', 'missed.pending': '条待处理', 'missed.clearAll': '全部标记已处理',
+    'qa.search': '搜索关键词…', 'qa.allTypes': '全部类型', 'qa.allRates': '全部评价',
+    'qa.col.time': '时间', 'qa.col.question': '问题', 'qa.col.answer': '回答', 'qa.col.type': '类型', 'qa.col.rate': '评价', 'qa.col.cat': '匹配类别',
+    'faq.add': '➕ 新增 / 编辑知识条目', 'faq.kw': '关键词（逗号分隔）', 'faq.cat': '分类', 'faq.zh': '中文回答', 'faq.en': 'English Answer',
+    'faq.export': '导出题库', 'faq.import': '批量导入', 'faq.save': '保存', 'faq.list': '知识库列表', 'faq.search': '搜索…',
+    'agents.title': '客服列表', 'agents.add': '添加客服',
+    'agents.col.name': '姓名', 'agents.col.email': '邮箱', 'agents.col.skill': '技能组', 'agents.col.status': '状态', 'agents.col.today': '今日处理',
+    'tickets.title': '留言工单',
+    'tickets.col.time': '提交时间', 'tickets.col.customer': '客户', 'tickets.col.contact': '联系方式', 'tickets.col.desc': '问题描述', 'tickets.col.status': '状态', 'tickets.col.action': '操作',
+  },
+  en: {
+    'app.title': 'AI Customer Service',
+    'mode.client': '💬 Client', 'mode.admin': '📊 Admin',
+    'welcome': "Hello! I'm your AI assistant 👋",
+    'welcome.desc': 'Ask about manufacturing, quoting, materials, design. Type "human" to reach a live agent.',
+    'transfer.hint': '👩‍💼 Need a human agent?', 'transfer.btn': 'Transfer to Agent',
+    'transfer.title': '👩‍💼 Transfer to Human Agent',
+    'transfer.name': 'Name', 'transfer.contact': 'Email or Phone', 'transfer.desc': 'Issue Description',
+    'transfer.cancel': 'Cancel', 'transfer.submit': 'Submit',
+    'input.ph': 'Type your question…', 'send': 'Send',
+    'rate.good': '👍 Helpful', 'rate.bad': '👎 Not Helpful',
+    'stat.today': "Today's Inquiries", 'stat.transfer': 'Transfer Rate', 'stat.match': 'KB Match Rate', 'stat.satisfaction': 'CSAT',
+    'tab.missed': '🔍 Missed', 'tab.qa': '📋 QA Log', 'tab.faq': '📚 Knowledge Base', 'tab.agents': '👥 Agents', 'tab.tickets': '🎫 Tickets',
+    'missed.title': 'Missed Questions', 'missed.pending': 'pending', 'missed.clearAll': 'Mark All Resolved',
+    'qa.search': 'Search…', 'qa.allTypes': 'All Types', 'qa.allRates': 'All Ratings',
+    'qa.col.time': 'Time', 'qa.col.question': 'Question', 'qa.col.answer': 'Answer', 'qa.col.type': 'Type', 'qa.col.rate': 'Rating', 'qa.col.cat': 'Category',
+    'faq.add': '➕ Add / Edit Entry', 'faq.kw': 'Keywords (comma-separated)', 'faq.cat': 'Category', 'faq.zh': 'Chinese Reply', 'faq.en': 'English Reply',
+    'faq.export': 'Export', 'faq.import': 'Import', 'faq.save': 'Save', 'faq.list': 'Knowledge Base', 'faq.search': 'Search…',
+    'agents.title': 'Agent List', 'agents.add': 'Add Agent',
+    'agents.col.name': 'Name', 'agents.col.email': 'Email', 'agents.col.skill': 'Skill Group', 'agents.col.status': 'Status', 'agents.col.today': "Today's Chats",
+    'tickets.title': 'Support Tickets',
+    'tickets.col.time': 'Submitted', 'tickets.col.customer': 'Customer', 'tickets.col.contact': 'Contact', 'tickets.col.desc': 'Description', 'tickets.col.status': 'Status', 'tickets.col.action': 'Action',
+  }
+};
+let currentLang = 'zh';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-switch button[data-lang="${lang}"]`).classList.add('active');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+  document.querySelectorAll('.hours-on .hours-indicator span:last-child, .hours-off .hours-indicator span:last-child').forEach(el => {
+    updateHours();
+  });
+}
+
+function updateHours() {
+  const badge = document.getElementById('hoursBadge');
+  const text = document.getElementById('hoursText');
+  const isOn = workingHours();
+  badge.className = 'hours-indicator ' + (isOn ? 'hours-on' : 'hours-off');
+  text.textContent = isOn
+    ? (currentLang === 'zh' ? '工作时间 · 人工在线' : 'Business Hours · Live')
+    : (currentLang === 'zh' ? '非工作时间' : 'After Hours');
+}
+
+// =============================================================
+// INIT
+// =============================================================
+(function() {
+  // Hours
+  updateHours();
+  setInterval(updateHours, 60000);
+
+  // Quick chips
+  document.getElementById('quickChips').innerHTML = [
+    '报价流程', '订单状态', '能做 CNC 吗', '3D 打印材料',
+    '如何成为供应商', '设计支持', '最小起订量', '转人工'
+  ].map(q => `<button onclick="ask('${q}')">${q}</button>`).join('');
+
+  // Mode switch
+  document.querySelectorAll('#modeSwitch button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      switchMode(this.getAttribute('data-mode'));
+    });
+  });
+
+  // Admin tabs
+  document.querySelectorAll('#adminTabs button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      switchAdminTab(this.getAttribute('data-tab'), this);
+    });
+  });
+
 1501|  // Language switch
-1502|  document.querySelectorAll('.lang-switch button').forEach(btn => {
-1503|    btn.addEventListener('click', function() {
-1504|      setLanguage(this.getAttribute('data-lang'));
-1505|    });
-1506|  });
-1507|
-1508|  // Filter inputs refresh
-1509|  ['fKeyword', 'fType', 'fRate', 'fFaqSearch'].forEach(id => {
-1510|    const el = document.getElementById(id);
-1511|    if (el) el.addEventListener('input', refreshAdmin);
-1512|  });
-1513|
-1514|  // Close modal on overlay click
-1515|  document.getElementById('transferModal').addEventListener('click', function(e) {
-1516|    if (e.target === this) closeTransfer();
-1517|  });
-1518|})();
-1519|</script>
-1520|</body>
-1521|</html>
-1522|
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      setLanguage(this.getAttribute('data-lang'));
+    });
+  });
+
+  // Filter inputs refresh
+  ['fKeyword', 'fType', 'fRate', 'fFaqSearch'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', refreshAdmin);
+  });
+
+  // Close modal on overlay click
+  document.getElementById('transferModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTransfer();
+  });
+})();
+</script>
+</body>
+</html>
