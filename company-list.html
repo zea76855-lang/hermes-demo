@@ -1,1 +1,532 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>公司列表 · CRM 客户管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --brand:#1E90FF;--brand-dark:#1872CC;--brand-light:#E8F4FD;
+  --primary:#4f6ef7;--primary-dark:#3b52cc;--primary-light:#eef1fe;
+  --success:#22c55e;--success-light:#f0fdf4;
+  --warning:#f59e0b;--warning-light:#fffbeb;
+  --danger:#ef4444;--danger-light:#fef2f2;
+  --bg:#f8f9fc;--card-bg:#fff;--text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+  --border:#e2e8f0;--border-light:#f1f5f9;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.04);--shadow:0 4px 12px rgba(0,0,0,.06);
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;--tran:all .25s ease;
+  --sidebar-w:240px;
+}
+body{font-family:"PingFang SC","Microsoft YaHei","SF Pro Display",-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:13px;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;position:fixed;left:0;top:0;bottom:0;z-index:200;display:flex;flex-direction:column;overflow-y:auto;}
+.sidebar-logo{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.sidebar-logo .logo-icon{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;}
+.sidebar-logo span{font-size:15px;font-weight:700;letter-spacing:-.3px;}
+.sidebar-nav{flex:1;padding:12px 0;}
+.nav-section{padding:0 16px;margin-bottom:4px;}
+.nav-section-title{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;padding:8px 4px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--tran);font-size:13px;font-weight:500;color:rgba(255,255,255,.6);text-decoration:none;margin:2px 8px;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9);}
+.nav-item.active{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(30,144,255,.3);}
+.nav-item .nav-badge{font-size:10px;background:rgba(255,255,255,.15);padding:1px 8px;border-radius:10px;margin-left:auto;}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.25);}
+.nav-sub{padding-left:12px;}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.top-bar{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+.top-bar h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.top-bar .badge{font-size:10px;background:var(--brand);padding:2px 8px;border-radius:10px;font-weight:600;}
+.top-bar-right{display:flex;align-items:center;gap:12px;}
+.lang-switch{display:flex;border-radius:var(--radius-xs);overflow:hidden;border:1px solid rgba(255,255,255,.25);}
+.lang-switch button{border:none;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,.6);transition:var(--tran);font-family:inherit;}
+.lang-switch button.active{background:var(--brand);color:#fff;}
+
+/* Content */
+.content{padding:16px 20px;max-width:1400px;width:100%;}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.page-header h2{font-size:18px;font-weight:700;}
+.page-header-right{display:flex;gap:8px;}
+
+/* Cards */
+.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:14px;border:1px solid var(--border-light);}
+.card-h{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#fff,#fafbfc);}
+.card-h h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.card-b{padding:0;overflow-x:auto;}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:11px;border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;}
+thead th:first-child{padding-left:16px;}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border-light);vertical-align:middle;}
+tbody td:first-child{padding-left:16px;}
+tbody tr:hover{background:var(--brand-light);}
+tbody tr:last-child td{border-bottom:none;}
+
+/* Tags */
+.t{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.2px;}
+.t-brand{background:var(--brand-light);color:var(--brand);}
+.t-g{background:var(--success-light);color:#15803d;}
+.t-b{background:#dbeafe;color:#1d4ed8;}
+.t-o{background:var(--warning-light);color:#b45309;}
+.t-r{background:var(--danger-light);color:#dc2626;}
+.t-p{background:#ede9fe;color:#7c3aed;}
+.t-gr{background:#f1f5f9;color:#475569;}
+
+/* Buttons */
+.btn{padding:7px 14px;border-radius:var(--radius-xs);font-size:11px;font-weight:600;cursor:pointer;border:none;transition:var(--tran);display:inline-flex;align-items:center;gap:5px;font-family:inherit;}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
+.btn-brand{background:var(--brand);color:#fff;}
+.btn-brand:hover{background:var(--brand-dark);}
+.btn-outline{background:#fff;color:var(--text2);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-danger{background:#fff;color:var(--danger);border:1px solid var(--danger);}
+.btn-sm{padding:5px 10px;font-size:10px;}
+.btn-icon{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-xs);}
+.btn-icon.edit{background:var(--brand-light);color:var(--brand);border:1px solid transparent;}
+.btn-icon.edit:hover{background:var(--brand);color:#fff;}
+
+/* Search Bar */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.search-bar input,.search-bar select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:12px;color:var(--text);background:#fff;transition:var(--tran);font-family:inherit;min-width:140px;}
+.search-bar input:focus,.search-bar select:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--brand-light);}
+.search-bar input{flex:1;}
+
+/* Pagination */
+.pagination{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:11px;color:var(--text2);}
+.pagination .pages{display:flex;gap:4px;}
+.pagination button{padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:#fff;cursor:pointer;font-size:11px;transition:var(--tran);}
+.pagination button:hover{border-color:var(--brand);color:var(--brand);}
+.pagination button.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:300;display:none;align-items:flex-start;justify-content:center;padding-top:40px;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card-bg);border-radius:var(--radius);width:720px;max-width:calc(100vw - 40px);max-height:calc(100vh - 80px);overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card-bg);z-index:1;border-radius:var(--radius) var(--radius) 0 0;}
+.modal-header h3{font-size:16px;font-weight:700;}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--border-light);cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:var(--tran);}
+.modal-close:hover{background:var(--danger-light);color:var(--danger);}
+.modal-body{padding:20px;}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px;}
+
+/* Form */
+.form-section{margin-bottom:16px;}
+.form-section-title{font-size:12px;font-weight:700;color:var(--brand);padding:8px 0;border-bottom:2px solid var(--brand-light);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.form-section-title .sec-icon{font-size:14px;}
+.form-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.form-group{display:flex;flex-direction:column;gap:3px;flex:1;min-width:180px;}
+.form-group label{font-size:10px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:2px;}
+.form-group label .req{color:var(--danger);}
+.form-group input,.form-group select,.form-group textarea{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:12px;color:var(--text);background:#fff;transition:var(--tran);font-family:inherit;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--brand-light);}
+.form-group input.auto,.form-group input.synced,.form-group select.auto{background:#f8fafc;color:var(--text2);cursor:not-allowed;}
+.form-group textarea{resize:vertical;min-height:60px;}
+.checkbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;}
+.checkbox-row input[type="checkbox"]{accent-color:var(--brand);width:16px;height:16px;}
+.auto-label{font-size:9px;color:var(--text3);font-style:italic;margin-left:4px;}
+.auto-label.synced{color:var(--primary);}
+
+/* Tag Multi-select */
+.tag-multi{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-xs);min-height:38px;align-items:center;cursor:pointer;background:#fff;transition:var(--tran);}
+.tag-multi:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-light);}
+.tag-multi .chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:var(--brand-light);color:var(--brand);border-radius:20px;font-size:10px;font-weight:600;}
+.tag-multi .chip .chip-x{cursor:pointer;font-size:12px;line-height:1;opacity:.7;}
+.tag-multi .chip .chip-x:hover{opacity:1;}
+.tag-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xs);box-shadow:var(--shadow);z-index:10;max-height:160px;overflow-y:auto;display:none;margin-top:4px;}
+.tag-dropdown.show{display:block;}
+.tag-dropdown .tag-opt{padding:6px 10px;font-size:11px;cursor:pointer;transition:var(--tran);}
+.tag-dropdown .tag-opt:hover{background:var(--brand-light);}
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar{width:60px;}
+  .sidebar-logo span,.nav-section-title,.nav-item span{display:none;}
+  .sidebar-logo{justify-content:center;padding:12px;}
+  .nav-item{justify-content:center;padding:10px;margin:2px 4px;}
+  :root{--sidebar-w:60px;}
+  .form-row{flex-direction:column;}
+  .modal{width:calc(100vw - 20px);}
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">C</div>
+    <span data-i18n="brand">CRM 系统</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title" data-i18n="nav_customer">客户管理</div>
+      <a href="company-list.html" class="nav-item active">
+        <span>🏢</span> <span data-i18n="nav_company">公司列表</span>
+        <span class="nav-badge">24</span>
+      </a>
+      <a href="contact-list.html" class="nav-item">
+        <span>👤</span> <span data-i18n="nav_contact">联系人列表</span>
+        <span class="nav-badge">68</span>
+      </a>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <h1>📋 <span data-i18n="page_title">客户管理</span> <span class="badge">CRM</span></h1>
+    </div>
+    <div class="top-bar-right">
+      <div class="lang-switch">
+        <button id="langZh" class="active" onclick="setLang('zh-CN')">中文</button>
+        <button id="langEn" onclick="setLang('en')">EN</button>
+      </div>
+      <span style="font-size:12px;opacity:.7;">👤 Admin</span>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <h2 data-i18n="company_list_title">公司列表</h2>
+      <div class="page-header-right">
+        <button class="btn btn-brand" onclick="openAddModal()">+ <span data-i18n="add_company">新建公司</span></button>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="search-bar">
+      <input type="text" data-i18n-placeholder="search_company" placeholder="搜索公司名称、联系人或域名...">
+      <select><option value="" data-i18n="filter_stage_all">全部阶段</option><option>潜在客户</option><option>意向确认</option><option>报价阶段</option><option>谈判阶段</option><option>已成交</option><option>已流失</option></select>
+      <select><option value="" data-i18n="filter_country_all">全部国家</option><option>中国</option><option>美国</option><option>德国</option><option>日本</option><option>韩国</option></select>
+      <button class="btn btn-outline" data-i18n="search">搜索</button>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card">
+      <div class="card-b">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="col_name">公司名称</th>
+              <th data-i18n="col_contact">联系人</th>
+              <th data-i18n="col_country">国家/地区</th>
+              <th data-i18n="col_industry">行业</th>
+              <th data-i18n="col_stage">客户阶段</th>
+              <th data-i18n="col_owner">跟进人</th>
+              <th data-i18n="col_date">创建日期</th>
+              <th data-i18n="col_actions">操作</th>
+            </tr>
+          </thead>
+          <tbody id="companyTableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span><span data-i18n="showing">显示</span> 1-10 / 24 <span data-i18n="records">条</span></span>
+        <div class="pages">
+          <button class="active">1</button><button>2</button><button>3</button>
+          <button data-i18n="next">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Company Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 data-i18n="modal_add_title">新建公司（客户）</h3>
+      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-section-title">📋 <span data-i18n="sec_basic">基础信息</span></div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_company_domain">公司全称（域名）</span><span class="req">*</span></label><input type="text" placeholder="例如：example.com"></div>
+          <div class="form-group"><label><span data-i18n="f_contact_name">联系人姓名</span><span class="req">*</span></label><input type="text"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_position">职位/部门</span><span class="req">*</span></label><input type="text"></div>
+          <div class="form-group"><label><span data-i18n="f_email">邮箱</span><span class="req">*</span></label><input type="email" placeholder="contact@example.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_phone">电话</span><span class="req">*</span></label><input type="tel"></div>
+          <div class="form-group"><label><span data-i18n="f_country">国家/地区</span><span class="req">*</span></label><select><option>中国</option><option>美国</option><option>德国</option><option>日本</option><option>韩国</option><option>其他</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_industry">行业</span><span class="req">*</span></label><select><option>电子制造</option><option>汽车零部件</option><option>医疗器械</option><option>消费电子</option><option>工业设备</option><option>通信设备</option></select></div>
+          <div class="form-group"><label><span data-i18n="f_source">客户来源</span><span class="req">*</span></label><select><option>官网询盘</option><option>展会</option><option>平台引流</option><option>老客户推荐</option><option>主动开发</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_stage">客户阶段</span><span class="req">*</span></label><select><option>潜在客户</option><option>意向确认</option><option>报价阶段</option><option>谈判阶段</option><option>已成交</option></select></div>
+          <div class="form-group"><label><span data-i18n="f_owner">跟进人</span><span class="auto-label">系统自带</span></label><input class="auto" value="张三" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_create_date">创建日期</span><span class="auto-label">系统自带</span></label><input class="auto" value="2026-06-16" disabled></div>
+          <div class="form-group"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('addModal')" data-i18n="cancel">取消</button>
+      <button class="btn btn-brand" onclick="submitAdd()" data-i18n="confirm_add">确认新建</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Company Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal" style="width:820px;">
+    <div class="modal-header">
+      <h3 data-i18n="modal_edit_title">编辑公司（客户）</h3>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- 基础信息 -->
+      <div class="form-section">
+        <div class="form-section-title"><span class="sec-icon">📋</span> <span data-i18n="sec_basic">基础信息</span></div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_follow">是否关注</span></label><div class="checkbox-row"><input type="checkbox"><span data-i18n="f_follow_hint">关注此客户</span></div></div>
+          <div class="form-group"><label><span data-i18n="f_company_name">公司名称</span><span class="auto-label">系统自带</span></label><input class="auto" value="深圳华强电子有限公司" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_company_size">公司规模</span></label><select><option>1-50人</option><option>51-200人</option><option>201-500人</option><option>500人以上</option></select></div>
+          <div class="form-group"><label><span data-i18n="f_country">国家地区</span><span class="auto-label">系统自带</span></label><input class="auto" value="中国" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_industry_type">行业类型</span><span class="auto-label synced">云平台同步</span></label><input class="auto synced" value="电子制造" disabled></div>
+          <div class="form-group"><label><span data-i18n="f_owner">跟进人</span><span class="auto-label">系统自带</span></label><input class="auto" value="张三" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_key_contact">核心联系人(职务)</span><span class="auto-label synced">云平台同步</span></label><input class="auto synced" value="李经理 — 采购总监" disabled></div>
+          <div class="form-group"><label><span data-i18n="f_phone">电话</span><span class="auto-label synced">云平台同步</span></label><input class="auto synced" value="+86 755-8888-6666" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_contact_email">联系人邮箱</span><span class="auto-label">系统自带</span></label><input class="auto" value="li@huaqiang-elec.com" disabled></div>
+          <div class="form-group"></div>
+        </div>
+      </div>
+
+      <!-- 状态信息 -->
+      <div class="form-section">
+        <div class="form-section-title"><span class="sec-icon">📊</span> <span data-i18n="sec_status">状态信息</span></div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_stage">客户阶段</span><span class="auto-label">系统自带</span></label><input class="auto" value="报价阶段" disabled></div>
+          <div class="form-group"><label><span data-i18n="f_last_follow">最近跟进时间</span><span class="auto-label">系统自带</span></label><input class="auto" value="2026-06-14 15:30" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_last_contact">最近联系时间</span><span class="auto-label">系统自带</span></label><input class="auto" value="2026-06-14 16:45" disabled></div>
+          <div class="form-group"><label><span data-i18n="f_first_deal">首次成交时间</span><span class="auto-label">系统自带</span></label><input class="auto" value="2025-03-12" disabled></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_total_amount">累计成交金额</span><span class="auto-label">系统自带</span></label><input class="auto" value="¥ 1,285,600.00" disabled></div>
+          <div class="form-group"><label><span data-i18n="f_12m_amount">最近12个月成交金额</span><span class="auto-label">系统自带</span></label><input class="auto" value="¥ 480,200.00" disabled></div>
+        </div>
+      </div>
+
+      <!-- 产品信息 -->
+      <div class="form-section">
+        <div class="form-section-title"><span class="sec-icon">🔧</span> <span data-i18n="sec_product">产品信息</span></div>
+        <div class="form-row">
+          <div class="form-group" style="min-width:100%;"><label><span data-i18n="f_process">需求工艺（多选标签）</span></label>
+            <div class="tag-multi" id="tagProcess" onclick="toggleTagDropdown('tagProcess')">
+              <span class="chip">SMT贴片<span class="chip-x" onclick="event.stopPropagation();removeTag(this)">×</span></span>
+              <span class="chip">DIP插件<span class="chip-x" onclick="event.stopPropagation();removeTag(this)">×</span></span>
+              <input type="text" style="border:none;outline:none;min-width:60px;flex:1;font-size:11px;" data-i18n-placeholder="tag_add" placeholder="+ 添加工艺" onfocus="toggleTagDropdown('tagProcess',true)" onkeydown="if(event.key==='Enter'){addTag('tagProcess',this);}">
+            </div>
+            <div class="tag-dropdown" id="tagProcess-dropdown">
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','SMT贴片')">SMT贴片</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','DIP插件')">DIP插件</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','波峰焊')">波峰焊</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','回流焊')">回流焊</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','手工焊接')">手工焊接</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','AOI检测')">AOI检测</div>
+              <div class="tag-opt" onclick="addTagDirect('tagProcess','ICT测试')">ICT测试</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_core_product">客户核心产品</span><span class="req">*</span></label><input type="text" value="智能家居控制面板"></div>
+          <div class="form-group"><label><span data-i18n="f_usage_scene">产品使用场景</span><span class="req">*</span></label><input type="text" value="家用智能照明控制系统"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_appearance">产品外观要求</span></label><input type="text" value="白色磨砂表面，超薄设计 ≤5mm"></div>
+          <div class="form-group"><label><span data-i18n="f_material">产品材质要求</span></label><input type="text" value="阻燃ABS+PC，符合UL94 V-0"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label><span data-i18n="f_reliability">产品功能与可靠性</span></label><input type="text" value="工作温度-20°C~70°C，MTBF≥50000小时"></div>
+          <div class="form-group"><label><span data-i18n="f_surface">产品表面处理要求</span></label><input type="text" value="UV涂层，抗指纹，耐刮擦"></div>
+        </div>
+      </div>
+
+      <!-- 其他信息 -->
+      <div class="form-section">
+        <div class="form-section-title"><span class="sec-icon">📝</span> <span data-i18n="sec_other">其他信息</span></div>
+        <div class="form-row">
+          <div class="form-group" style="min-width:100%;"><label><span data-i18n="f_history_supplier">历史供应商信息</span></label><textarea placeholder="该公司历史合作过的供应商信息...">2024年与XX电子有过合作，主要供应PCB板材</textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="min-width:100%;"><label><span data-i18n="f_supplier_pain">历史供应商合作痛点与评价</span></label><textarea placeholder="历史供应商合作中的痛点...">交期不稳定，质量问题频发</textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="min-width:100%;"><label><span data-i18n="f_supplier_compare">历史供应商优劣势对比</span></label><textarea placeholder="与历史供应商的优劣势对比分析...">A供应商价格低但质量不稳定；B供应商质量好但交期长</textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="min-width:100%;"><label><span data-i18n="f_complaints">历史客诉</span></label><textarea placeholder="历史客户投诉记录...">2025年Q2有一批产品出现焊接不良，已赔付处理</textarea></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editModal')" data-i18n="cancel">取消</button>
+      <button class="btn btn-brand" onclick="submitEdit()" data-i18n="confirm_save">保存更新</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Company data
+const companies = [
+  {name:'深圳华强电子有限公司',contact:'李经理',country:'中国',industry:'电子制造',stage:'报价阶段',owner:'张三',date:'2025-03-12'},
+  {name:'德昌电机（深圳）有限公司',contact:'王总监',country:'中国',industry:'汽车零部件',stage:'已成交',owner:'李四',date:'2024-11-05'},
+  {name:'Foxconn Technology Group',contact:'陈先生',country:'中国',industry:'消费电子',stage:'谈判阶段',owner:'张三',date:'2025-06-20'},
+  {name:'Samsung Electronics Korea',contact:'Park Min-jun',country:'韩国',industry:'通信设备',stage:'意向确认',owner:'王五',date:'2026-01-15'},
+  {name:'Bosch GmbH Stuttgart',contact:'Dr. Müller',country:'德国',industry:'汽车零部件',stage:'已成交',owner:'李四',date:'2024-08-22'},
+  {name:'Sony Corporation',contact:'Tanaka Hiroshi',country:'日本',industry:'消费电子',stage:'潜在客户',owner:'王五',date:'2026-04-01'},
+  {name:'美的集团股份有限公司',contact:'刘副总',country:'中国',industry:'工业设备',stage:'报价阶段',owner:'张三',date:'2025-09-10'},
+  {name:'Apple Inc.',contact:'Tim Johnson',country:'美国',industry:'消费电子',stage:'谈判阶段',owner:'李四',date:'2025-07-18'},
+  {name:'LG Electronics',contact:'Kim Soo-hyun',country:'韩国',industry:'电子制造',stage:'意向确认',owner:'王五',date:'2026-02-28'},
+  {name:'通用电气（中国）有限公司',contact:'周经理',country:'中国',industry:'医疗器械',stage:'已流失',owner:'张三',date:'2024-05-30'}
+];
+
+function renderTable(){
+  const tbody = document.getElementById('companyTableBody');
+  const stageClass = {
+    '潜在客户':'t-gr','意向确认':'t-b','报价阶段':'t-o','谈判阶段':'t-p','已成交':'t-g','已流失':'t-r'
+  };
+  tbody.innerHTML = companies.map((c,i) => `<tr>
+    <td><strong>${c.name}</strong></td>
+    <td>${c.contact}</td>
+    <td>${c.country}</td>
+    <td><span class="t t-brand">${c.industry}</span></td>
+    <td><span class="t ${stageClass[c.stage]||'t-gr'}">${c.stage}</span></td>
+    <td>${c.owner}</td>
+    <td>${c.date}</td>
+    <td><button class="btn btn-sm btn-outline" onclick="openEditModal(${i})" data-i18n="edit">编辑</button></td>
+  </tr>`).join('');
+}
+
+renderTable();
+
+// Modal
+function openAddModal(){document.getElementById('addModal').classList.add('show');}
+function openEditModal(i){document.getElementById('editModal').classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function submitAdd(){alert('公司创建成功（演示）');closeModal('addModal');}
+function submitEdit(){alert('公司信息已更新（演示）');closeModal('editModal');}
+
+// Tag multi-select
+function toggleTagDropdown(id,show){const dd=document.getElementById(id+'-dropdown');if(show===true)dd.classList.add('show');else dd.classList.toggle('show');}
+function addTag(id,input){const v=input.value.trim();if(v){addTagDirect(id,v);input.value='';}}
+function addTagDirect(id,v){
+  const container=document.getElementById(id);
+  const existing=container.querySelectorAll('.chip');
+  for(let c of existing){if(c.textContent.replace('×','').trim()===v)return;}
+  const input=container.querySelector('input');
+  const chip=document.createElement('span');
+  chip.className='chip';chip.innerHTML=v+'<span class="chip-x" onclick="event.stopPropagation();removeTag(this)">×</span>';
+  container.insertBefore(chip,input);
+}
+function removeTag(el){el.parentElement.remove();}
+
+// i18n
+const i18n={
+  'zh-CN':{
+    brand:'CRM 系统',nav_customer:'客户管理',nav_company:'公司列表',nav_contact:'联系人列表',
+    page_title:'客户管理',company_list_title:'公司列表',add_company:'新建公司',
+    search_company:'搜索公司名称、联系人或域名...',filter_stage_all:'全部阶段',filter_country_all:'全部国家',search:'搜索',
+    col_name:'公司名称',col_contact:'联系人',col_country:'国家/地区',col_industry:'行业',col_stage:'客户阶段',col_owner:'跟进人',col_date:'创建日期',col_actions:'操作',
+    showing:'显示',records:'条',next:'下一页',edit:'编辑',
+    modal_add_title:'新建公司（客户）',modal_edit_title:'编辑公司（客户）',
+    sec_basic:'基础信息',sec_status:'状态信息',sec_product:'产品信息',sec_other:'其他信息',
+    f_company_domain:'公司全称（域名）',f_contact_name:'联系人姓名',f_position:'职位/部门',f_email:'邮箱',f_phone:'电话',f_country:'国家/地区',f_industry:'行业',f_source:'客户来源',f_stage:'客户阶段',f_owner:'跟进人',f_create_date:'创建日期',
+    f_follow:'是否关注',f_follow_hint:'关注此客户',f_company_name:'公司名称',f_company_size:'公司规模',f_industry_type:'行业类型',f_key_contact:'核心联系人(职务)',f_contact_email:'联系人邮箱',
+    f_last_follow:'最近跟进时间',f_last_contact:'最近联系时间',f_first_deal:'首次成交时间',f_total_amount:'累计成交金额',f_12m_amount:'最近12个月成交金额',
+    f_process:'需求工艺（多选标签）',f_core_product:'客户核心产品',f_usage_scene:'产品使用场景',f_appearance:'产品外观要求',f_material:'产品材质要求',f_reliability:'产品功能与可靠性',f_surface:'产品表面处理要求',
+    f_history_supplier:'历史供应商信息',f_supplier_pain:'历史供应商合作痛点与评价',f_supplier_compare:'历史供应商优劣势对比',f_complaints:'历史客诉',
+    cancel:'取消',confirm_add:'确认新建',confirm_save:'保存更新',
+    tag_add:'+ 添加工艺',
+    modal_add_contact_title:'新建联系人',modal_edit_contact_title:'编辑联系人',
+    f_contact_first:'联系人姓氏',
+    f_customer_class:'客户分类',f_customer_model:'客户模型',f_pain_points:'需求痛点',f_segment:'所属行业/细分领域',f_personality:'性格特征',f_last_note:'最后联系备注',
+    col_first:'姓',col_last:'名',col_position:'职位',
+  },
+  'en':{
+    brand:'CRM System',nav_customer:'Customer Mgmt',nav_company:'Companies',nav_contact:'Contacts',
+    page_title:'Customer Management',company_list_title:'Company List',add_company:'Add Company',
+    search_company:'Search company name, contact or domain...',filter_stage_all:'All Stages',filter_country_all:'All Countries',search:'Search',
+    col_name:'Company Name',col_contact:'Contact',col_country:'Country/Region',col_industry:'Industry',col_stage:'Stage',col_owner:'Owner',col_date:'Created',col_actions:'Actions',
+    showing:'Showing',records:'records',next:'Next',edit:'Edit',
+    modal_add_title:'New Company (Customer)',modal_edit_title:'Edit Company (Customer)',
+    sec_basic:'Basic Info',sec_status:'Status Info',sec_product:'Product Info',sec_other:'Other Info',
+    f_company_domain:'Company Full Name (Domain)',f_contact_name:'Contact Name',f_position:'Position/Dept',f_email:'Email',f_phone:'Phone',f_country:'Country/Region',f_industry:'Industry',f_source:'Lead Source',f_stage:'Customer Stage',f_owner:'Owner',f_create_date:'Created Date',
+    f_follow:'Follow',f_follow_hint:'Follow this customer',f_company_name:'Company Name',f_company_size:'Company Size',f_industry_type:'Industry Type',f_key_contact:'Key Contact (Title)',f_contact_email:'Contact Email',
+    f_last_follow:'Last Follow-up',f_last_contact:'Last Contact',f_first_deal:'First Deal Date',f_total_amount:'Total Deal Amount',f_12m_amount:'Last 12M Deal Amount',
+    f_process:'Required Processes (Multi-tag)',f_core_product:'Core Product',f_usage_scene:'Usage Scenario',f_appearance:'Appearance Requirements',f_material:'Material Requirements',f_reliability:'Reliability Requirements',f_surface:'Surface Finish Requirements',
+    f_history_supplier:'Historical Supplier Info',f_supplier_pain:'Supplier Pain Points & Feedback',f_supplier_compare:'Supplier Comparison',f_complaints:'Historical Complaints',
+    cancel:'Cancel',confirm_add:'Create',confirm_save:'Save Changes',
+    tag_add:'+ Add Process',
+    modal_add_contact_title:'New Contact',modal_edit_contact_title:'Edit Contact',
+    f_contact_first:'First Name',
+    f_customer_class:'Customer Class',f_customer_model:'Customer Model',f_pain_points:'Pain Points',f_segment:'Industry Segment',f_personality:'Personality Traits',f_last_note:'Last Contact Note',
+    col_first:'First Name',col_last:'Last Name',col_position:'Position',
+  }
+};
+
+const stageMapEn = {'潜在客户':'Lead','意向确认':'Qualified','报价阶段':'Quoting','谈判阶段':'Negotiation','已成交':'Won','已流失':'Lost'};
+const industryMapEn = {'电子制造':'Electronics Mfg','汽车零部件':'Auto Parts','消费电子':'Consumer Electronics','工业设备':'Industrial Equipment','通信设备':'Telecom','医疗器械':'Medical Devices'};
+
+let currentLang = localStorage.getItem('crm_lang') || 'zh-CN';
+function setLang(lang){
+  currentLang=lang;localStorage.setItem('crm_lang',lang);
+  document.documentElement.lang=lang;
+  document.getElementById('langZh').classList.toggle('active',lang==='zh-CN');
+  document.getElementById('langEn').classList.toggle('active',lang==='en');
+  const d=i18n[lang];if(!d)return;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(d[k])el.innerHTML=d[k];});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(d[k])el.placeholder=d[k];});
+  // Re-render table for stage/industry translation
+  renderTable();
+  // Update stage select options
+  if(lang==='en'){
+    document.querySelectorAll('.search-bar select:first-of-type option').forEach((opt,i)=>{
+      const zh=['全部阶段','潜在客户','意向确认','报价阶段','谈判阶段','已成交','已流失'];
+      const en=['All Stages','Lead','Qualified','Quoting','Negotiation','Won','Lost'];
+      if(i<zh.length)opt.textContent=en[i];
+    });
+  }else{
+    document.querySelectorAll('.search-bar select:first-of-type option').forEach((opt,i)=>{
+      const zh=['全部阶段','潜在客户','意向确认','报价阶段','谈判阶段','已成交','已流失'];
+      if(i<zh.length)opt.textContent=zh[i];
+    });
+  }
+}
+setLang(currentLang);
+
+// Click outside to close modals
+document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});});
+document.addEventListener('click',function(e){if(!e.target.closest('.tag-multi')){document.querySelectorAll('.tag-dropdown').forEach(d=>d.classList.remove('show'));}});
+
+// Close modals with Escape
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show'));}});
+</script>
+</body>
+</html>
