@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Create Lab — From Concept to Production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;450;500;600;700;800;900&family=JetBrains+Mono:opsz,wght@14..32,400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   DESIGN SYSTEM — V7 "Dark Lab"
+   Premium dark theme for Western audience
+   Designers · Engineers · 3D Printing Enthusiasts
+   ===================================================== */
+:root {
+  /* Core palette — charcoal lab */
+  --bg:       #0b0d11;
+  --bg-raised:#111318;
+  --bg-card:  #16181f;
+  --bg-hover: #1c1f27;
+  --bg-input: #13151b;
+
+  /* Text */
+  --fg:       #e8eaed;
+  --fg-body:  #b0b5bd;
+  --fg-muted: #9399a8;
+  --fg-faint: #5d6170;
+
+  /* Primary accent — electric teal */
+  --accent:        #2dd4bf;
+  --accent-strong: #5eead4;
+  --accent-dim:    #0d9488;
+  --accent-glass:  rgba(45,212,191,0.08);
+  --accent-glass-hover: rgba(45,212,191,0.14);
+
+  /* Semantic */
+  --success: #34d399;
+  --warn:    #fbbf24;
+  --danger:  #f87171;
+
+  /* Borders */
+  --border:  rgba(255,255,255,0.06);
+  --border-visible: rgba(255,255,255,0.10);
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 2px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.2);
+
+  /* Radius */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+
+  /* Spacing */
+  --s-2xs: 4px;
+  --s-xs: 8px;
+  --s-sm: 12px;
+  --s-md: 20px;
+  --s-lg: 32px;
+  --s-xl: 48px;
+  --s-2xl: 72px;
+  --s-3xl: 100px;
+
+  /* Fonts */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
+  --font-cn: 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+
+  /* Type scale */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+  --text-2xl: 36px;
+  --text-3xl: 48px;
+  --text-display: clamp(48px, 6vw, 72px);
+}
+
+[lang="zh-CN"] body,
+[lang="zh-CN"] h1, [lang="zh-CN"] h2, [lang="zh-CN"] h3 {
+  font-family: var(--font-cn);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Subtle grid pattern — blueprint nod */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(45,212,191,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,212,191,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 70%);
+}
+
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 var(--s-md);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.section-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--text-xs); font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: var(--s-sm);
+  font-family: var(--font-mono);
+}
+.section-badge::before {
+  content: ''; width: 20px; height: 1px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+
+.section-title {
+  font-size: var(--text-3xl); font-weight: 800;
+  line-height: 1.08; letter-spacing: -0.025em;
+  color: var(--fg); margin-bottom: var(--s-sm);
+}
+.section-desc {
+  font-size: var(--text-md); color: var(--fg-muted);
+  line-height: 1.65; max-width: 520px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 26px; font-size: var(--text-sm); font-weight: 600;
+  border-radius: var(--r-md); cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.22,1,0.36,1);
+  text-decoration: none; border: none; white-space: nowrap;
+  font-family: inherit; position: relative;
+}
+.btn:active { transform: scale(0.975); }
+
+.btn-primary {
+  background: var(--accent); color: #0b0d11;
+  box-shadow: 0 2px 16px rgba(45,212,191,0.15);
+}
+.btn-primary:hover {
+  background: var(--accent-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(45,212,191,0.25);
+}
+
+.btn-outline {
+  background: transparent; color: var(--fg-body);
+  border: 1px solid var(--border-visible);
+}
+.btn-outline:hover {
+  border-color: var(--accent); color: var(--accent);
+  background: var(--accent-glass);
+}
+
+.btn-ghost {
+  background: transparent; color: var(--fg-muted);
+}
+.btn-ghost:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
+
+/* Focus-visible — triple WCAG fix (1.4.11, 2.4.7, 2.4.13) */
+a:focus-visible, button:focus-visible, .btn:focus-visible,
+input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.ind-card:focus-visible, .feat-card:focus-visible, .show-card:focus-visible,
+.uz-card:focus-visible, .upload-zone:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-color: var(--accent-dim);
+}
+
+/* Reduced-motion support (WCAG 2.2.2 Level A + vestibular safety) */
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap;
+  border-width: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .testi-track { animation: none !important; }
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--s-xl);
+  background: rgba(11,13,17,0.82);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+.nav.scrolled {
+  border-bottom-color: var(--border);
+  background: rgba(11,13,17,0.94);
+}
+
+.nav-brand {
+  font-size: var(--text-md); font-weight: 800; color: var(--fg);
+  text-decoration: none; display: flex; align-items: center; gap: 10px;
+  letter-spacing: -0.01em;
+}
+.nav-logo { width: 30px; height: 30px; flex-shrink: 0; }
+
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-links a {
+  color: var(--fg-muted); text-decoration: none;
+  font-size: var(--text-sm); font-weight: 500;
+  transition: color 0.2s; position: relative; padding: 4px 0;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -2px; left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%; height: 1.5px; background: var(--accent);
+  border-radius: 1px;
+  transition: transform 0.22s cubic-bezier(0.22,1,0.36,1);
+}
+.nav-links a:hover { color: var(--fg); }
+.nav-links a:hover::after { transform: translateX(-50%) scaleX(0.7); }
+
+.nav-actions { display: flex; align-items: center; gap: var(--s-sm); }
+
+/* Lang toggle */
+.lang-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 20px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  cursor: pointer; font-size: var(--text-xs); font-weight: 600;
+  color: var(--fg-muted); transition: all 0.2s;
+  font-family: var(--font-mono);
+}
+.lang-toggle:hover {
+  border-color: var(--border-visible);
+  color: var(--fg);
+}
+
+/* Hamburger */
+.nav-hamburger {
+  display: none; background: none; border: none;
+  cursor: pointer; padding: 8px; z-index: 110;
+}
+.nav-hamburger span {
+  display: block; width: 20px; height: 2px;
+  background: var(--fg-body); margin: 4px 0;
+  border-radius: 2px; transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
+.nav-hamburger.active span:nth-child(2) { opacity: 0; }
+.nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
+
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 99;
+  background: rgba(11,13,17,0.97);
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 24px; padding: 80px 20px 40px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: var(--text-lg); font-weight: 700; color: var(--fg);
+  text-decoration: none; transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--accent); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .nav-actions .btn-primary.pre-login { display: none; }
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding-top: 80px; padding-bottom: var(--s-2xl);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse at center, rgba(45,212,191,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-inner {
+  width: 100%; position: relative; z-index: 1;
+  text-align: center;
+}
+.hero-content {
+  max-width: 720px; margin: 0 auto var(--s-2xl);
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--accent); margin-bottom: var(--s-lg);
+  padding: 7px 18px;
+  background: var(--accent-glass);
+  border: 1px solid rgba(45,212,191,0.15);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,212,191,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(45,212,191,0); }
+}
+
+.hero-title {
+  font-size: var(--text-display); font-weight: 900;
+  line-height: 1.04; letter-spacing: -0.035em;
+  color: var(--fg); margin-bottom: var(--s-md);
+}
+.hero-title .highlight {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: var(--text-md); color: var(--fg-muted);
+  line-height: 1.7; max-width: 560px;
+  margin: 0 auto var(--s-xl);
+}
+.hero-actions {
+  display: flex; gap: var(--s-sm); justify-content: center; flex-wrap: wrap;
+}
+.hero-actions .btn-primary { padding: 15px 30px; font-size: var(--text-base); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 64px; justify-content: center;
+  margin-bottom: var(--s-xl); flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat-value {
+  font-size: 40px; font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+.hero-stat-label {
+  font-size: var(--text-xs); color: var(--fg-muted);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-top: 6px;
+}
+
+/* ===== INDUSTRY PANEL ===== */
+.industry-section {
+  padding: 0 0 var(--s-3xl);
+}
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-sm);
+  max-width: 960px; margin: 0 auto;
+}
+.ind-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-md);
+  display: flex; align-items: center; gap: var(--s-md);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  text-decoration: none; color: inherit;
+  position: relative; overflow: hidden;
+}
+.ind-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(45,212,191,0.03), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.ind-card:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.ind-card:hover::before { opacity: 1; }
+
+.ind-icon {
+  width: 48px; height: 48px; border-radius: var(--r-md);
+  background: var(--bg-hover);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  transition: background 0.3s;
+}
+.ind-card:hover .ind-icon { background: var(--accent-glass); }
+.ind-icon svg { width: 28px; height: 28px; }
+
+.ind-info { position: relative; z-index: 1; flex: 1; min-width: 0; }
+.ind-name { font-size: var(--text-sm); font-weight: 700; color: var(--fg); margin-bottom: 2px; }
+.ind-desc { font-size: var(--text-xs); color: var(--fg-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ===== FEATURES ===== */
+.features {
+  padding: var(--s-3xl) 0;
+  background: var(--bg-raised);
+  position: relative;
+}
+.features::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-visible), transparent);
+}
+.features-header { text-align: center; margin-bottom: var(--s-2xl); }
+.features-header .section-desc { margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-md);
+  max-width: 960px; margin: 0 auto;
+}
+.feat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-lg) var(--s-md);
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  position: relative; overflow: hidden;
+}
+.feat-card:hover {
+  border-color: var(--border-visible);
+  background: var(--bg-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.feat-icon {
+  width: 48px; height: 48px; border-radius: var(--r-md);
+  background: var(--accent-glass);
+  margin-bottom: var(--s-md);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s, transform 0.3s;
+}
+.feat-card:hover .feat-icon {
+  background: var(--accent-glass-hover);
+  transform: scale(1.06);
+}
+.feat-icon svg { width: 24px; height: 24px; }
+.feat-title {
+  font-size: var(--text-md); font-weight: 700;
+  margin-bottom: var(--s-xs); color: var(--fg);
+}
+.feat-desc {
+  font-size: var(--text-sm); color: var(--fg-muted); line-height: 1.55;
+}
+
+/* ===== SHOWCASE ===== */
+.showcase {
+  padding: var(--s-3xl) 0;
+}
+.showcase-header { text-align: center; margin-bottom: var(--s-2xl); }
+.showcase-header .section-desc { margin: 0 auto; }
+
+.show-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-md);
+  max-width: 960px; margin: 0 auto;
+}
+.show-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  cursor: pointer;
+}
+.show-card:hover {
+  border-color: var(--border-visible);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+.show-visual {
+  height: 200px;
+  background: var(--bg-hover);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.show-visual-inner {
+  width: 120px; height: 120px;
+  border-radius: var(--r-md);
+  background: rgba(45,212,191,0.04);
+  border: 1px solid rgba(45,212,191,0.08);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.show-card:hover .show-visual-inner {
+  transform: scale(1.04);
+  border-color: rgba(45,212,191,0.2);
+}
+.show-visual-inner svg { width: 52px; height: 52px; opacity: 0.5; transition: opacity 0.3s; }
+.show-card:hover .show-visual-inner svg { opacity: 0.8; }
+
+.show-visual .tag {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 4px 10px;
+  border-radius: var(--r-sm); background: rgba(0,0,0,0.5);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.show-info { padding: var(--s-md); }
+.show-title { font-size: var(--text-base); font-weight: 700; margin-bottom: 4px; color: var(--fg); }
+.show-meta {
+  font-size: var(--text-xs); color: var(--fg-muted);
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+}
+
+/* ===== TESTIMONIAL STRIP ===== */
+.testimonial-strip {
+  padding: var(--s-xl) 0;
+  background: var(--bg-raised);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.testi-track {
+  display: flex; gap: var(--s-lg);
+  animation: scroll-left 35s linear infinite;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.testi-item {
+  display: flex; align-items: center; gap: var(--s-sm);
+  white-space: nowrap; flex-shrink: 0;
+}
+.testi-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent-glass);
+  border: 1px solid var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xs); font-weight: 700; color: var(--accent-strong);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+.testi-text { font-size: var(--text-sm); color: var(--fg-body); font-weight: 500; }
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: var(--s-3xl) 0;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(45,212,191,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(167,139,250,0.03) 0%, transparent 50%);
+  animation: ctaPulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ctaPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+.cta-section > * { position: relative; }
+.cta-section .section-title { color: var(--fg); }
+.cta-section .section-desc { color: var(--fg-muted); margin: 0 auto var(--s-lg); }
+.cta-actions { display: flex; gap: var(--s-sm); justify-content: center; flex-wrap: wrap; }
+
+.btn-white-outline {
+  background: transparent; color: var(--fg-body);
+  border: 1px solid var(--border-visible);
+}
+.btn-white-outline:hover {
+  border-color: var(--accent); color: var(--accent);
+  background: var(--accent-glass);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+  border-top: 1px solid var(--border);
+  padding: var(--s-xl) 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--s-lg);
+}
+.footer-brand {
+  font-size: var(--text-md); font-weight: 800; color: var(--fg);
+  margin-bottom: var(--s-sm);
+  display: flex; align-items: center; gap: 10px;
+}
+.footer-brand .nav-logo { width: 24px; height: 24px; }
+.footer-desc {
+  font-size: var(--text-sm); color: var(--fg-muted);
+  max-width: 260px; line-height: 1.6;
+}
+.footer-col-title {
+  font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--fg); margin-bottom: var(--s-sm);
+  font-family: var(--font-mono);
+}
+.footer-col a {
+  display: block; font-size: var(--text-sm); color: var(--fg-muted);
+  text-decoration: none; margin-bottom: 8px; transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  margin-top: var(--s-lg); padding-top: var(--s-md);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-size: var(--text-xs); color: var(--fg-faint);
+}
+
+/* ===== POST-LOGIN STATES ===== */
+body.logged-in .post-login { display: block; }
+body.logged-in .pre-login { display: none; }
+body.logged-in .nav-links.pre-login-links { display: none; }
+body.logged-in .post-login-links { display: flex; }
+.post-login { display: none; }
+.post-login-links { display: none; }
+
+/* ===== DASHBOARD ===== */
+.db-hero {
+  padding: 120px 0 var(--s-3xl);
+}
+.db-heading {
+  text-align: center; margin-bottom: var(--s-2xl);
+}
+.db-heading h1 {
+  font-size: var(--text-3xl); font-weight: 800;
+  color: var(--fg); margin-bottom: var(--s-xs);
+  letter-spacing: -0.02em;
+}
+.db-heading p {
+  font-size: var(--text-md); color: var(--fg-muted);
+}
+
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-md);
+  max-width: 960px; margin: 0 auto;
+}
+.db-panel { }
+.db-panel-inner {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-lg);
+  height: 100%;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.db-panel-inner::before {
+  content: ''; position: absolute; top: 0; left: var(--s-lg); right: var(--s-lg);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45,212,191,0.12), transparent);
+}
+
+.db-panel-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+}
+.db-panel-label::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+.db-panel-title {
+  font-size: var(--text-lg); font-weight: 700; color: var(--fg);
+  margin-bottom: 2px; line-height: 1.3;
+}
+.db-panel-desc {
+  font-size: var(--text-sm); color: var(--fg-muted);
+  margin-bottom: var(--s-md); line-height: 1.5;
+}
+.db-panel-body { flex: 1; display: flex; flex-direction: column; }
+
+/* Upload zone */
+.upload-zone {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  padding: 32px 20px; text-align: center;
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  cursor: pointer;
+  background: var(--bg-input);
+  position: relative; overflow: hidden;
+  min-height: 176px;
+}
+.upload-zone::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(45,212,191,0.06) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.upload-zone:hover {
+  border-color: var(--accent-dim); border-style: solid;
+  background: var(--bg-hover);
+  box-shadow: inset 0 0 40px rgba(45,212,191,0.03);
+}
+.upload-zone:hover::after { opacity: 1; }
+
+.upload-zone-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent-glass);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; transition: transform 0.3s;
+}
+.upload-zone:hover .upload-zone-icon { transform: scale(1.08); }
+.upload-zone-icon svg { width: 22px; height: 22px; }
+
+.upload-zone-text { font-size: var(--text-sm); font-weight: 600; color: var(--fg); margin-bottom: 2px; }
+.upload-zone-hint { font-size: var(--text-xs); color: var(--fg-muted); }
+
+.upload-zone-tags { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+.upload-zone-tag {
+  font-size: 10px; font-weight: 600; padding: 4px 10px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--fg-muted);
+  transition: all 0.2s; font-family: var(--font-mono);
+}
+.upload-zone:hover .upload-zone-tag { border-color: rgba(45,212,191,0.2); color: var(--accent); }
+
+/* Prompt textarea */
+.prompt-area { flex: 1; display: flex; flex-direction: column; }
+.prompt-input {
+  flex: 1; width: 100%; min-height: 176px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: var(--text-sm); line-height: 1.7;
+  resize: none;
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.prompt-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg-hover);
+  box-shadow: 0 0 0 3px rgba(45,212,191,0.06), inset 0 0 30px rgba(45,212,191,0.02);
+}
+.prompt-input::placeholder { color: var(--fg-faint); }
+
+.prompt-suggestions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.prompt-sug {
+  font-size: var(--text-xs); color: var(--fg-muted);
+  background: var(--bg-hover);
+  padding: 5px 14px; border-radius: 20px; cursor: pointer;
+  transition: all 0.22s; border: 1px solid transparent;
+  font-family: var(--font);
+}
+.prompt-sug:hover {
+  color: var(--accent); background: var(--accent-glass);
+  border-color: rgba(45,212,191,0.15);
+}
+
+/* DB Action buttons */
+.db-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.db-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: var(--r-md);
+  font-size: var(--text-sm); font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s;
+  border: none; text-decoration: none;
+}
+.db-btn-primary {
+  background: var(--accent); color: #0b0d11;
+  box-shadow: 0 2px 12px rgba(45,212,191,0.15);
+}
+.db-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.db-btn-ghost {
+  background: transparent; color: var(--fg-muted);
+}
+.db-btn-ghost:hover { color: var(--fg); }
+
+@media (max-width: 768px) {
+  .db-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ===== USER ZONE ===== */
+.user-zone {
+  padding: var(--s-3xl) 0;
+  background: var(--bg-raised);
+}
+.uz-header { text-align: center; margin-bottom: var(--s-2xl); }
+.uz-header .section-desc { margin: 0 auto; }
+
+.uz-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-sm);
+  max-width: 960px; margin: 0 auto;
+}
+.uz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-md);
+  transition: all 0.22s;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.uz-card:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+.uz-icon {
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+}
+.uz-icon svg { width: 22px; height: 22px; }
+.uz-title {
+  font-size: var(--text-sm); font-weight: 700; color: var(--fg);
+}
+.uz-count { font-size: var(--text-xs); color: var(--fg-muted); font-family: var(--font-mono); }
+.uz-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  background: var(--accent); color: #0b0d11;
+}
+
+/* ===== LOGIN TOGGLE (nav control) ===== */
+.login-toggle-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--fg-muted); cursor: pointer;
+  font-family: var(--font-mono);
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.login-toggle-btn::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--fg-faint); transition: background 0.2s;
+}
+.login-toggle-btn:hover {
+  color: var(--fg);
+  border-color: var(--border-visible);
+}
+body.logged-in .login-toggle-btn::before {
+  background: var(--accent);
+}
+
+/* ===== ANIMATIONS ===== */
+.fade-up {
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUpAnim 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes fadeUpAnim { to { opacity: 1; transform: translateY(0); } }
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal-init {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.revealed { opacity: 1 !important; transform: translateY(0) !important; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .industry-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .show-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .uz-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav { padding: 0 var(--s-md); }
+}
+@media (max-width: 640px) {
+  .industry-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .show-grid { grid-template-columns: 1fr; }
+  .uz-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 32px; }
+  .hero-stat-value { font-size: 32px; }
+  .lang-toggle span.label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav" id="navbar">
+  <a href="#" class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="8" stroke="#2dd4bf" stroke-width="2.5" fill="none"/>
+      <path d="M10 22V12l12 5-12 5z" fill="#2dd4bf"/>
+      <circle cx="24" cy="24" r="3" fill="#5eead4" opacity="0.5"/>
+    </svg>
+    <span data-i18n="brand">AI Create Lab</span>
+  </a>
+
+  <div class="nav-links pre-login-links">
+    <a href="#industries" data-i18n="nav_industries">Industries</a>
+    <a href="#features" data-i18n="nav_features">Features</a>
+    <a href="#showcase" data-i18n="nav_showcase">Showcase</a>
+  </div>
+
+  <div class="nav-links post-login-links">
+    <a href="#dashboard" data-i18n="nav_dashboard">Dashboard</a>
+    <a href="#user-zone" data-i18n="nav_myzone">My Zone</a>
+    <a href="#showcase-logged" data-i18n="nav_gallery">Gallery</a>
+  </div>
+
+  <div class="nav-actions">
+    <button class="login-toggle-btn" onclick="toggleLoginState()" title="Toggle login state">
+      <span data-i18n="preview_guest">Guest</span>
+    </button>
+    <div class="lang-toggle" onclick="toggleLang()" title="Switch Language / 切换语言">
+      <span class="label" id="langLabel">中</span>
+    </div>
+    <button class="btn btn-primary pre-login" style="padding:9px 20px;font-size:13px;border-radius:10px;" data-i18n="start_free">Start Free</button>
+    <div class="post-login" style="display:flex;align-items:center;gap:12px;">
+      <a href="#" class="db-btn db-btn-primary" style="text-decoration:none;" data-i18n="db_nav_create">Create</a>
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0b0d11;cursor:pointer;">JD</div>
+    </div>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<!-- ========== PRE-LOGIN ========== -->
+<div class="pre-login">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="container hero-inner">
+    <div class="hero-content fade-up">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span data-i18n="hero_badge">AI-Powered Product Development</span>
+      </div>
+      <h1 class="hero-title">
+        <span data-i18n="hero_title_line1">From Concept</span><br>
+        <span class="highlight" data-i18n="hero_title_line2">to Production</span>
+      </h1>
+      <p class="hero-desc" data-i18n="hero_desc">Upload a sketch or describe your idea — AI instantly generates precise 3D models. Connect with 500+ certified factories, quote, order, and deliver — all in one platform.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary" data-i18n="hero_cta">Get Started Free →</a>
+        <a href="#" class="btn btn-outline" data-i18n="hero_demo">Book a Demo</a>
+      </div>
+    </div>
+
+    <div class="hero-stats fade-up stagger-1">
+      <div class="hero-stat">
+        <div class="hero-stat-value count-50k">—</div>
+        <div class="hero-stat-label" data-i18n="stat_models">AI-Generated Models</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value count-500">—</div>
+        <div class="hero-stat-label" data-i18n="stat_suppliers">Partner Factories</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value count-24">—</div>
+        <div class="hero-stat-label" data-i18n="stat_delivery">Fastest Delivery</div>
+      </div>
+    </div>
+
+    <div class="industry-grid fade-up stagger-2" id="industries">
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="5" width="18" height="20" rx="3"/><rect x="11" y="9" width="10" height="6" rx="1.5"/><circle cx="16" cy="12" r="1.5" fill="#2dd4bf" opacity="0.4"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_trendy_name">Trendy Toys & Figurines</div><div class="ind-desc" data-i18n="ind_trendy_desc">Pop toys · Collectibles</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="5" width="20" height="12" rx="3"/><rect x="11" y="9" width="10" height="4" rx="1.5"/><circle cx="16" cy="22" r="4"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_consumer_name">Consumer Electronics</div><div class="ind-desc" data-i18n="ind_consumer_desc">Earphones · Wearables · Gadgets</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="5" width="16" height="18" rx="3"/><circle cx="12" cy="11" r="2.5"/><circle cx="20" cy="11" r="2.5"/><rect x="12" y="17" width="8" height="2" rx="1" fill="#2dd4bf" opacity="0.2"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_robot_name">Robotics</div><div class="ind-desc" data-i18n="ind_robot_desc">Robots · Automation</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="3" width="20" height="15" rx="3"/><rect x="11" y="7" width="10" height="6" rx="1.5"/><line x1="16" y1="10" x2="16" y2="13"/><circle cx="16" cy="23" r="4"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_medical_name">Medical Devices</div><div class="ind-desc" data-i18n="ind_medical_desc">Medical · Health equipment</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M16 2L4 14h4v14h7v-8h2v8h7V14h4L16 2z"/><rect x="18" y="12" width="6" height="3" rx="1"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_smarthome_name">Smart Home</div><div class="ind-desc" data-i18n="ind_smarthome_desc">IoT · Home appliances</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="12" width="22" height="10" rx="3"/><circle cx="11" cy="22" r="3.5"/><circle cx="21" cy="22" r="3.5"/><circle cx="11" cy="22" r="1" fill="#2dd4bf"/><circle cx="21" cy="22" r="1" fill="#2dd4bf"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_auto_name">Automotive</div><div class="ind-desc" data-i18n="ind_auto_desc">Custom parts · Modification</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M4 26l6-14 10 2-5 6 8-2 3-5 5-1-2 12-5-2-3-5-10-2 5 6-10 2z"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_aero_name">Aerospace</div><div class="ind-desc" data-i18n="ind_aero_desc">Drones · UAVs · Aviation</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="3.5"/><circle cx="16" cy="16" r="1" fill="#2dd4bf"/><line x1="16" y1="6" x2="16" y2="12.5"/><line x1="16" y1="19.5" x2="16" y2="26"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_industrial_name">Industrial Equipment</div><div class="ind-desc" data-i18n="ind_industrial_desc">Machinery · Precision parts</div></div>
+      </a>
+      <a href="#" class="ind-card">
+        <div class="ind-icon"><svg viewBox="0 0 32 32" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><circle cx="16" cy="16" r="12"/><path d="M16 4v24M4 16h24"/><circle cx="16" cy="16" r="2" fill="#2dd4bf" opacity="0.3"/><circle cx="10" cy="10" r="1" fill="#2dd4bf"/><circle cx="22" cy="10" r="1" fill="#2dd4bf"/></svg></div>
+        <div class="ind-info"><div class="ind-name" data-i18n="ind_sport_name">Sports & Education</div><div class="ind-desc" data-i18n="ind_sport_desc">Equipment · Educational toys</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header fade-up">
+      <div class="section-badge" data-i18n="features_badge">Core Capabilities</div>
+      <h2 class="section-title" data-i18n="features_title">AI-Powered Full-Stack</h2>
+      <p class="section-desc" data-i18n="features_desc">From image recognition to 3D generation, from DFM validation to instant quoting — product development has never been this efficient.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M8.5 10.5l4 4 5-5"/></svg></div>
+        <div class="feat-title" data-i18n="feat_img3d_title">Image to 3D</div>
+        <div class="feat-desc" data-i18n="feat_img3d_desc">Upload photos from any angle. AI generates accurate 3D models with multi-view fusion recognition.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M17.5 17.5l3.5 3.5"/></svg></div>
+        <div class="feat-title" data-i18n="feat_text3d_title">Text to 3D</div>
+        <div class="feat-desc" data-i18n="feat_text3d_desc">Describe your product in natural language. AI understands intent and generates editable 3D models.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/><rect x="10" y="10" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.08"/></svg></div>
+        <div class="feat-title" data-i18n="feat_quote_title">Instant Quotation</div>
+        <div class="feat-desc" data-i18n="feat_quote_desc">Upload drawings, AI analyzes manufacturing paths and generates real-time quotes for CNC, injection molding, and 3D printing.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 4"/></svg></div>
+        <div class="feat-title" data-i18n="feat_dfm_title">DFM Auto-Check</div>
+        <div class="feat-desc" data-i18n="feat_dfm_desc">AI detects manufacturability issues — wall thickness, draft angles — catching risks at the design stage before production.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M3 7h18v10a3 3 0 01-3 3H6a3 3 0 01-3-3V7z"/><path d="M3 7l4-4h10l4 4"/><line x1="12" y1="12" x2="12" y2="17"/></svg></div>
+        <div class="feat-title" data-i18n="feat_order_title">One-Click Order</div>
+        <div class="feat-desc" data-i18n="feat_order_desc">Place orders directly after quote confirmation. 500+ certified factories covering the full manufacturing chain.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="2" width="8" height="8" rx="1.5"/><rect x="14" y="2" width="8" height="8" rx="1.5"/><rect x="2" y="14" width="8" height="8" rx="1.5"/><rect x="14" y="14" width="8" height="8" rx="1.5"/></svg></div>
+        <div class="feat-title" data-i18n="feat_pm_title">Project Dashboard</div>
+        <div class="feat-desc" data-i18n="feat_pm_desc">Manage projects, model versions, orders, and delivery progress in one place. Seamless team collaboration.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="showcase" id="showcase">
+  <div class="container">
+    <div class="showcase-header fade-up">
+      <div class="section-badge" data-i18n="showcase_badge">Case Studies</div>
+      <h2 class="section-title" data-i18n="showcase_title">3D Models & Case Studies</h2>
+      <p class="section-desc" data-i18n="showcase_desc">Real user creations from diverse industries — explore the boundaries of AI creativity.</p>
+    </div>
+    <div class="show-grid">
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag1">CNC</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><circle cx="24" cy="24" r="16" stroke-dasharray="5 3"/><circle cx="24" cy="24" r="6"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title1">Precision Gear Assembly</div><div class="show-meta"><span data-i18n="show_cat1">Industrial Mfg</span><span data-i18n="show_time1">24h delivery</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag2">Injection</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="9" y="6" width="30" height="36" rx="4"/><rect x="15" y="13" width="18" height="22" rx="2.5"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title2">Consumer Electronics Shell</div><div class="show-meta"><span data-i18n="show_cat2">Electronics</span><span data-i18n="show_time2">3 days</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag3">Sheet</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M8 24l12-10 12 10-12 10z"/><path d="M26 24l10-10 6 6-10 10z"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title3">Drone Bracket Assembly</div><div class="show-meta"><span data-i18n="show_cat3">Aerospace</span><span data-i18n="show_time3">5 days</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag4">Injection</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="7" y="7" width="34" height="20" rx="3"/><rect x="13" y="13" width="22" height="10" rx="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title4">Medical Device Enclosure</div><div class="show-meta"><span data-i18n="show_cat4">Medical</span><span data-i18n="show_time4">48h delivery</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag5">CNC</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M12 8l3-3h16l5 5"/><rect x="8" y="8" width="32" height="32" rx="3"/><circle cx="19" cy="24" r="4.5"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title5">Custom Auto Connector</div><div class="show-meta"><span data-i18n="show_cat5">Automotive</span><span data-i18n="show_time5">3 days</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag6">Multi</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="8" y="13" width="12" height="26" rx="2.5"/><rect x="28" y="13" width="12" height="26" rx="2.5"/><rect x="19" y="9" width="10" height="34" rx="2"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title6">Robot Joint Module</div><div class="show-meta"><span data-i18n="show_cat6">Robotics</span><span data-i18n="show_time6">7 days</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL STRIP -->
+<section class="testimonial-strip">
+  <div class="testi-track">
+    <div class="testi-item"><div class="testi-avatar">AL</div><span class="testi-text">"AI-generated 3D models exceeded our accuracy expectations — got samples in 3 days."</span></div>
+    <div class="testi-item"><div class="testi-avatar">MK</div><span class="testi-text">"From drawing to quote in 2 minutes — 10× efficiency improvement."</span></div>
+    <div class="testi-item"><div class="testi-avatar">SR</div><span class="testi-text">"DFM check caught 3 design issues before we sent to production."</span></div>
+    <div class="testi-item"><div class="testi-avatar">JP</div><span class="testi-text">"End-to-end from design to delivery — cut 60% of back-and-forth."</span></div>
+    <div class="testi-item"><div class="testi-avatar">NV</div><span class="testi-text">"500+ factories in one platform — comparing suppliers is effortless."</span></div>
+    <div class="testi-item"><div class="testi-avatar">AL</div><span class="testi-text">"AI-generated 3D models exceeded our accuracy expectations — got samples in 3 days."</span></div>
+    <div class="testi-item"><div class="testi-avatar">MK</div><span class="testi-text">"From drawing to quote in 2 minutes — 10× efficiency improvement."</span></div>
+    <div class="testi-item"><div class="testi-avatar">SR</div><span class="testi-text">"DFM check caught 3 design issues before we sent to production."</span></div>
+    <div class="testi-item"><div class="testi-avatar">JP</div><span class="testi-text">"End-to-end from design to delivery — cut 60% of back-and-forth."</span></div>
+    <div class="testi-item"><div class="testi-avatar">NV</div><span class="testi-text">"500+ factories in one platform — comparing suppliers is effortless."</span></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-badge" data-i18n="cta_badge">Get Started</div>
+    <h2 class="section-title" data-i18n="cta_title">Ready to turn ideas into reality?</h2>
+    <p class="section-desc" data-i18n="cta_desc">Sign up free and experience AI-driven full-cycle product development.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-primary" style="font-size:16px;padding:16px 36px;" data-i18n="cta_btn_primary">Get Started Free →</a>
+      <a href="#" class="btn btn-white-outline" style="font-size:14px;padding:14px 30px;" data-i18n="cta_btn_secondary">Book a Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (guest) -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <svg class="nav-logo" viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="28" height="28" rx="8" stroke="#2dd4bf" stroke-width="2.5" fill="none"/><path d="M10 22V12l12 5-12 5z" fill="#2dd4bf"/><circle cx="24" cy="24" r="3" fill="#5eead4" opacity="0.5"/></svg>
+          <span data-i18n="brand">AI Create Lab</span>
+        </div>
+        <p class="footer-desc" data-i18n="footer_desc">All-in-One AI platform from concept to manufacturing.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col1_title">Product</div>
+        <a href="#" data-i18n="footer_col1_l1">AI 3D Modeling</a><a href="#" data-i18n="footer_col1_l2">Instant Quote</a><a href="#" data-i18n="footer_col1_l3">Manufacturing</a><a href="#" data-i18n="footer_col1_l4">Project Mgmt</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col2_title">Resources</div>
+        <a href="#" data-i18n="footer_col2_l1">Case Library</a><a href="#" data-i18n="footer_col2_l2">Help Center</a><a href="#" data-i18n="footer_col2_l3">API Docs</a><a href="#" data-i18n="footer_col2_l4">Blog</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col3_title">Company</div>
+        <a href="#" data-i18n="footer_col3_l1">About Us</a><a href="#" data-i18n="footer_col3_l2">Contact Us</a><a href="#" data-i18n="footer_col3_l3">Privacy Policy</a><a href="#" data-i18n="footer_col3_l4">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer_copyright">© 2026 AI Create Lab. All rights reserved.</span>
+      <span data-i18n="footer_sub">A RapidDirect Product</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /pre-login -->
+
+<!-- ========== POST-LOGIN ========== -->
+<div class="post-login">
+
+<!-- DASHBOARD -->
+<section class="db-hero" id="dashboard">
+  <div class="container">
+    <div class="db-heading fade-up">
+      <h1 data-i18n="db_main_title">Design with Words</h1>
+      <p data-i18n="db_main_desc">Describe your product, and AI brings it to life in 3D</p>
+    </div>
+
+    <div class="db-grid">
+      <!-- LEFT: Image to 3D -->
+      <div class="db-panel fade-up">
+        <div class="db-panel-inner">
+          <div class="db-panel-label" data-i18n="db_panel1_label">Image to 3D</div>
+          <div class="db-panel-title" data-i18n="db_panel1_title">Upload Image, AI Generates 3D</div>
+          <div class="db-panel-desc" data-i18n="db_panel1_desc">Supports multi-angle photos, hand sketches, and reference images</div>
+          <div class="db-panel-body">
+            <div class="upload-zone" onclick="handleUpload()">
+              <div class="upload-zone-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div class="upload-zone-text" data-i18n="upload_text">Click or drag to upload</div>
+              <div class="upload-zone-hint" data-i18n="upload_hint">Supports JPG / PNG / WEBP, up to 20MB</div>
+              <div class="upload-zone-tags"><span class="upload-zone-tag">JPG</span><span class="upload-zone-tag">PNG</span><span class="upload-zone-tag">WEBP</span><span class="upload-zone-tag" data-i18n="upload_tag_multi">Multi-angle</span></div>
+            </div>
+          </div>
+          <div class="db-actions">
+            <button class="db-btn db-btn-ghost" onclick="handleUpload()" data-i18n="upload_drag">Drag & Drop</button>
+            <button class="db-btn db-btn-primary" onclick="handleUpload()" data-i18n="upload_btn">Upload & Generate →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Text to 3D -->
+      <div class="db-panel fade-up stagger-1">
+        <div class="db-panel-inner">
+          <div class="db-panel-label" data-i18n="db_panel2_label">Text to 3D</div>
+          <div class="db-panel-title" data-i18n="db_panel2_title">Describe in Text, AI Generates 3D</div>
+          <div class="db-panel-desc" data-i18n="db_panel2_desc">Describe in natural language, AI understands intent and generates editable 3D models</div>
+          <div class="db-panel-body">
+            <div class="prompt-area">
+              <label for="promptInput" class="sr-only" data-i18n="prompt_label">Describe the 3D model you want</label>
+              <textarea class="prompt-input" id="promptInput" data-i18n-placeholder="prompt_placeholder" placeholder="Describe the 3D model you want..."></textarea>
+              <div class="prompt-suggestions">
+                <span class="prompt-sug" onclick="fillPrompt('50mm aluminum gear, module 2, 20 teeth, precision CNC')" data-i18n="prompt_gear">Gear</span>
+                <span class="prompt-sug" onclick="fillPrompt('Phone case with rounded corners, camera cutout, matte finish')" data-i18n="prompt_case">Phone Case</span>
+                <span class="prompt-sug" onclick="fillPrompt('Drone arm connector, carbon fiber, lightweight, aerodynamic')" data-i18n="prompt_drone">Drone</span>
+                <span class="prompt-sug" onclick="fillPrompt('Medical device enclosure, ergonomic design, ABS material')" data-i18n="prompt_med">Medical</span>
+              </div>
+            </div>
+          </div>
+          <div class="db-actions">
+            <button class="db-btn db-btn-ghost" onclick="fillPrompt('')" data-i18n="clear_btn">Clear</button>
+            <button class="db-btn db-btn-primary" onclick="generate3D()" data-i18n="generate_btn">AI Generate 3D →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER ZONE -->
+<section class="user-zone" id="user-zone">
+  <div class="container">
+    <div class="uz-header fade-up">
+      <div class="section-badge" data-i18n="uz_badge">My Workspace</div>
+      <h2 class="section-title" data-i18n="uz_title">My Zone</h2>
+      <p class="section-desc" data-i18n="uz_desc">Manage your creations, orders, and data.</p>
+    </div>
+    <div class="uz-grid">
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+        <div class="uz-title" data-i18n="uz_projects">My Projects</div>
+        <div class="uz-count" data-i18n="uz_projects_count">12 active</div>
+        <span class="uz-badge" data-i18n="uz_projects_badge">3 new</span>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <div class="uz-title" data-i18n="uz_models">3D Model Library</div>
+        <div class="uz-count" data-i18n="uz_models_count">47 models</div>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="uz-title" data-i18n="uz_orders">My Orders</div>
+        <div class="uz-count" data-i18n="uz_orders_count">8 active</div>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+        <div class="uz-title" data-i18n="uz_quotes">Quotes History</div>
+        <div class="uz-count" data-i18n="uz_quotes_count">23 entries</div>
+        <span class="uz-badge" data-i18n="uz_quotes_badge">5 pending</span>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div class="uz-title" data-i18n="uz_messages">Messages</div>
+        <div class="uz-count" data-i18n="uz_messages_count">6 unread</div>
+        <span class="uz-badge" data-i18n="uz_messages_badge">New</span>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="uz-title" data-i18n="uz_settings">Account</div>
+        <div class="uz-count" data-i18n="uz_settings_count">Enterprise</div>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <div class="uz-title" data-i18n="uz_dashboard">Analytics</div>
+        <div class="uz-count" data-i18n="uz_dashboard_count">This month ¥12.8K</div>
+      </a>
+      <a href="#" class="uz-card">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="uz-title" data-i18n="uz_favorites">Favorites</div>
+        <div class="uz-count" data-i18n="uz_favorites_count">15 items</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE (logged-in) -->
+<section class="showcase" id="showcase-logged">
+  <div class="container">
+    <div class="showcase-header fade-up">
+      <div class="section-badge" data-i18n="gallery_badge">Gallery</div>
+      <h2 class="section-title" data-i18n="gallery_title">Community Cases & My Work</h2>
+      <p class="section-desc" data-i18n="gallery_desc">Browse outstanding platform cases and view your generated 3D models.</p>
+    </div>
+    <div class="show-grid">
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag1">CNC</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><circle cx="24" cy="24" r="16" stroke-dasharray="5 3"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title1">Precision Gear Assembly</div><div class="show-meta"><span data-i18n="show_cat1">Industrial Mfg</span><span data-i18n="show_time1">24h delivery</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag2">Injection</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="9" y="6" width="30" height="36" rx="4"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title2">Consumer Electronics Shell</div><div class="show-meta"><span data-i18n="show_cat2">Electronics</span><span data-i18n="show_time2">3 days</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border-color:rgba(45,212,191,0.2);" data-i18n="gallery_mine">My Work</div><div class="show-visual-inner" style="border-color:rgba(45,212,191,0.2);"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M12 8l3-3h16l5 5"/><rect x="8" y="8" width="32" height="32" rx="3"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="gallery_mine_title1">My Project: Bracket V2</div><div class="show-meta"><span style="color:#2dd4bf;" data-i18n="gallery_mine_status1">Quoting</span><span data-i18n="gallery_mine_time1">Updated 3d ago</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag3">Sheet</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M8 24l12-10 12 10-12 10z"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title3">Drone Bracket Assembly</div><div class="show-meta"><span data-i18n="show_cat3">Aerospace</span><span data-i18n="show_time3">5 days</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border-color:rgba(45,212,191,0.2);" data-i18n="gallery_mine">My Work</div><div class="show-visual-inner" style="border-color:rgba(45,212,191,0.2);"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="7" y="7" width="34" height="20" rx="3"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="gallery_mine_title2">My Project: Enclosure A3</div><div class="show-meta"><span style="color:#34d399;" data-i18n="gallery_mine_status2">Delivered</span><span data-i18n="gallery_mine_time2">1w ago</span></div></div>
+      </div>
+      <div class="show-card">
+        <div class="show-visual"><div class="tag" data-i18n="show_tag6">Multi</div><div class="show-visual-inner"><svg viewBox="0 0 48 48" fill="none" stroke="#2dd4bf" stroke-width="1.5"><rect x="8" y="13" width="12" height="26" rx="2.5"/><rect x="28" y="13" width="12" height="26" rx="2.5"/></svg></div></div>
+        <div class="show-info"><div class="show-title" data-i18n="show_title6">Robot Joint Module</div><div class="show-meta"><span data-i18n="show_cat6">Robotics</span><span data-i18n="show_time6">7 days</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (logged-in) -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <svg class="nav-logo" viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="28" height="28" rx="8" stroke="#2dd4bf" stroke-width="2.5" fill="none"/><path d="M10 22V12l12 5-12 5z" fill="#2dd4bf"/><circle cx="24" cy="24" r="3" fill="#5eead4" opacity="0.5"/></svg>
+          <span data-i18n="brand">AI Create Lab</span>
+        </div>
+        <p class="footer-desc" data-i18n="footer_desc_logged">All-in-One AI platform from concept to manufacturing.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col4_title">Quick Actions</div>
+        <a href="#" data-i18n="footer_col4_l1">New Project</a><a href="#" data-i18n="footer_col4_l2">Upload & Quote</a><a href="#" data-i18n="footer_col4_l3">View Orders</a><a href="#" data-i18n="footer_col4_l4">Settings</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col2_title">Resources</div>
+        <a href="#" data-i18n="footer_col2_l1">Case Library</a><a href="#" data-i18n="footer_col2_l2">Help Center</a><a href="#" data-i18n="footer_col2_l3">API Docs</a><a href="#" data-i18n="footer_col2_l4_logged">Community</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title" data-i18n="footer_col3_title">Company</div>
+        <a href="#" data-i18n="footer_col3_l1">About Us</a><a href="#" data-i18n="footer_col3_l2">Contact Us</a><a href="#" data-i18n="footer_col3_l3">Privacy Policy</a><a href="#" data-i18n="footer_col3_l4">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer_copyright">© 2026 AI Create Lab. All rights reserved.</span>
+      <span data-i18n="footer_sub">A RapidDirect Product</span>
+    </div>
+  </div>
+</footer>
+</div><!-- /post-login -->
+
+<script>
+// =====================================================
+// I18N DICTIONARY
+// =====================================================
+const i18n = {
+  'zh-CN': {
+    brand: 'AI 造物实验室',
+    nav_industries: '行业方案', nav_features: '功能', nav_showcase: '案例',
+    nav_dashboard: '工作台', nav_myzone: '我的专区', nav_gallery: '案例库',
+    start_free: '免费开始', db_nav_create: '创作', db_nav_projects: '我的项目',
+
+    hero_badge: 'AI 驱动产品开发',
+    hero_title_line1: '从创意', hero_title_line2: '到制造',
+    hero_desc: '上传草图或描述想法，AI 即刻生成精准 3D 模型。对接 500+ 认证工厂，一键报价、下单、交付——全流程在一个平台完成。',
+    hero_cta: '免费开始使用 →', hero_demo: '预约演示',
+    stat_models: 'AI 生成模型', stat_suppliers: '合作工厂', stat_delivery: '最快交付',
+
+    ind_trendy_name: '潮玩手办', ind_trendy_desc: '潮玩手办 · 模型玩具',
+    ind_consumer_name: '消费电子', ind_consumer_desc: '消费电子 · 耳机 · 穿戴设备',
+    ind_robot_name: '机器人', ind_robot_desc: '机器人 · 自动化设备',
+    ind_medical_name: '医疗器械', ind_medical_desc: '医疗器械 · 健康设备',
+    ind_smarthome_name: '智能家居', ind_smarthome_desc: '智能家居 · 小家电',
+    ind_auto_name: '汽车改装', ind_auto_desc: '汽车改装 · 定制零件',
+    ind_aero_name: '航空航天', ind_aero_desc: '航空航天 · 无人机',
+    ind_industrial_name: '工业设备', ind_industrial_desc: '工业设备 · 精密零件',
+    ind_sport_name: '体育教育', ind_sport_desc: '体育器材 · 教育玩具',
+
+    features_badge: '核心能力', features_title: 'AI 驱动的全链路能力',
+    features_desc: '从图片识别到 3D 生成，从工程验证到即时报价——产品开发从未如此高效。',
+    feat_img3d_title: '图片转 3D', feat_img3d_desc: '上传任意角度照片或草图，AI 自动生成精准 3D 模型，支持多视角融合识别。',
+    feat_text3d_title: '文字转 3D', feat_text3d_desc: '用自然语言描述产品，AI 理解意图并生成可编辑的 3D 模型。',
+    feat_quote_title: '即时报价', feat_quote_desc: '上传图纸自动分析工艺路径，实时生成 CNC、注塑、3D 打印报价。',
+    feat_dfm_title: 'DFM 自动检测', feat_dfm_desc: 'AI 自动检测可制造性问题，在设计阶段就标注壁厚、拔模角等风险点。',
+    feat_order_title: '一键下单', feat_order_desc: '确认报价后直接下单，对接 500+ 认证工厂，全工艺链覆盖。',
+    feat_pm_title: '项目看板', feat_pm_desc: '统一管理项目、模型版本、订单和交付进度，团队无缝协作。',
+
+    showcase_badge: '案例展示', showcase_title: '3D 模型展示 & 案例', showcase_desc: '来自不同行业的真实作品——探索 AI 创造力的边界。',
+    show_tag1: 'CNC', show_title1: '精密齿轮组件', show_cat1: '工业制造', show_time1: '24h 交付',
+    show_tag2: '注塑', show_title2: '消费电子外壳', show_cat2: '消费电子', show_time2: '3 天交付',
+    show_tag3: '钣金', show_title3: '无人机支架总成', show_cat3: '航空航天', show_time3: '5 天交付',
+    show_tag4: '注塑', show_title4: '医疗器械壳体', show_cat4: '医疗器械', show_time4: '48h 交付',
+    show_tag5: 'CNC', show_title5: '汽车定制连接件', show_cat5: '汽车制造', show_time5: '3 天交付',
+    show_tag6: '多工艺', show_title6: '机器人关节模组', show_cat6: '机器人', show_time6: '7 天交付',
+
+    cta_badge: '开始使用', cta_title: '准备好将创意变为现实？', cta_desc: '免费注册，立即体验 AI 驱动的全链路产品开发。',
+    cta_btn_primary: '免费开始使用 →', cta_btn_secondary: '预约演示',
+
+    footer_desc: 'All-in-One AI 平台，从创意到制造，一站式完成产品开发。',
+    footer_col1_title: '产品', footer_col1_l1: 'AI 3D 建模', footer_col1_l2: '即时报价', footer_col1_l3: '制造下单', footer_col1_l4: '项目管理',
+    footer_col2_title: '资源', footer_col2_l1: '案例库', footer_col2_l2: '帮助中心', footer_col2_l3: 'API 文档', footer_col2_l4: '博客',
+    footer_col3_title: '公司', footer_col3_l1: '关于我们', footer_col3_l2: '联系我们', footer_col3_l3: '隐私政策', footer_col3_l4: '服务条款',
+    footer_copyright: '© 2026 AI 造物实验室. All rights reserved.', footer_sub: 'RapidDirect 旗下产品',
+
+    db_main_title: 'Design with Words', db_main_desc: '用文字描述你的产品，AI 即刻生成 3D 模型',
+    db_panel1_label: 'Image to 3D', db_panel1_title: '上传图片，AI 生成 3D 模型', db_panel1_desc: '支持任意角度照片、手绘草图、参考图片',
+    upload_text: '点击或拖拽上传图片', upload_hint: '支持 JPG / PNG / WEBP，最大 20MB',
+    upload_tag_multi: '多视角', upload_drag: '拖拽上传', upload_btn: '上传并生成 →',
+    db_panel2_label: 'Text to 3D', db_panel2_title: '文字描述，AI 生成 3D 模型', db_panel2_desc: '用自然语言描述，AI 理解意图并生成可编辑的 3D 模型',
+    prompt_placeholder: '描述你想要的 3D 模型...',
+    prompt_label: '描述你想要的 3D 模型',
+    prompt_gear: '齿轮', prompt_case: '手机壳', prompt_drone: '无人机', prompt_med: '医疗',
+    clear_btn: '清空', generate_btn: 'AI 生成 3D →',
+
+    uz_badge: '我的工作区', uz_title: '我的专区', uz_desc: '管理你的创作、订单与数据。',
+    uz_projects: '我的项目', uz_projects_count: '12 个进行中', uz_projects_badge: '3 新',
+    uz_models: '3D 模型库', uz_models_count: '47 个模型',
+    uz_orders: '我的订单', uz_orders_count: '8 个进行中',
+    uz_quotes: '报价记录', uz_quotes_count: '23 条', uz_quotes_badge: '5 待确认',
+    uz_messages: '消息中心', uz_messages_count: '6 条未读', uz_messages_badge: '新',
+    uz_settings: '账户设置', uz_settings_count: '企业认证',
+    uz_dashboard: '数据看板', uz_dashboard_count: '本月 ¥12.8K',
+    uz_favorites: '收藏案例', uz_favorites_count: '15 个',
+
+    gallery_badge: '作品集', gallery_title: '社区案例 & 我的作品', gallery_desc: '浏览平台优秀案例，查看你生成的 3D 模型。',
+    gallery_mine: '我的作品',
+    gallery_mine_title1: '我的项目：支架 V2', gallery_mine_status1: '报价中', gallery_mine_time1: '3 天前更新',
+    gallery_mine_title2: '我的项目：壳体 A3', gallery_mine_status2: '已交付', gallery_mine_time2: '1 周前',
+
+    footer_desc_logged: 'All-in-One AI 平台，从创意到制造，一站式完成产品开发。',
+    footer_col4_title: '快捷操作', footer_col4_l1: '新建项目', footer_col4_l2: '上传图纸报价', footer_col4_l3: '查看订单', footer_col4_l4: '账户设置',
+    footer_col2_l4_logged: '社区',
+
+    preview_guest: '访客', preview_logged: '已登录',
+  },
+  en: {
+    brand: 'AI Create Lab',
+    nav_industries: 'Industries', nav_features: 'Features', nav_showcase: 'Showcase',
+    nav_dashboard: 'Dashboard', nav_myzone: 'My Zone', nav_gallery: 'Gallery',
+    start_free: 'Start Free', db_nav_create: 'Create', db_nav_projects: 'My Projects',
+
+    hero_badge: 'AI-Powered Product Development',
+    hero_title_line1: 'From Concept', hero_title_line2: 'to Production',
+    hero_desc: 'Upload a sketch or describe your idea — AI instantly generates precise 3D models. Connect with 500+ certified factories, quote, order, and deliver — all in one platform.',
+    hero_cta: 'Get Started Free →', hero_demo: 'Book a Demo',
+    stat_models: 'AI-Generated Models', stat_suppliers: 'Partner Factories', stat_delivery: 'Fastest Delivery',
+
+    ind_trendy_name: 'Trendy Toys & Figurines', ind_trendy_desc: 'Pop toys · Collectibles',
+    ind_consumer_name: 'Consumer Electronics', ind_consumer_desc: 'Earphones · Wearables · Gadgets',
+    ind_robot_name: 'Robotics', ind_robot_desc: 'Robots · Automation',
+    ind_medical_name: 'Medical Devices', ind_medical_desc: 'Medical · Health equipment',
+    ind_smarthome_name: 'Smart Home', ind_smarthome_desc: 'IoT · Home appliances',
+    ind_auto_name: 'Automotive', ind_auto_desc: 'Custom parts · Modification',
+    ind_aero_name: 'Aerospace', ind_aero_desc: 'Drones · UAVs · Aviation',
+    ind_industrial_name: 'Industrial Equipment', ind_industrial_desc: 'Machinery · Precision parts',
+    ind_sport_name: 'Sports & Education', ind_sport_desc: 'Equipment · Educational toys',
+
+    features_badge: 'Core Capabilities', features_title: 'AI-Powered Full-Stack',
+    features_desc: 'From image recognition to 3D generation, from DFM validation to instant quoting — product development has never been this efficient.',
+    feat_img3d_title: 'Image to 3D', feat_img3d_desc: 'Upload photos from any angle. AI generates accurate 3D models with multi-view fusion recognition.',
+    feat_text3d_title: 'Text to 3D', feat_text3d_desc: 'Describe your product in natural language. AI understands intent and generates editable 3D models.',
+    feat_quote_title: 'Instant Quotation', feat_quote_desc: 'Upload drawings, AI analyzes manufacturing paths and generates real-time quotes for CNC, injection molding, and 3D printing.',
+    feat_dfm_title: 'DFM Auto-Check', feat_dfm_desc: 'AI detects manufacturability issues — wall thickness, draft angles — catching risks at the design stage.',
+    feat_order_title: 'One-Click Order', feat_order_desc: 'Place orders directly after quote confirmation. 500+ certified factories covering the full manufacturing chain.',
+    feat_pm_title: 'Project Dashboard', feat_pm_desc: 'Manage projects, model versions, orders, and delivery progress in one place. Seamless team collaboration.',
+
+    showcase_badge: 'Case Studies', showcase_title: '3D Models & Case Studies', showcase_desc: 'Real user creations from diverse industries — explore the boundaries of AI creativity.',
+    show_tag1: 'CNC', show_title1: 'Precision Gear Assembly', show_cat1: 'Industrial Mfg', show_time1: '24h delivery',
+    show_tag2: 'Injection', show_title2: 'Consumer Electronics Shell', show_cat2: 'Electronics', show_time2: '3 days',
+    show_tag3: 'Sheet', show_title3: 'Drone Bracket Assembly', show_cat3: 'Aerospace', show_time3: '5 days',
+    show_tag4: 'Injection', show_title4: 'Medical Device Enclosure', show_cat4: 'Medical', show_time4: '48h delivery',
+    show_tag5: 'CNC', show_title5: 'Custom Auto Connector', show_cat5: 'Automotive', show_time5: '3 days',
+    show_tag6: 'Multi', show_title6: 'Robot Joint Module', show_cat6: 'Robotics', show_time6: '7 days',
+
+    cta_badge: 'Get Started', cta_title: 'Ready to turn ideas into reality?', cta_desc: 'Sign up free and experience AI-driven full-cycle product development.',
+    cta_btn_primary: 'Get Started Free →', cta_btn_secondary: 'Book a Demo',
+
+    footer_desc: 'All-in-One AI platform from concept to manufacturing.',
+    footer_col1_title: 'Product', footer_col1_l1: 'AI 3D Modeling', footer_col1_l2: 'Instant Quote', footer_col1_l3: 'Manufacturing', footer_col1_l4: 'Project Mgmt',
+    footer_col2_title: 'Resources', footer_col2_l1: 'Case Library', footer_col2_l2: 'Help Center', footer_col2_l3: 'API Docs', footer_col2_l4: 'Blog',
+    footer_col3_title: 'Company', footer_col3_l1: 'About Us', footer_col3_l2: 'Contact Us', footer_col3_l3: 'Privacy Policy', footer_col3_l4: 'Terms of Service',
+    footer_copyright: '© 2026 AI Create Lab. All rights reserved.', footer_sub: 'A RapidDirect Product',
+
+    db_main_title: 'Design with Words', db_main_desc: 'Describe your product, and AI brings it to life in 3D',
+    db_panel1_label: 'Image to 3D', db_panel1_title: 'Upload Image, AI Generates 3D', db_panel1_desc: 'Supports multi-angle photos, hand sketches, and reference images',
+    upload_text: 'Click or drag to upload', upload_hint: 'Supports JPG / PNG / WEBP, up to 20MB',
+    upload_tag_multi: 'Multi-angle', upload_drag: 'Drag & Drop', upload_btn: 'Upload & Generate →',
+    db_panel2_label: 'Text to 3D', db_panel2_title: 'Describe in Text, AI Generates 3D', db_panel2_desc: 'Describe in natural language, AI understands intent and generates editable 3D models',
+    prompt_placeholder: 'Describe the 3D model you want...',
+    prompt_label: 'Describe the 3D model you want',
+    prompt_gear: 'Gear', prompt_case: 'Phone Case', prompt_drone: 'Drone', prompt_med: 'Medical',
+    clear_btn: 'Clear', generate_btn: 'AI Generate 3D →',
+
+    uz_badge: 'My Workspace', uz_title: 'My Zone', uz_desc: 'Manage your creations, orders, and data.',
+    uz_projects: 'My Projects', uz_projects_count: '12 active', uz_projects_badge: '3 new',
+    uz_models: '3D Model Library', uz_models_count: '47 models',
+    uz_orders: 'My Orders', uz_orders_count: '8 active',
+    uz_quotes: 'Quotes History', uz_quotes_count: '23 entries', uz_quotes_badge: '5 pending',
+    uz_messages: 'Messages', uz_messages_count: '6 unread', uz_messages_badge: 'New',
+    uz_settings: 'Account', uz_settings_count: 'Enterprise',
+    uz_dashboard: 'Analytics', uz_dashboard_count: 'This month ¥12.8K',
+    uz_favorites: 'Favorites', uz_favorites_count: '15 items',
+
+    gallery_badge: 'Gallery', gallery_title: 'Community Cases & My Work', gallery_desc: 'Browse outstanding platform cases and view your generated 3D models.',
+    gallery_mine: 'My Work',
+    gallery_mine_title1: 'My Project: Bracket V2', gallery_mine_status1: 'Quoting', gallery_mine_time1: 'Updated 3d ago',
+    gallery_mine_title2: 'My Project: Enclosure A3', gallery_mine_status2: 'Delivered', gallery_mine_time2: '1w ago',
+
+    footer_desc_logged: 'All-in-One AI platform from concept to manufacturing.',
+    footer_col4_title: 'Quick Actions', footer_col4_l1: 'New Project', footer_col4_l2: 'Upload & Quote', footer_col4_l3: 'View Orders', footer_col4_l4: 'Settings',
+    footer_col2_l4_logged: 'Community',
+
+    preview_guest: 'Guest', preview_logged: 'Logged In',
+  }
+};
+
+// =====================================================
+// I18N ENGINE
+// =====================================================
+let currentLang = localStorage.getItem('ai_creation_v7_lang') || detectLang();
+
+function detectLang() {
+  const navLang = navigator.language || navigator.userLanguage;
+  return navLang.startsWith('zh') ? 'zh-CN' : 'en';
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'zh-CN' ? 'en' : 'zh-CN';
+  localStorage.setItem('ai_creation_v7_lang', currentLang);
+  applyLang(currentLang);
+  document.getElementById('langLabel').textContent = currentLang === 'zh-CN' ? 'EN' : '中';
+  document.documentElement.lang = currentLang;
+}
+
+function applyLang(lang) {
+  const dict = i18n[lang];
+  if (!dict) return;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key]) el.placeholder = dict[key];
+  });
+}
+
+applyLang(currentLang);
+document.getElementById('langLabel').textContent = currentLang === 'zh-CN' ? 'EN' : '中';
+document.documentElement.lang = currentLang;
+
+// =====================================================
+// LOGIN STATE TOGGLE (replaces old state bar)
+// =====================================================
+function toggleLoginState() {
+  const b = document.body;
+  const btn = document.querySelector('.login-toggle-btn span');
+  const isLoggedIn = b.classList.toggle('logged-in');
+  if (btn) btn.textContent = isLoggedIn
+    ? (currentLang === 'zh-CN' ? '已登录' : 'Logged In')
+    : (currentLang === 'zh-CN' ? '访客' : 'Guest');
+}
+
+// =====================================================
+// MOBILE MENU
+// =====================================================
+function toggleMenu() {
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    menu.classList.remove('open');
+    document.body.style.overflow = '';
+    return;
+  }
+  hamburger.setAttribute('aria-expanded', 'true');
+  const dict = i18n[currentLang];
+  const isLoggedIn = document.body.classList.contains('logged-in');
+  menu.innerHTML = isLoggedIn
+    ? `<a href="#dashboard" onclick="closeMenu()">${dict.nav_dashboard}</a>
+       <a href="#user-zone" onclick="closeMenu()">${dict.nav_myzone}</a>
+       <a href="#showcase-logged" onclick="closeMenu()">${dict.nav_gallery}</a>`
+    : `<a href="#hero" onclick="closeMenu()">${dict.nav_industries}</a>
+       <a href="#features" onclick="closeMenu()">${dict.nav_features}</a>
+       <a href="#showcase" onclick="closeMenu()">${dict.nav_showcase}</a>
+       <button class="btn btn-primary" style="margin-top:8px;" onclick="closeMenu()">${dict.start_free}</button>`;
+  hamburger.classList.add('active');
+  menu.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  const hamburger = document.getElementById('hamburger');
+  hamburger.classList.remove('active');
+  hamburger.setAttribute('aria-expanded', 'false');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// =====================================================
+// SCROLL REVEAL
+// =====================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('revealed');
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.feat-card, .show-card, .ind-card, .uz-card').forEach(el => {
+  el.classList.add('reveal-init');
+  observer.observe(el);
+});
+
+// =====================================================
+// COUNT-UP
+// =====================================================
+function animateCount(el, target, suffix, duration) {
+  const startTime = performance.now();
+  function update(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(target * eased) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.counted) {
+      e.target.dataset.counted = '1';
+      if (e.target.classList.contains('count-50k')) animateCount(e.target, 50, 'K+', 2000);
+      if (e.target.classList.contains('count-500')) animateCount(e.target, 500, '+', 1800);
+      if (e.target.classList.contains('count-24')) { e.target.textContent = '24h'; e.target.style.opacity = '1'; }
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.count-50k, .count-500, .count-24').forEach(el => countObserver.observe(el));
+
+// =====================================================
+// INTERACTIONS
+// =====================================================
+function handleUpload() {
+  alert(currentLang === 'zh-CN'
+    ? '📤 上传功能 — 正式版将支持拖拽和多视角识别'
+    : 'Upload — the full version supports drag-and-drop and multi-angle recognition');
+}
+function fillPrompt(t) {
+  const input = document.getElementById('promptInput');
+  input.value = t;
+  input.focus();
+}
+function generate3D() {
+  const t = document.getElementById('promptInput').value.trim();
+  if (!t) {
+    alert(currentLang === 'zh-CN' ? '请先输入产品描述' : 'Please enter a product description first');
+    return;
+  }
+  alert((currentLang === 'zh-CN' ? 'AI 正在生成 3D 模型...\n\n' : 'AI is generating 3D model...\n\n') + t);
+}
+
+// =====================================================
+// NAV SCROLL SHADOW
+// =====================================================
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      window.scrollTo({ top: target.offsetTop - 72, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
