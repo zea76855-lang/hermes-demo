@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>销售漏斗中心 — RapidDirect</title>
+<style>
+:root {
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-hover: #f8f9fb;
+  --bg-sidebar: #ffffff;
+  --bg-topbar: #f7f8fa;
+  --text-primary: #2f3542;
+  --text-regular: #5b6472;
+  --text-secondary: #8b93a1;
+  --text-disabled: #b7bfca;
+  --border: #ebeef3;
+  --border-light: #f1f3f6;
+  --brand: #ff6b5c;
+  --brand-hover: #ff7e70;
+  --brand-active: #f05b4d;
+  --brand-bg: #fff2ef;
+  --brand-border: #ffd4cc;
+  --success: #67c23a;
+  --success-bg: #eef9e8;
+  --info: #4c9bff;
+  --info-bg: #edf5ff;
+  --warning: #f5a623;
+  --warning-bg: #fff6e8;
+  --purple: #9b7bff;
+  --purple-bg: #f3eeff;
+  --danger: #ff6b5c;
+  --danger-bg: #fff2ef;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-xs: 0 1px 2px rgba(15,23,42,0.03);
+  --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
+  --shadow-md: 0 4px 16px rgba(15,23,42,0.06);
+  --font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-family);font-size:14px;color:var(--text-regular);background:var(--bg-page);-webkit-font-smoothing:antialiased;}
+.app-layout{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:216px;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-logo{height:72px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--border);gap:10px;}
+.sidebar-logo .logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#ff6b5c,#f05b4d);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;}
+.sidebar-logo .logo-text{font-size:16px;font-weight:600;color:var(--text-primary);}
+.sidebar-logo .menu-toggle{margin-left:auto;color:var(--text-secondary);font-size:18px;cursor:pointer;}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto;}
+.nav-item{display:flex;align-items:center;height:44px;padding:0 20px;color:var(--text-regular);cursor:pointer;gap:10px;font-size:14px;position:relative;transition:color 0.15s;}
+.nav-item:hover{color:var(--text-primary);}
+.nav-item .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0;color:var(--text-secondary);}
+.nav-item .nav-arrow{margin-left:auto;font-size:12px;color:var(--text-secondary);}
+.nav-item.active{color:var(--brand);font-weight:500;}
+.nav-item.active .nav-icon{color:var(--brand);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--brand);border-radius:0 3px 3px 0;}
+.sidebar-section{padding:16px 20px 4px;font-size:12px;color:var(--text-secondary);letter-spacing:0.5px;}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:60px;background:var(--bg-topbar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.breadcrumb-current{padding:6px 14px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:14px;color:var(--text-primary);font-weight:500;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.pill-task{height:32px;padding:0 12px;border-radius:16px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-regular);}
+.pill-task .num{color:var(--brand);font-weight:500;}
+.top-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:var(--text-secondary);font-size:16px;}
+.top-icon:hover{background:var(--bg-hover);}
+.topbar-user{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.topbar-user:hover{background:var(--bg-hover);}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ff6b5c,#e8554a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}
+.username{font-size:14px;color:var(--text-primary);}
+.content{flex:1;padding:16px 20px;overflow-y:auto;}
+.tab-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.tab-btn{height:32px;padding:0 14px;border-radius:var(--radius-xs);border:1px solid #e7eaf0;background:#fff;color:var(--text-regular);font-size:14px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.tab-btn:hover{border-color:var(--brand-border);color:var(--brand);}
+.tab-btn.active{color:var(--brand);border-color:var(--brand-border);background:var(--brand-bg);}
+.tab-spacer{flex:1;}
+.btn-refresh{height:32px;padding:0 14px;border-radius:var(--radius-xs);border:1px solid var(--border);background:#fff;color:var(--text-regular);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:4px;}
+.btn-refresh:hover{border-color:var(--text-secondary);}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:16px;font-weight:600;color:var(--text-primary);}
+.section-sub{font-size:13px;color:var(--text-secondary);margin-left:12px;}
+.section-actions{display:flex;align-items:center;gap:10px;}
+.btn-outline{height:30px;padding:0 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:#fff;color:var(--text-regular);font-size:13px;cursor:pointer;}
+.btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+.period-group{display:flex;gap:0;}
+.period-btn{height:30px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--text-regular);font-size:13px;cursor:pointer;transition:all 0.15s;}
+.period-btn:first-child{border-radius:var(--radius-xs) 0 0 var(--radius-xs);}
+.period-btn:last-child{border-radius:0 var(--radius-xs) var(--radius-xs) 0;}
+.period-btn:not(:first-child){margin-left:-1px;}
+.period-btn:hover{border-color:var(--brand-border);color:var(--brand);z-index:1;}
+.period-btn.active{border-color:var(--brand);background:var(--brand-bg);color:var(--brand);z-index:1;}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;position:relative;transition:box-shadow 0.15s;}
+.metric-card:hover{box-shadow:var(--shadow-sm);}
+.metric-card .mc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.metric-card .mc-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.metric-card .mc-icon.red{background:var(--danger-bg);color:var(--danger);}
+.metric-card .mc-icon.purple{background:var(--purple-bg);color:var(--purple);}
+.metric-card .mc-icon.green{background:var(--success-bg);color:var(--success);}
+.metric-card .mc-icon.blue{background:var(--info-bg);color:var(--info);}
+.mc-label{font-size:13px;color:var(--text-secondary);margin-bottom:2px;}
+.mc-value{font-size:28px;font-weight:700;color:var(--text-primary);line-height:1.2;}
+.mc-target{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+.mc-pct{font-size:13px;font-weight:500;}
+.mc-pct.up{color:var(--success);}
+.progress-track{height:6px;background:#e9edf3;border-radius:999px;margin-top:8px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:999px;transition:width 0.5s;}
+.progress-bar.brand{background:var(--brand);}
+.progress-bar.warning{background:var(--warning);}
+.progress-bar.info{background:var(--info);}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;}
+.card-title{font-size:16px;font-weight:600;color:var(--text-primary);}
+.card-sub{font-size:12px;color:var(--text-secondary);}
+.card-body{padding:16px;}
+.funnel-container{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;}
+.funnel-step{display:flex;align-items:center;width:100%;position:relative;justify-content:center;transition:all 0.2s;cursor:pointer;}
+.funnel-step:hover{opacity:0.9;}
+.funnel-bar{height:36px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:500;color:#fff;position:relative;transition:width 0.3s;min-width:60%;}
+.funnel-step-1 .funnel-bar{background:linear-gradient(135deg,#4c9bff,#6cb3ff);width:100%;}
+.funnel-step-2 .funnel-bar{background:linear-gradient(135deg,#5ba0f7,#7bb8f7);width:85%;}
+.funnel-step-3 .funnel-bar{background:linear-gradient(135deg,#ff9f4a,#ffb86c);width:68%;}
+.funnel-step-4 .funnel-bar{background:linear-gradient(135deg,#ff6b5c,#ff8b7a);width:45%;}
+.funnel-step-5 .funnel-bar{background:linear-gradient(135deg,#67c23a,#85d65a);width:32%;}
+.funnel-bar .step-label{font-size:13px;opacity:0.9;}
+.funnel-bar .step-count{font-size:14px;font-weight:700;}
+.funnel-bar .step-rate{font-size:11px;opacity:0.8;position:absolute;right:-56px;color:var(--text-secondary);}
+.funnel-note{text-align:center;font-size:12px;color:var(--text-secondary);margin-top:8px;}
+.chart-placeholder{height:140px;display:flex;align-items:flex-end;gap:6px;padding:0 4px;}
+.chart-col{flex:1;border-radius:3px 3px 0 0;position:relative;min-height:4px;cursor:pointer;}
+.chart-col:hover{opacity:0.8;}
+.chart-col .col-tip{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text-primary);font-weight:500;white-space:nowrap;display:none;}
+.chart-col:hover .col-tip{display:block;}
+.chart-x{display:flex;gap:6px;margin-top:6px;}
+.chart-x span{flex:1;text-align:center;font-size:11px;color:var(--text-secondary);}
+.table-wrap{overflow-x:auto;}
+.table{width:100%;border-collapse:collapse;}
+.table th{background:#fafbfc;color:var(--text-secondary);font-size:13px;font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.table td{padding:10px 12px;color:var(--text-primary);font-size:13px;border-bottom:1px solid var(--border-light);}
+.table tr:last-child td{border-bottom:none;}
+.table tr:hover td{background:var(--bg-hover);}
+.table .num-col{text-align:right;font-variant-numeric:tabular-nums;}
+.table .highlight{color:var(--brand);font-weight:600;}
+.rank-num{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;font-size:12px;font-weight:500;}
+.rank-1{background:var(--brand-bg);color:var(--brand);}
+.rank-2{background:var(--warning-bg);color:var(--warning);}
+.rank-3{background:var(--info-bg);color:var(--info);}
+.rank-n{background:#f4f5f7;color:var(--text-secondary);}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;}
+.badge-success{background:var(--success-bg);color:var(--success);}
+.badge-warning{background:var(--warning-bg);color:var(--warning);}
+.badge-danger{background:var(--danger-bg);color:var(--danger);}
+.badge-info{background:var(--info-bg);color:var(--info);}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.quick-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 8px;text-align:center;cursor:pointer;transition:all 0.15s;}
+.quick-item:hover{box-shadow:var(--shadow-sm);border-color:var(--brand-border);}
+.quick-item .qi-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:18px;}
+.quick-item .qi-icon.red{background:var(--danger-bg);color:var(--danger);}
+.quick-item .qi-icon.green{background:var(--success-bg);color:var(--success);}
+.quick-item .qi-icon.orange{background:var(--warning-bg);color:var(--warning);}
+.quick-item .qi-icon.purple{background:var(--purple-bg);color:var(--purple);}
+.quick-item .qi-label{font-size:13px;color:var(--text-primary);}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#d0d5de;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#b0b8c6;}
+@media(max-width:1200px){.metrics-row{grid-template-columns:repeat(2,1fr);}.dashboard-grid{grid-template-columns:1fr;}.quick-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){.sidebar{display:none;}.metrics-row{grid-template-columns:1fr;}.quick-grid{grid-template-columns:repeat(2,1fr);}.period-group{display:none;}}
+</style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">R</div>
+      <span class="logo-text">RapidDirect</span>
+      <span class="menu-toggle">☰</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item"><span class="nav-icon">📊</span>经营总览</div>
+      <div class="nav-item active"><span class="nav-icon">🔻</span>销售漏斗中心<span class="nav-arrow">▾</span></div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span>工艺经营<span class="nav-arrow">▾</span></div>
+      <div class="nav-item"><span class="nav-icon">👥</span>销售团队<span class="nav-arrow">▾</span></div>
+      <div class="nav-item"><span class="nav-icon">📂</span>客户资产<span class="nav-arrow">▾</span></div>
+      <div class="nav-item"><span class="nav-icon">📋</span>询单质量<span class="nav-arrow">▾</span></div>
+      <div class="nav-item"><span class="nav-icon">🤖</span>AI诊断<span class="nav-arrow">▾</span></div>
+      <div class="sidebar-section">系统管理</div>
+      <div class="nav-item"><span class="nav-icon">⚡</span>快捷入口</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span>系统设置</div>
+    </nav>
+  </aside>
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left"><span class="breadcrumb-current">销售漏斗中心</span></div>
+      <div class="topbar-right">
+        <div class="pill-task">📋 任务 <span class="num">0/0</span></div>
+        <div class="top-icon">🌐</div>
+        <div class="top-icon">⛶</div>
+        <div class="topbar-user">
+          <div class="avatar">E</div>
+          <span class="username">Eric 周鑫</span>
+        </div>
+      </div>
+    </header>
+    <div class="content">
+      <div class="tab-row">
+        <button class="tab-btn active">全链路漏斗</button>
+        <button class="tab-btn">自动报价</button>
+        <button class="tab-btn">全渠道成交</button>
+        <button class="tab-btn">转化归因</button>
+        <div class="tab-spacer"></div>
+        <button class="btn-refresh">🔄 刷新</button>
+      </div>
+      <div class="section-header">
+        <div><span class="section-title">目标完成情况</span><span class="section-sub">2026年5月</span></div>
+        <div class="section-actions">
+          <button class="btn-outline">配置指标</button>
+          <div class="period-group">
+            <button class="period-btn">本日</button>
+            <button class="period-btn">本周</button>
+            <button class="period-btn active">本月</button>
+            <button class="period-btn">本季度</button>
+            <button class="period-btn">本年</button>
+          </div>
+        </div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="mc-top"><div class="mc-icon red">💰</div><span class="mc-pct up">86.01%</span></div>
+          <div class="mc-label">成交金额 RMB</div>
+          <div class="mc-value">¥27,273,872</div>
+          <div class="mc-target">目标 ¥31,706,800</div>
+          <div class="progress-track"><div class="progress-bar brand" style="width:86%"></div></div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-top"><div class="mc-icon purple">📦</div><span class="mc-pct">—</span></div>
+          <div class="mc-label">成交单数</div>
+          <div class="mc-value">1,391</div>
+          <div class="mc-target">目标 —</div>
+          <div class="progress-track"><div class="progress-bar info" style="width:0%"></div></div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-top"><div class="mc-icon green">📄</div><span class="mc-pct">—</span></div>
+          <div class="mc-label">询价单数</div>
+          <div class="mc-value">4,886</div>
+          <div class="mc-target">目标 —</div>
+          <div class="progress-track"><div class="progress-bar warning" style="width:0%"></div></div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-top"><div class="mc-icon blue">💬</div><span class="mc-pct">—</span></div>
+          <div class="mc-label">报价单数</div>
+          <div class="mc-value">4,107</div>
+          <div class="mc-target">目标 —</div>
+          <div class="progress-track"><div class="progress-bar info" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">全链路漏斗</span><span class="card-sub">本月转化路径</span></div>
+          <div class="card-body">
+            <div class="funnel-container">
+              <div class="funnel-step funnel-step-1"><div class="funnel-bar"><span class="step-label">询盘总数</span><span class="step-count">4,886</span></div><span class="step-rate">100%</span></div>
+              <div class="funnel-step funnel-step-2"><div class="funnel-bar"><span class="step-label">有效报价</span><span class="step-count">2,886</span></div><span class="step-rate">59.1%</span></div>
+              <div class="funnel-step funnel-step-3"><div class="funnel-bar"><span class="step-label">提交报价单</span><span class="step-count">1,672</span></div><span class="step-rate">34.2%</span></div>
+              <div class="funnel-step funnel-step-4"><div class="funnel-bar"><span class="step-label">自动报价成交</span><span class="step-count">598</span></div><span class="step-rate">12.5%</span></div>
+              <div class="funnel-step funnel-step-5"><div class="funnel-bar"><span class="step-label">全渠道成交</span><span class="step-count">1,514</span></div><span class="step-rate">31.0%</span></div>
+            </div>
+            <div class="funnel-note">⚠️ 自动报价转化率 12.5%，全渠道成交比自动报价高 153%</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">营收趋势</span><span class="card-sub">本月 vs 上月</span></div>
+          <div class="card-body">
+            <div class="chart-placeholder" id="revenueChart"></div>
+            <div class="chart-x" id="revenueLabels"></div>
+            <div style="display:flex;gap:20px;margin-top:12px;font-size:12px;color:var(--text-secondary)">
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--brand);margin-right:4px;"></span>本月</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--info);margin-right:4px;opacity:0.6;"></span>上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><span class="card-title">销售团队排行 Top 6</span><span class="card-sub">按成交金额排序</span></div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th style="width:40px">#</th><th>部门</th><th>人数</th><th class="num-col">累计成交</th><th class="num-col">本月成交</th><th class="num-col">客户数</th><th class="num-col">人均产值</th><th>成交率</th></tr></thead>
+              <tbody>
+                <tr><td><span class="rank-num rank-1">1</span></td><td>AM1组</td><td>5</td><td class="num-col highlight">¥19,915万</td><td class="num-col">¥9,425万</td><td class="num-col">377</td><td class="num-col">¥3,983万</td><td><span class="badge badge-success">35.2%</span></td></tr>
+                <tr><td><span class="rank-num rank-2">2</span></td><td>AM2组</td><td>9</td><td class="num-col highlight">¥13,181万</td><td class="num-col">¥7,141万</td><td class="num-col">997</td><td class="num-col">¥1,465万</td><td><span class="badge badge-success">28.7%</span></td></tr>
+                <tr><td><span class="rank-num rank-3">3</span></td><td>长沙分部</td><td>14</td><td class="num-col highlight">¥8,990万</td><td class="num-col">¥6,021万</td><td class="num-col">3,732</td><td class="num-col">¥642万</td><td><span class="badge badge-info">21.4%</span></td></tr>
+                <tr><td><span class="rank-num rank-n">4</span></td><td>AM3组</td><td>6</td><td class="num-col">¥6,882万</td><td class="num-col">¥3,579万</td><td class="num-col">227</td><td class="num-col">¥1,147万</td><td><span class="badge badge-info">19.8%</span></td></tr>
+                <tr><td><span class="rank-num rank-n">5</span></td><td>IS组</td><td>8</td><td class="num-col">¥1,725万</td><td class="num-col">¥568万</td><td class="num-col">2,284</td><td class="num-col">¥216万</td><td><span class="badge badge-warning">12.3%</span></td></tr>
+                <tr><td><span class="rank-num rank-n">6</span></td><td>深圳分部</td><td>6</td><td class="num-col">¥1,628万</td><td class="num-col">¥1,056万</td><td class="num-col">6,178</td><td class="num-col">¥271万</td><td><span class="badge badge-warning">11.5%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">快捷入口</span><span class="card-sub">常用操作直达</span></div>
+        <div class="card-body">
+          <div class="quick-grid">
+            <div class="quick-item"><div class="qi-icon red">📈</div><div class="qi-label">新建商机</div></div>
+            <div class="quick-item"><div class="qi-icon green">🏢</div><div class="qi-label">新建公司</div></div>
+            <div class="quick-item"><div class="qi-icon orange">✏️</div><div class="qi-label">创建跟进</div></div>
+            <div class="quick-item"><div class="qi-icon purple">📋</div><div class="qi-label">创建工单</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const d=[{l:'5/1',v1:2850,v2:2200},{l:'5/5',v1:3200,v2:2600},{l:'5/9',v1:4100,v2:3100},{l:'5/13',v1:3800,v2:3500},{l:'5/17',v1:5200,v2:4000},{l:'5/21',v1:6100,v2:4500},{l:'5/25',v1:5800,v2:4700},{l:'5/29',v1:7200,v2:5100}];
+  const m=Math.max(...d.map(x=>Math.max(x.v1,x.v2)))*1.15;
+  const c=document.getElementById('revenueChart');
+  const l=document.getElementById('revenueLabels');
+  d.forEach(x=>{
+    const h1=(x.v1/m)*130,h2=(x.v2/m)*130;
+    const w=document.createElement('div');
+    w.style.flex='1';w.style.display='flex';w.style.flexDirection='column';w.style.justifyContent='flex-end';w.style.gap='3px';
+    const c2=document.createElement('div');c2.className='chart-col';c2.style.background='var(--info)';c2.style.height=h2+'px';c2.style.opacity='0.5';c2.innerHTML='<div class="col-tip">¥'+(x.v2/1000).toFixed(1)+'K</div>';
+    const c1=document.createElement('div');c1.className='chart-col';c1.style.background='var(--brand)';c1.style.height=h1+'px';c1.style.opacity='0.85';c1.innerHTML='<div class="col-tip">¥'+(x.v1/1000).toFixed(1)+'K</div>';
+    w.appendChild(c2);w.appendChild(c1);c.appendChild(w);
+    const lb=document.createElement('span');lb.textContent=x.l;l.appendChild(lb);
+  });
+})();
+</script>
+</body>
+</html>
