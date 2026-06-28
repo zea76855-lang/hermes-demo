@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudNova CRM — 企业级智能客户关系管理平台</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Inter","PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;background:#0a1628;color:#e2e8f0;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.hero{min-height:100vh;background:linear-gradient(160deg,#0a1628 0%,#0d1f3c 30%,#132a4a 60%,#0d1f3c 100%);position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 600px 400px at 10% 20%,rgba(59,130,246,0.08),transparent),radial-gradient(ellipse 500px 500px at 80% 80%,rgba(99,102,241,0.06),transparent),radial-gradient(ellipse 300px 300px at 50% 50%,rgba(56,189,248,0.04),transparent);pointer-events:none;}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.nav{position:relative;z-index:10;display:flex;align-items:center;padding:20px 40px;max-width:1440px;margin:0 auto;width:100%;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;}
+.nav-logo .logo-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.nav-links{display:flex;align-items:center;gap:32px;margin-left:48px;}
+.nav-links a{color:#94a3b8;text-decoration:none;font-size:14px;transition:color .2s;}
+.nav-links a:hover{color:#fff;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.btn-outline{padding:8px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#e2e8f0;font-size:14px;cursor:pointer;transition:all .2s;}
+.btn-outline:hover{border-color:rgba(59,130,246,0.5);color:#fff;}
+.btn-primary{padding:8px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;font-size:14px;cursor:pointer;transition:all .2s;font-weight:500;}
+.btn-primary:hover{box-shadow:0 4px 20px rgba(59,130,246,0.4);transform:translateY(-1px);}
+.hero-content{position:relative;z-index:10;max-width:1440px;margin:0 auto;padding:60px 40px 0;display:grid;grid-template-columns:1fr 1fr;gap:60px;flex:1;align-items:flex-start;}
+.hero-left{padding-top:20px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:9999px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);color:#60a5fa;font-size:13px;font-weight:500;margin-bottom:20px;}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:#3b82f6;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{font-size:48px;font-weight:800;line-height:1.15;color:#fff;margin-bottom:16px;letter-spacing:-1.5px;}
+.hero-title .gradient{background:linear-gradient(135deg,#60a5fa,#a78bfa,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:16px;line-height:1.7;color:#94a3b8;margin-bottom:32px;max-width:520px;}
+.hero-cta{display:flex;gap:12px;}
+.hero-stats{display:flex;gap:48px;margin-top:48px;}
+.hero-stat .num{font-size:28px;font-weight:700;color:#fff;}
+.hero-stat .label{font-size:13px;color:#64748b;margin-top:2px;}
+.hero-right{position:relative;}
+.dashboard-mockup{background:rgba(15,23,42,0.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,0.15);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 80px rgba(59,130,246,0.05);position:relative;}
+.dashboard-mockup::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,0.3),transparent);}
+.dash-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.dash-header .dash-logo{font-size:14px;font-weight:600;color:#e2e8f0;display:flex;align-items:center;gap:8px;}
+.dash-header .dash-logo .dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;}
+.dash-header .dash-actions{display:flex;gap:12px;align-items:center;}
+.dash-header .dash-actions .d-icon{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:13px;color:#64748b;}
+.dash-header .dash-user{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.dash-body{padding:16px;display:grid;grid-template-columns:180px 1fr;gap:16px;}
+.dash-sidebar{display:flex;flex-direction:column;gap:2px;}
+.dash-sidebar .ds-item{padding:8px 10px;border-radius:6px;font-size:13px;color:#64748b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.dash-sidebar .ds-item:hover{color:#e2e8f0;background:rgba(255,255,255,0.04);}
+.dash-sidebar .ds-item.active{color:#60a5fa;background:rgba(59,130,246,0.1);}
+.dash-sidebar .ds-item .ds-icon{font-size:14px;width:18px;text-align:center;}
+.dash-main{display:flex;flex-direction:column;gap:12px;}
+.dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.kpi-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;}
+.kpi-card .kc-label{font-size:11px;color:#64748b;margin-bottom:4px;}
+.kpi-card .kc-value{font-size:18px;font-weight:700;color:#f1f5f9;}
+.kpi-card .kc-change{font-size:11px;margin-top:2px;}
+.kpi-card .kc-change.up{color:#22c55e;}
+.kanban-row{display:flex;gap:6px;}
+.kanban-col{flex:1;background:rgba(255,255,255,0.02);border-radius:6px;padding:6px;}
+.kanban-col .kc-h{font-size:10px;color:#64748b;padding:2px 4px;margin-bottom:4px;display:flex;justify-content:space-between;}
+.kanban-col .kc-h span{font-weight:600;color:#94a3b8;}
+.k-card{background:rgba(255,255,255,0.04);border-radius:4px;padding:6px;margin-bottom:4px;font-size:10px;border-left:2px solid;}
+.k-card .kc-name{color:#cbd5e1;font-weight:500;}
+.k-card .kc-info{color:#64748b;margin-top:2px;}
+.k-card.c1{border-color:#3b82f6;}.k-card.c2{border-color:#f59e0b;}.k-card.c3{border-color:#22c55e;}
+.chart-mini{display:flex;align-items:flex-end;gap:3px;height:50px;padding-top:4px;}
+.chart-mini .bar{flex:1;border-radius:2px 2px 0 0;min-height:4px;cursor:pointer;}
+.chart-mini .bar:hover{opacity:.7;}
+.legend{display:flex;gap:12px;margin-top:6px;font-size:10px;color:#64748b;}
+.legend span{display:flex;align-items:center;gap:4px;}
+.legend .ld{width:8px;height:8px;border-radius:2px;}
+.table-mini{width:100%;font-size:10px;border-collapse:collapse;}
+.table-mini th{text-align:left;color:#64748b;font-weight:500;padding:4px 4px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.table-mini td{padding:4px 4px;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,0.02);}
+.table-mini .highlight{color:#f1f5f9;font-weight:500;}
+.dashboard-mockup::after{content:'';position:absolute;bottom:-30px;left:10%;right:10%;height:60px;background:radial-gradient(ellipse at center,rgba(59,130,246,0.1),transparent);filter:blur(20px);pointer-events:none;}
+.features{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:80px 40px 60px;width:100%;}
+.features-header{text-align:center;margin-bottom:48px;}
+.features-header h2{font-size:32px;font-weight:700;color:#fff;margin-bottom:12px;}
+.features-header p{font-size:15px;color:#64748b;max-width:600px;margin:0 auto;}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.feature-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;text-align:center;transition:all .3s;cursor:default;}
+.feature-card:hover{background:rgba(59,130,246,0.05);border-color:rgba(59,130,246,0.2);transform:translateY(-2px);}
+.feature-card .fc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;}
+.feature-card .fc-title{font-size:15px;font-weight:600;color:#f1f5f9;margin-bottom:6px;}
+.feature-card .fc-desc{font-size:13px;color:#64748b;line-height:1.5;}
+.fci-blue{background:rgba(59,130,246,0.1);color:#60a5fa;}.fci-purple{background:rgba(139,92,246,0.1);color:#a78bfa;}.fci-green{background:rgba(34,197,94,0.1);color:#4ade80;}.fci-orange{background:rgba(245,158,11,0.1);color:#fbbf24;}
+.footer{position:relative;z-index:10;text-align:center;padding:30px 40px;font-size:13px;color:#475569;border-top:1px solid rgba(255,255,255,0.04);max-width:1440px;margin:0 auto;width:100%;}
+@media(max-width:1024px){.hero-content{grid-template-columns:1fr;padding-top:40px;gap:40px;}.hero-title{font-size:36px;}.hero-stats{gap:24px;}.feature-grid{grid-template-columns:repeat(2,1fr);}.nav-links{display:none;}.dash-body{grid-template-columns:1fr;}.dash-sidebar{display:none;}.dash-kpi{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.hero-content{padding:20px;}.hero-title{font-size:28px;}.hero-stats{flex-wrap:wrap;gap:16px;}.feature-grid{grid-template-columns:1fr;}.dash-kpi{grid-template-columns:1fr;}.nav{padding:16px 20px;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <nav class="nav">
+    <div class="nav-logo"><div class="logo-icon">C</div><span class="logo-text">CloudNova</span></div>
+    <div class="nav-links"><a href="#">产品</a><a href="#">解决方案</a><a href="#">客户案例</a><a href="#">定价</a></div>
+    <div class="nav-right"><button class="btn-outline">登录</button><button class="btn-primary">免费试用</button></div>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge"><span></span> 新一代企业级 CRM</div>
+      <h1 class="hero-title">智能驱动<br><span class="gradient">客户增长</span></h1>
+      <p class="hero-desc">统一客户数据、智能分析洞察、加速销售转化。<br>为企业打造的下一代智能客户关系管理平台。</p>
+      <div class="hero-cta"><button class="btn-primary" style="padding:12px 28px;font-size:15px;">开始使用</button><button class="btn-outline" style="padding:12px 28px;font-size:15px;">预约演示</button></div>
+      <div class="hero-stats"><div class="hero-stat"><div class="num">12,640+</div><div class="label">企业客户</div></div><div class="hero-stat"><div class="num">99.99%</div><div class="label">服务可用性</div></div><div class="hero-stat"><div class="num">¥8.42M+</div><div class="label">年均客户营收</div></div></div>
+    </div>
+    <div class="hero-right">
+      <div class="dashboard-mockup">
+        <div class="dash-header"><div class="dash-logo"><span class="dot"></span> CloudNova CRM</div><div class="dash-actions"><span class="d-icon">🔍</span><span class="d-icon">🔔</span><span class="dash-user">A</span></div></div>
+        <div class="dash-body">
+          <div class="dash-sidebar">
+            <div class="ds-item active"><span class="ds-icon">📊</span>仪表盘</div>
+            <div class="ds-item"><span class="ds-icon">👥</span>客户管理</div>
+            <div class="ds-item"><span class="ds-icon">📈</span>商机管理</div>
+            <div class="ds-item"><span class="ds-icon">🔻</span>销售漏斗</div>
+            <div class="ds-item"><span class="ds-icon">📋</span>数据分析</div>
+            <div class="ds-item"><span class="ds-icon">📦</span>订单管理</div>
+            <div class="ds-item"><span class="ds-icon">⚙️</span>系统设置</div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-kpi">
+              <div class="kpi-card"><div class="kc-label">总客户数</div><div class="kc-value">12,640</div><div class="kc-change up">↑ 18.5%</div></div>
+              <div class="kpi-card"><div class="kc-label">活跃商机</div><div class="kc-value">3,258</div><div class="kc-change up">↑ 22.1%</div></div>
+              <div class="kpi-card"><div class="kc-label">成交率</div><div class="kc-value">26.8%</div><div class="kc-change up">↑ 4.3%</div></div>
+              <div class="kpi-card"><div class="kc-label">总营收</div><div class="kc-value">$8.42M</div><div class="kc-change up">↑ 31.8%</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="dash-panel" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;">
+                <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;">📋 销售看板</div>
+                <div class="kanban-row">
+                  <div class="kanban-col"><div class="kc-h">潜在 <span>12</span></div><div class="k-card c1"><div class="kc-name">TechCorp</div><div class="kc-info">¥128K</div></div><div class="k-card c1"><div class="kc-name">DataFlow</div><div class="kc-info">¥95K</div></div></div>
+                  <div class="kanban-col"><div class="kc-h">跟进 <span>8</span></div><div class="k-card c2"><div class="kc-name">NexGen</div><div class="kc-info">¥256K</div></div><div class="k-card c2"><div class="kc-name">CloudBase</div><div class="kc-info">¥180K</div></div></div>
+                  <div class="kanban-col"><div class="kc-h">成交 <span>5</span></div><div class="k-card c3"><div class="kc-name">Innovate</div><div class="kc-info">¥420K</div></div><div class="k-card c3"><div class="kc-name">Synergy</div><div class="kc-info">¥350K</div></div></div>
+                </div>
+              </div>
+              <div class="dash-panel" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;">
+                <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;">📈 营收趋势</div>
+                <div class="chart-mini" id="miniChart"></div>
+                <div class="legend"><span><span class="ld" style="background:#3b82f6"></span>本月</span><span><span class="ld" style="background:#6366f1;opacity:.5"></span>上月</span></div>
+              </div>
+            </div>
+            <div class="dash-panel" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;">
+              <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;">🏆 最新商机</div>
+              <table class="table-mini"><thead><tr><th>商机</th><th>客户</th><th>阶段</th><th style="text-align:right">金额</th></tr></thead><tbody><tr><td class="highlight">云迁移项目</td><td>TechCorp</td><td style="color:#f59e0b">跟进中</td><td style="text-align:right;color:#22c55e">$420K</td></tr><tr><td class="highlight">企业许可</td><td>NexGen</td><td style="color:#3b82f6">洽谈</td><td style="text-align:right">$256K</td></tr><tr><td class="highlight">实施服务</td><td>DataFlow</td><td style="color:#22c55e">已成交</td><td style="text-align:right;color:#22c55e">$180K</td></tr><tr><td class="highlight">维护合同</td><td>CloudBase</td><td style="color:#f59e0b">跟进中</td><td style="text-align:right">$95K</td></tr></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="features">
+    <div class="features-header"><h2>全方位 CRM 能力</h2><p>从客户获取到售后服务，覆盖完整销售生命周期</p></div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="fc-icon fci-blue">👥</div><div class="fc-title">客户管理</div><div class="fc-desc">360°客户视图，自动化标签分层，精准客户画像</div></div>
+      <div class="feature-card"><div class="fc-icon fci-purple">📈</div><div class="fc-title">商机管理</div><div class="fc-desc">可视化销售管道，智能推荐跟进策略，提升转化率</div></div>
+      <div class="feature-card"><div class="fc-icon fci-green">🔻</div><div class="fc-title">销售漏斗</div><div class="fc-desc">全链路漏斗分析，自动化报价，精准成交预测</div></div>
+      <div class="feature-card"><div class="fc-icon fci-orange">📊</div><div class="fc-title">数据分析</div><div class="fc-desc">实时 BI 仪表盘，AI 智能诊断，驱动科学决策</div></div>
+    </div>
+  </div>
+  <div class="footer">© 2026 CloudNova CRM. All rights reserved. Enterprise-Grade · ISO 27001 Certified · 99.99% Uptime SLA</div>
+</div>
+<script>
+(function(){const d=[{l:'W1',v1:56,v2:42},{l:'W2',v1:72,v2:55},{l:'W3',v1:85,v2:64},{l:'W4',v1:68,v2:58},{l:'W5',v1:92,v2:70},{l:'W6',v1:110,v2:82},{l:'W7',v1:96,v2:75},{l:'W8',v1:120,v2:88}];const m=Math.max(...d.map(x=>Math.max(x.v1,x.v2)))*1.2;const e=document.getElementById('miniChart');d.forEach((x,i)=>{const h1=(x.v1/m)*46,h2=(x.v2/m)*46;const w=document.createElement('div');w.style.flex='1';w.style.display='flex';w.style.flexDirection='column';w.style.justifyContent='flex-end';w.style.alignItems='center';w.style.gap='2px';const b1=document.createElement('div');b1.className='bar';b1.style.background='#3b82f6';b1.style.height=h1+'px';b1.style.width='70%';const b2=document.createElement('div');b2.className='bar';b2.style.background='#6366f1';b2.style.height=h2+'px';b2.style.width='70%';b2.style.opacity='0.5';w.appendChild(b2);w.appendChild(b1);e.appendChild(w);})})();
+</script>
+</body>
+</html>
