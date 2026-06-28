@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>销售漏斗中心 — RapidDirect</title>
+<style>
+:root {
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-hover: #f8f9fb;
+  --bg-sidebar: #ffffff;
+  --bg-topbar: #f7f8fa;
+  --text-primary: #2f3542;
+  --text-regular: #5b6472;
+  --text-secondary: #8b93a1;
+  --text-disabled: #b7bfca;
+  --border: #ebeef3;
+  --border-light: #f1f3f6;
+  --brand: #ff6b5c;
+  --brand-hover: #ff7e70;
+  --brand-active: #f05b4d;
+  --brand-bg: #fff2ef;
+  --brand-border: #ffd4cc;
+  --success: #67c23a;
+  --success-bg: #eef9e8;
+  --info: #4c9bff;
+  --info-bg: #edf5ff;
+  --warning: #f5a623;
+  --warning-bg: #fff6e8;
+  --purple: #9b7bff;
+  --purple-bg: #f3eeff;
+  --danger: #e74c3c;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-xs: 0 1px 2px rgba(15,23,42,0.03);
+  --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
+  --shadow-md: 0 4px 16px rgba(15,23,42,0.06);
+  --font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-family);font-size:14px;color:var(--text-regular);background:var(--bg-page);-webkit-font-smoothing:antialiased;}
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:216px;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}.sidebar-logo{height:72px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--border);gap:10px;}.sidebar-logo .logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#ff6b5c,#f05b4d);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex-shrink:0;}.sidebar-logo .logo-text{font-size:16px;font-weight:600;color:var(--text-primary);}.sidebar-nav{flex:1;padding:12px 0;}.nav-group{font-size:12px;color:var(--text-secondary);padding:16px 20px 4px;letter-spacing:0.5px;}.nav-item{display:flex;align-items:center;height:44px;padding:0 20px;color:var(--text-regular);cursor:pointer;gap:10px;font-size:14px;position:relative;transition:color 0.15s;}.nav-item:hover{color:var(--text-primary);background:var(--bg-hover);}.nav-item .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0;color:var(--text-secondary);}.nav-item .nav-arrow{margin-left:auto;font-size:12px;color:var(--text-secondary);}.nav-item.active{color:var(--brand);font-weight:500;}.nav-item.active .nav-icon{color:var(--brand);}.nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--brand);border-radius:0 3px 3px 0;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:60px;background:var(--bg-topbar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;flex-shrink:0;}.topbar-left{display:flex;align-items:center;gap:12px;}.breadcrumb{padding:6px 14px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:14px;color:var(--text-primary);font-weight:500;}.topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px;}.pill-task{height:32px;padding:0 12px;border-radius:16px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-regular);}.pill-task .num{color:var(--brand);font-weight:500;}.top-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:var(--text-secondary);font-size:16px;}.top-icon:hover{background:var(--bg-hover);}
+.topbar-user{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:6px;}.topbar-user:hover{background:var(--bg-hover);}.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ff6b5c,#e8554a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}.username{font-size:14px;color:var(--text-primary);}
+.content{flex:1;padding:16px 20px;overflow-y:auto;}
+.view{display:none;}.view.active{display:block;}
+.sub-tab{height:32px;padding:0 14px;border-radius:var(--radius-xs);border:1px solid #e7eaf0;background:#fff;color:var(--text-regular);font-size:14px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}.sub-tab:hover{border-color:var(--brand-border);color:var(--brand);}.sub-tab.active{color:var(--brand);border-color:var(--brand-border);background:var(--brand-bg);}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:16px;font-weight:600;color:var(--text-primary);}
+.section-sub{font-size:13px;color:var(--text-secondary);margin-left:12px;}.section-actions{display:flex;align-items:center;gap:10px;}
+.btn-outline{height:30px;padding:0 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:#fff;color:var(--text-regular);font-size:13px;cursor:pointer;transition:all 0.15s;}.btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+.period-group{display:flex;gap:0;}.period-btn{height:30px;padding:0 10px;border:1px solid var(--border);background:#fff;color:var(--text-regular);font-size:13px;cursor:pointer;transition:all 0.15s;}.period-btn:first-child{border-radius:var(--radius-xs) 0 0 var(--radius-xs);}.period-btn:last-child{border-radius:0 var(--radius-xs) var(--radius-xs) 0;}.period-btn:not(:first-child){margin-left:-1px;}.period-btn:hover{border-color:var(--brand-border);color:var(--brand);z-index:1;}.period-btn.active{border-color:var(--brand);background:var(--brand-bg);color:var(--brand);z-index:1;}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;position:relative;transition:box-shadow 0.15s;}.metric-card:hover{box-shadow:var(--shadow-sm);}
+.metric-card .mc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.metric-card .mc-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}.mc-icon.red{background:var(--danger-bg);color:var(--danger);}.mc-icon.purple{background:var(--purple-bg);color:var(--purple);}.mc-icon.green{background:var(--success-bg);color:var(--success);}.mc-icon.blue{background:var(--info-bg);color:var(--info);}.mc-icon.orange{background:var(--warning-bg);color:var(--warning);}
+.mc-label{font-size:13px;color:var(--text-secondary);margin-bottom:2px;}
+.mc-value{font-size:28px;font-weight:700;color:var(--text-primary);line-height:1.2;}
+.mc-target{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+.mc-pct{font-size:13px;font-weight:500;}.mc-pct.up{color:var(--success);}.mc-pct.down{color:var(--danger);}
+.progress-track{height:6px;background:#e9edf3;border-radius:999px;margin-top:8px;overflow:hidden;}.progress-bar{height:100%;border-radius:999px;transition:width 0.5s;}.progress-bar.brand{background:var(--brand);}.progress-bar.warning{background:var(--warning);}.progress-bar.info{background:var(--info);}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:12px;}.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;}.card-title{font-size:16px;font-weight:600;color:var(--text-primary);}.card-sub{font-size:12px;color:var(--text-secondary);}.card-body{padding:16px;}.card-body.nopad{padding:0;}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.dashboard-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.funnel-container{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;}
+.funnel-step{display:flex;align-items:center;width:100%;position:relative;justify-content:center;cursor:pointer;}.funnel-step:hover{opacity:0.9;}
+.funnel-bar{height:36px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:500;color:#fff;position:relative;transition:width 0.3s;min-width:55%;}
+.fs1 .funnel-bar{background:linear-gradient(135deg,#4c9bff,#6cb3ff);width:100%;}.fs2 .funnel-bar{background:linear-gradient(135deg,#5ba0f7,#7bb8f7);width:82%;}.fs3 .funnel-bar{background:linear-gradient(135deg,#ff9f4a,#ffb86c);width:65%;}.fs4 .funnel-bar{background:linear-gradient(135deg,#ff6b5c,#ff8b7a);width:42%;}.fs5 .funnel-bar{background:linear-gradient(135deg,#67c23a,#85d65a);width:30%;}
+.funnel-bar .fl{font-size:13px;opacity:0.9;}.funnel-bar .fc{font-size:14px;font-weight:700;}.funnel-rate{font-size:11px;color:var(--text-secondary);position:absolute;right:-56px;}
+.funnel-note{text-align:center;font-size:12px;color:var(--text-secondary);margin-top:8px;padding:8px;background:var(--brand-bg);border-radius:6px;}
+.chart-box{height:150px;display:flex;align-items:flex-end;gap:4px;}
+.chart-col{flex:1;position:relative;min-height:4px;border-radius:3px 3px 0 0;cursor:pointer;}.chart-col .tip{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text-primary);font-weight:500;white-space:nowrap;display:none;}.chart-col:hover .tip{display:block;}
+.chart-x{display:flex;gap:4px;margin-top:6px;}.chart-x span{flex:1;text-align:center;font-size:11px;color:var(--text-secondary);}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:#fafbfc;color:var(--text-secondary);font-size:13px;font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:10px 12px;color:var(--text-primary);font-size:13px;border-bottom:1px solid var(--border-light);}
+tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg-hover);}
+td.num{text-align:right;font-variant-numeric:tabular-nums;}td.highlight{color:var(--brand);font-weight:600;}
+td .rn{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;font-size:12px;font-weight:500;}
+.r1{background:var(--brand-bg);color:var(--brand);}.r2{background:var(--warning-bg);color:var(--warning);}.r3{background:var(--info-bg);color:var(--info);}.rn{background:#f4f5f7;color:var(--text-secondary);}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;}
+.tag-success{background:var(--success-bg);color:var(--success);}.tag-warning{background:var(--warning-bg);color:var(--warning);}.tag-danger{background:var(--danger-bg);color:var(--danger);}.tag-info{background:var(--info-bg);color:var(--info);}
+.ai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.ai-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;transition:box-shadow 0.15s;}
+.ai-card:hover{box-shadow:var(--shadow-sm);}
+.ai-card .ai-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;margin-bottom:8px;}
+.ai-card .ai-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.ai-card .ai-desc{font-size:13px;color:var(--text-regular);line-height:1.6;}
+.ai-tag-green{background:var(--success-bg);color:var(--success);}.ai-tag-red{background:var(--danger-bg);color:var(--danger);}.ai-tag-orange{background:var(--warning-bg);color:var(--warning);}.ai-tag-blue{background:var(--info-bg);color:var(--info);}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.quick-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 8px;text-align:center;cursor:pointer;}.quick-item:hover{box-shadow:var(--shadow-sm);border-color:var(--brand-border);}
+.quick-item .qi{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:18px;}.quick-item .ql{font-size:13px;color:var(--text-primary);}
+.grade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.grade-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;}
+.grade-card .gv{font-size:28px;font-weight:700;color:var(--text-primary);}
+.grade-card .gl{font-size:13px;color:var(--text-secondary);margin-top:4px;}
+.grade-card .gg{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+.grade-bar{height:4px;border-radius:999px;margin-top:8px;}
+.grade-card.g1 .grade-bar{background:var(--brand);width:100%;}.grade-card.g2 .grade-bar{background:var(--warning);width:100%;}.grade-card.g3 .grade-bar{background:var(--info);width:100%;}.grade-card.g4 .grade-bar{background:var(--text-disabled);width:100%;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#d0d5de;border-radius:3px;}
+@media(max-width:1200px){.metrics-row{grid-template-columns:repeat(2,1fr);}.dashboard-grid,.dashboard-grid-3{grid-template-columns:1fr;}.ai-grid{grid-template-columns:repeat(2,1fr);}.grade-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){.sidebar{display:none;}.metrics-row{grid-template-columns:1fr;}.ai-grid{grid-template-columns:1fr;}.grade-grid{grid-template-columns:1fr;}.period-group{display:none;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">R</div><span class="logo-text">RapidDirect</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">经营分析</div>
+      <div class="nav-item" onclick="switchView('overview')"><span class="nav-icon">📊</span>经营总览</div>
+      <div class="nav-item active" onclick="switchView('funnel')"><span class="nav-icon">🔻</span>销售漏斗中心</div>
+      <div class="nav-item" onclick="switchView('process')"><span class="nav-icon">⚙️</span>工艺经营</div>
+      <div class="nav-group">销售管理</div>
+      <div class="nav-item" onclick="switchView('team')"><span class="nav-icon">👥</span>销售团队</div>
+      <div class="nav-item" onclick="switchView('customer')"><span class="nav-icon">📂</span>客户资产</div>
+      <div class="nav-item" onclick="switchView('lost')"><span class="nav-icon">📋</span>输单原因</div>
+      <div class="nav-item" onclick="switchView('ai')"><span class="nav-icon">🤖</span>AI诊断</div>
+      <div class="nav-group">系统管理</div>
+      <div class="nav-item"><span class="nav-icon">⚡</span>快捷入口</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span>系统设置</div>
+    </nav>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left"><span class="breadcrumb" id="pageTitle">销售漏斗中心</span></div>
+      <div class="topbar-right">
+        <div class="pill-task">📋 任务 <span class="num">0/0</span></div>
+        <div class="top-icon">🌐</div>
+        <div class="top-icon">⛶</div>
+        <div class="topbar-user"><div class="avatar">E</div><span class="username">Eric 周鑫</span></div>
+      </div>
+    </header>
+    <div class="content">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="period-group">
+          <button class="period-btn" onclick="setPeriod(this)">今日</button>
+          <button class="period-btn" onclick="setPeriod(this)">本周</button>
+          <button class="period-btn active" onclick="setPeriod(this)">本月</button>
+          <button class="period-btn" onclick="setPeriod(this)">本季度</button>
+          <button class="period-btn" onclick="setPeriod(this)">本年</button>
+          <button class="period-btn" onclick="setPeriod(this)">自定义</button>
+        </div>
+        <button class="btn-outline" onclick="alert('数据刷新中...')">🔄 刷新</button>
+      </div>
+
+      <!-- 经营总览 -->
+      <div class="view" id="view-overview">
+        <div class="metrics-row">
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon red">💰</div><span class="mc-pct up">+18.5%</span></div><div class="mc-label">成交金额</div><div class="mc-value">¥3,485万</div><div class="mc-target">目标 ¥3,170万 · 完成 110%</div><div class="progress-track"><div class="progress-bar brand" style="width:100%"></div></div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon blue">📦</div><span class="mc-pct up">+12.3%</span></div><div class="mc-label">成交单数</div><div class="mc-value">1,514</div><div class="mc-target">目标 1,400 · 完成 108%</div><div class="progress-track"><div class="progress-bar info" style="width:86%"></div></div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon green">📄</div><span class="mc-pct up">+5.2%</span></div><div class="mc-label">询盘总数</div><div class="mc-value">4,886</div><div class="mc-target">自动报价转化率 12.5%</div><div class="progress-track"><div class="progress-bar warning" style="width:48%"></div></div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon purple">💬</div><span class="mc-pct down">-2.1%</span></div><div class="mc-label">报价单数</div><div class="mc-value">4,107</div><div class="mc-target">报价覆盖率达 84%</div><div class="progress-track"><div class="progress-bar brand" style="width:84%"></div></div></div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="card"><div class="card-header"><span class="card-title">转化路径分析</span><span class="card-sub">GA4</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th>转化路径</th><th class="num">用户数</th><th class="num">转化率</th></tr></thead><tbody><tr><td>发起询价 → 线上结账</td><td class="num">285</td><td class="num">12.5%</td></tr><tr><td>发起询价 → 全渠道成交</td><td class="num">1,514</td><td class="num">—</td></tr><tr><td>再营销总池</td><td class="num">1,986</td><td class="num">87.5%</td></tr></tbody></table></div></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">营收趋势</span><span class="card-sub">本月 vs 上月</span></div><div class="card-body"><div class="chart-box" id="chartRevenue"></div><div class="chart-x" id="chartRevenueX"></div><div style="display:flex;gap:20px;margin-top:10px;font-size:12px;color:var(--text-secondary)"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--brand);margin-right:4px;"></span>本月</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--info);margin-right:4px;opacity:0.5;"></span>上月</span></div></div></div>
+        </div>
+        <div class="card"><div class="card-header"><span class="card-title">年度目标进度</span><span class="card-sub">年度目标 ¥8,460万 · 当前完成 ¥3,485万</span></div><div class="card-body"><div style="height:36px;background:#e9edf3;border-radius:999px;overflow:hidden;position:relative;"><div style="height:100%;background:linear-gradient(90deg,var(--brand),var(--warning));border-radius:999px;width:41.2%;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-size:13px;font-weight:600;">41.2%</div></div></div></div>
+      </div>
+
+      <!-- 销售漏斗中心 -->
+      <div class="view active" id="view-funnel">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+          <button class="sub-tab active" onclick="switchFunnelTab(this,'funnel-detail')">全链路漏斗</button>
+          <button class="sub-tab" onclick="switchFunnelTab(this,'funnel-auto')">自动报价</button>
+          <button class="sub-tab" onclick="switchFunnelTab(this,'funnel-all')">全渠道成交</button>
+          <button class="sub-tab" onclick="switchFunnelTab(this,'funnel-attribution')">转化归因</button>
+        </div>
+        <div id="funnel-detail">
+          <div class="dashboard-grid">
+            <div class="card"><div class="card-header"><span class="card-title">自动报价漏斗</span><span class="card-sub">GA4 · 30天滚动</span></div><div class="card-body"><div class="funnel-container"><div class="funnel-step fs1"><div class="funnel-bar"><span class="fl">询盘总数</span><span class="fc">4,886</span></div><span class="funnel-rate">100%</span></div><div class="funnel-step fs2"><div class="funnel-bar"><span class="fl">有效报价</span><span class="fc">2,886</span></div><span class="funnel-rate">59.1%</span></div><div class="funnel-step fs3"><div class="funnel-bar"><span class="fl">提交报价单</span><span class="fc">1,672</span></div><span class="funnel-rate">34.2%</span></div><div class="funnel-step fs4"><div class="funnel-bar"><span class="fl">自动报价成交</span><span class="fc">598</span></div><span class="funnel-rate">12.5%</span></div><div class="funnel-step fs5"><div class="funnel-bar"><span class="fl">全渠道成交</span><span class="fc">1,514</span></div><span class="funnel-rate">31.0%</span></div></div><div class="funnel-note">⚠️ 最大流失环节：有效报价→提交报价单（损耗 1,214，流失率 42.1%）</div></div></div>
+            <div class="card"><div class="card-header"><span class="card-title">全渠道成交拆解</span><span class="card-sub">ERP</span></div><div class="card-body"><div class="funnel-container"><div class="funnel-step fs1"><div class="funnel-bar"><span class="fl">线上成交</span><span class="fc">598</span></div><span class="funnel-rate">12.5%</span></div><div class="funnel-step fs3"><div class="funnel-bar"><span class="fl">人工跟单</span><span class="fc">678</span></div><span class="funnel-rate">13.9%</span></div><div class="funnel-step fs5"><div class="funnel-bar"><span class="fl">老客复购</span><span class="fc">238</span></div><span class="funnel-rate">4.9%</span></div></div><div class="funnel-note">💡 全渠道成交 1,514 单，自动报价仅占 39.5%，人工跟单贡献 44.8%</div></div></div>
+          </div>
+          <div class="card"><div class="card-header"><span class="card-title">询单质量归因</span><span class="card-sub">流失原因分析</span></div><div class="card-body"><div class="dashboard-grid-3"><div class="metric-card" style="border-color:var(--brand-border);border-width:2px;"><div class="mc-label">无效/流失询盘</div><div class="mc-value" style="font-size:24px;">1,200</div><div class="mc-target">占询盘总量 24.6%</div></div><div class="metric-card" style="border-color:var(--warning);border-width:2px;"><div class="mc-label">待补充报价单</div><div class="mc-value" style="font-size:24px;">1,214</div><div class="mc-target">占有效报价 42.1%</div></div><div class="metric-card" style="border-color:var(--info);border-width:2px;"><div class="mc-label">比价后流失</div><div class="mc-value" style="font-size:24px;">1,074</div><div class="mc-target">占提交报价 64.2%</div></div></div></div></div>
+        </div>
+        <div id="funnel-auto" style="display:none;"><div class="card"><div class="card-header"><span class="card-title">自动报价漏斗</span></div><div class="card-body"><div class="funnel-container"><div class="funnel-step fs1"><div class="funnel-bar"><span class="fl">发起询价</span><span class="fc">2,271</span></div></div><div class="funnel-step fs2"><div class="funnel-bar"><span class="fl">即时报价</span><span class="fc">598</span></div><span class="funnel-rate">26.3%</span></div><div class="funnel-step fs3"><div class="funnel-bar"><span class="fl">提交报价单</span><span class="fc">581</span></div><span class="funnel-rate">25.6%</span></div><div class="funnel-step fs4"><div class="funnel-bar"><span class="fl">自动报价成交</span><span class="fc">285</span></div><span class="funnel-rate">12.5%</span></div></div></div></div></div>
+        <div id="funnel-all" style="display:none;"><div class="card"><div class="card-header"><span class="card-title">全渠道成交</span></div><div class="card-body"><div class="dashboard-grid-3"><div class="metric-card"><div class="mc-label">线上成交</div><div class="mc-value" style="font-size:24px;">598</div></div><div class="metric-card"><div class="mc-label">线下成交</div><div class="mc-value" style="font-size:24px;">678</div></div><div class="metric-card"><div class="mc-label">老客复购</div><div class="mc-value" style="font-size:24px;">238</div></div></div></div></div></div>
+        <div id="funnel-attribution" style="display:none;"><div class="card"><div class="card-header"><span class="card-title">转化归因</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th>归因渠道</th><th class="num">首次接触</th><th class="num">助攻</th><th class="num">最后成交</th><th class="num">贡献占比</th></tr></thead><tbody><tr><td>Google Ads</td><td class="num">1,842</td><td class="num">965</td><td class="num">412</td><td class="num highlight">27.2%</td></tr><tr><td>自然搜索</td><td class="num">1,210</td><td class="num">780</td><td class="num">386</td><td class="num highlight">25.5%</td></tr><tr><td>老客户复购</td><td class="num">238</td><td class="num">—</td><td class="num">238</td><td class="num highlight">15.7%</td></tr><tr><td>社交媒体</td><td class="num">856</td><td class="num">423</td><td class="num">196</td><td class="num highlight">12.9%</td></tr><tr><td>邮件营销</td><td class="num">420</td><td class="num">185</td><td class="num">182</td><td class="num highlight">12.0%</td></tr><tr><td>推荐转介绍</td><td class="num">320</td><td class="num">96</td><td class="num">100</td><td class="num highlight">6.6%</td></tr></tbody></table></div></div></div></div>
+      </div>
+
+      <!-- 工艺经营 -->
+      <div class="view" id="view-process">
+        <div class="metrics-row">
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon red">⚙️</div></div><div class="mc-label">CNC Machining</div><div class="mc-value">¥2,790万</div><div class="mc-target">占比 62.8%</div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon blue">📋</div></div><div class="mc-label">Sheet Metal</div><div class="mc-value">¥727万</div><div class="mc-target">占比 16.4%</div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon green">💉</div></div><div class="mc-label">Injection Molding</div><div class="mc-value">¥330万</div><div class="mc-target">占比 7.4%</div></div>
+          <div class="metric-card"><div class="mc-top"><div class="mc-icon purple">🔷</div></div><div class="mc-label">3D Printing</div><div class="mc-value">¥283万</div><div class="mc-target">占比 6.4%</div></div>
+        </div>
+        <div class="card"><div class="card-header"><span class="card-title">各工艺营收明细</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th>工艺</th><th class="num">营收</th><th class="num">占比</th><th class="num">订单数</th><th class="num">客单价</th></tr></thead><tbody><tr><td><b>CNC Machining</b></td><td class="num highlight">¥2,790万</td><td class="num">62.8%</td><td class="num">623</td><td class="num">¥4.48万</td></tr><tr><td>Sheet Metal</td><td class="num">¥727万</td><td class="num">16.4%</td><td class="num">298</td><td class="num">¥2.44万</td></tr><tr><td>Injection Molding</td><td class="num">¥330万</td><td class="num">7.4%</td><td class="num">156</td><td class="num">¥2.12万</td></tr><tr><td>3D Printing</td><td class="num">¥283万</td><td class="num">6.4%</td><td class="num">142</td><td class="num">¥1.99万</td></tr><tr><td>Vacuum Casting</td><td class="num">¥207万</td><td class="num">4.7%</td><td class="num">98</td><td class="num">¥2.11万</td></tr><tr><td>其他</td><td class="num">¥124万</td><td class="num">2.3%</td><td class="num">197</td><td class="num">¥0.63万</td></tr></tbody></table></div></div></div>
+      </div>
+
+      <!-- 销售团队 -->
+      <div class="view" id="view-team">
+        <div class="dashboard-grid">
+          <div class="card"><div class="card-header"><span class="card-title">部门排行</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th style="width:32px">#</th><th>部门</th><th class="num">人数</th><th class="num">累计成交</th><th class="num">本月成交</th><th class="num">人均产值</th></tr></thead><tbody><tr><td><span class="rn r1">1</span></td><td>AM1组</td><td class="num">5</td><td class="num highlight">¥19,915万</td><td class="num">¥9,425万</td><td class="num">¥3,983万</td></tr><tr><td><span class="rn r2">2</span></td><td>AM2组</td><td class="num">9</td><td class="num highlight">¥13,181万</td><td class="num">¥7,141万</td><td class="num">¥1,465万</td></tr><tr><td><span class="rn r3">3</span></td><td>长沙分部</td><td class="num">14</td><td class="num highlight">¥8,990万</td><td class="num">¥6,021万</td><td class="num">¥642万</td></tr><tr><td><span class="rn rn">4</span></td><td>AM3组</td><td class="num">6</td><td class="num">¥6,882万</td><td class="num">¥3,579万</td><td class="num">¥1,147万</td></tr><tr><td><span class="rn rn">5</span></td><td>IS组</td><td class="num">8</td><td class="num">¥1,725万</td><td class="num">¥568万</td><td class="num">¥216万</td></tr><tr><td><span class="rn rn">6</span></td><td>深圳分部</td><td class="num">6</td><td class="num">¥1,628万</td><td class="num">¥1,056万</td><td class="num">¥271万</td></tr><tr><td><span class="rn rn">7</span></td><td>Apex</td><td class="num">2</td><td class="num">¥1,521万</td><td class="num">¥830万</td><td class="num">¥761万</td></tr><tr><td><span class="rn rn">8</span></td><td>美国分部</td><td class="num">7</td><td class="num">¥1,042万</td><td class="num">¥517万</td><td class="num">¥149万</td></tr></tbody></table></div></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">个人排行 Top 15</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th style="width:32px">#</th><th>业务员</th><th class="num">成交数</th><th class="num">成交金额</th></tr></thead><tbody><tr><td><span class="rn r1">1</span></td><td>Tim 肖宇明</td><td class="num">45</td><td class="num highlight">¥355.0万</td></tr><tr><td><span class="rn r2">2</span></td><td>Andy 陈晔</td><td class="num">55</td><td class="num highlight">¥321.4万</td></tr><tr><td><span class="rn r3">3</span></td><td>Elena 彭美丽</td><td class="num">85</td><td class="num highlight">¥231.2万</td></tr><tr><td><span class="rn rn">4</span></td><td>Gretchen 梁明珠</td><td class="num">93</td><td class="num">¥226.4万</td></tr><tr><td><span class="rn rn">5</span></td><td>Carina 单婷</td><td class="num">55</td><td class="num">¥167.8万</td></tr><tr><td><span class="rn rn">6</span></td><td>Shiny 章闪</td><td class="num">41</td><td class="num">¥158.8万</td></tr><tr><td><span class="rn rn">7</span></td><td>Jenny 曾媚钰</td><td class="num">58</td><td class="num">¥155.1万</td></tr><tr><td><span class="rn rn">8</span></td><td>Jane 黄莉娟</td><td class="num">33</td><td class="num">¥153.5万</td></tr><tr><td><span class="rn rn">9</span></td><td>Ivy 刘朝霞</td><td class="num">101</td><td class="num">¥143.3万</td></tr><tr><td><span class="rn rn">10</span></td><td>Jack 王龙泉</td><td class="num">56</td><td class="num">¥142.0万</td></tr><tr><td><span class="rn rn">11</span></td><td>Violet 陈曦玮</td><td class="num">30</td><td class="num">¥122.9万</td></tr><tr><td><span class="rn rn">12</span></td><td>Ashley 肖玲</td><td class="num">14</td><td class="num">¥110.7万</td></tr><tr><td><span class="rn rn">13</span></td><td>Lucky 陈娜</td><td class="num">37</td><td class="num">¥109.7万</td></tr><tr><td><span class="rn rn">14</span></td><td>Jenifer 邓冬平</td><td class="num">48</td><td class="num">¥95.5万</td></tr><tr><td><span class="rn rn">15</span></td><td>Matthew 黄红伟</td><td class="num">37</td><td class="num">¥80.1万</td></tr></tbody></table></div></div></div>
+        </div>
+      </div>
+
+      <!-- 客户资产 -->
+      <div class="view" id="view-customer">
+        <div class="grade-grid">
+          <div class="grade-card g1"><div class="gv">52</div><div class="gl">A级 核心客户</div><div class="gg">占比 0.2%</div><div class="grade-bar"></div></div>
+          <div class="grade-card g2"><div class="gv">200</div><div class="gl">B级 高潜力客户</div><div class="gg">占比 0.96%</div><div class="grade-bar"></div></div>
+          <div class="grade-card g3"><div class="gv">878</div><div class="gl">C级 普通客户</div><div class="gg">占比 4.19%</div><div class="grade-bar"></div></div>
+          <div class="grade-card g4"><div class="gv">18,779</div><div class="gl">D级 潜在客户</div><div class="gg">占比 89.49%</div><div class="grade-bar"></div></div>
+        </div>
+        <div class="card"><div class="card-header"><span class="card-title">客户分层定义</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th>等级</th><th class="num">客户数</th><th class="num">占比</th><th>定义说明</th></tr></thead><tbody><tr><td><span class="tag tag-danger">A级</span></td><td class="num">52</td><td class="num">0.2%</td><td>成熟活跃客户，3次以上成交，年交易额>¥100万</td></tr><tr><td><span class="tag tag-warning">B级</span></td><td class="num">200</td><td class="num">0.96%</td><td>高潜力客户，1-2次成交，年交易额>¥30万</td></tr><tr><td><span class="tag tag-info">C级</span></td><td class="num">878</td><td class="num">4.19%</td><td>中等潜力客户，历史有成交记录</td></tr><tr><td><span class="tag">D级</span></td><td class="num">18,779</td><td class="num">89.49%</td><td>潜在客户为主，询盘未成交或未跟进</td></tr></tbody></table></div></div></div>
+      </div>
+
+      <!-- 输单原因 -->
+      <div class="view" id="view-lost">
+        <div class="card"><div class="card-header"><span class="card-title">询单归因分析</span></div><div class="card-body nopad"><div class="table-wrap"><table><thead><tr><th>输单原因</th><th class="num">人数</th><th class="num">占比</th></tr></thead><tbody><tr><td>产品覆盖不足（无法报价）</td><td class="num">386</td><td class="num">30.2%</td></tr><tr><td>报价响应超时</td><td class="num">278</td><td class="num">21.7%</td></tr><tr><td>价格竞争力不足</td><td class="num">204</td><td class="num">16.0%</td></tr><tr><td>交期不满足客户要求</td><td class="num">156</td><td class="num">12.2%</td></tr><tr><td>客户已被竞争对手转化</td><td class="num">132</td><td class="num">10.3%</td></tr><tr><td>其他原因</td><td class="num">124</td><td class="num">9.6%</td></tr></tbody></table></div></div></div>
+      </div>
+
+      <!-- AI诊断 -->
+      <div class="view" id="view-ai">
+        <div class="ai-grid">
+          <div class="ai-card" style="border-left:3px solid var(--success);"><div class="ai-tag ai-tag-green">📈 营收</div><div class="ai-title">A级客户成交占比高</div><div class="ai-desc">本月 A 级客户贡献 ¥1,256 万，占总营收 36%。头部 52 个客户平均客单价 ¥24.2 万，建议进一步推进 AB 级客户的交叉销售。</div></div>
+          <div class="ai-card" style="border-left:3px solid var(--danger);"><div class="ai-tag ai-tag-red">⚠️ 风险</div><div class="ai-title">自动报价转化率偏低</div><div class="ai-desc">自动报价成交率仅 12.5%，有效报价→提交报价单环节流失 42.1%。建议排查报价模板完整性和即时报价响应时间。</div></div>
+          <div class="ai-card" style="border-left:3px solid var(--warning);"><div class="ai-tag ai-tag-orange">🔍 分析</div><div class="ai-title">销售团队效能差异大</div><div class="ai-desc">AM1组人均产值 ¥3,983 万，是深圳分部（¥271 万）的 14.7 倍。建议将头部团队的最佳实践标准化推广至尾部团队。</div></div>
+          <div class="ai-card" style="border-left:3px solid var(--info);"><div class="ai-tag ai-tag-blue">💡 机会</div><div class="ai-title">D级客户激活潜力巨大</div><div class="ai-desc">D 级沉睡客户 18,779 个占客户总量 89.5%。按行业平均转化率 3% 估算，潜在新增成交额可达 ¥1,200 万+。</div></div>
+        </div>
+        <div class="card" style="margin-top:12px;">
+          <div class="card-header"><span class="card-title">AI 经营建议</span><span class="card-sub">基于本月数据的自动诊断</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--brand-bg);border-radius:6px;"><span style="width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">1</span><div><div style="font-weight:600;color:var(--text-primary);margin-bottom:2px;">立即优化自动报价流程</div><div style="font-size:13px;color:var(--text-regular);">自动报价转化率仅 12.5%，远低于行业健康值 25-30%。建议本周内启动报价流程复盘会议。</div></div></div>
+              <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--info-bg);border-radius:6px;"><span style="width:24px;height:24px;border-radius:50%;background:var(--info);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">2</span><div><div style="font-weight:600;color:var(--text-primary);margin-bottom:2px;">启动 D 级客户激活专项</div><div style="font-size:13px;color:var(--text-regular);">19,000+ 沉睡客户是最大的待挖掘资产。建议按询盘频次和最后联系时间对 D 级客户分层。</div></div></div>
+              <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--success-bg);border-radius:6px;"><span style="width:24px;height:24px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">3</span><div><div style="font-weight:600;color:var(--text-primary);margin-bottom:2px;">推进工艺多元化</div><div style="font-size:13px;color:var(--text-regular);">CNC 占比 62.8% 带来经营单一依赖风险。建议将 3D Printing、Vacuum Casting 等新工艺的营销资源提升 30%。</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function switchView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');event.target.closest('.nav-item').classList.add('active');const t={overview:'经营总览',funnel:'销售漏斗中心',process:'工艺经营',team:'销售团队',customer:'客户资产',lost:'输单原因',ai:'AI诊断'};document.getElementById('pageTitle').textContent=t[id]||'销售漏斗中心';}
+function setPeriod(el){document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function switchFunnelTab(el,id){document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.querySelectorAll('#view-funnel>div:not(.sub-tab)').forEach(v=>v.style.display='none');document.getElementById(id).style.display='block';}
+(function(){const d=[{l:'5/1',v1:2850,v2:2200},{l:'5/5',v1:3200,v2:2600},{l:'5/9',v1:4100,v2:3100},{l:'5/13',v1:3800,v2:3500},{l:'5/17',v1:5200,v2:4000},{l:'5/21',v1:6100,v2:4500},{l:'5/25',v1:5800,v2:4700},{l:'5/29',v1:7200,v2:5100}];const m=Math.max(...d.map(x=>Math.max(x.v1,x.v2)))*1.15;const c=document.getElementById('chartRevenue'),l=document.getElementById('chartRevenueX');d.forEach(x=>{const h1=(x.v1/m)*140,h2=(x.v2/m)*140;const w=document.createElement('div');w.style.flex='1';w.style.display='flex';w.style.flexDirection='column';w.style.justifyContent='flex-end';w.style.gap='3px';const b2=document.createElement('div');b2.className='chart-col';b2.style.background='var(--info)';b2.style.height=h2+'px';b2.style.opacity='0.5';b2.innerHTML='<div class="tip">¥'+(x.v2/1000).toFixed(1)+'K</div>';const b1=document.createElement('div');b1.className='chart-col';b1.style.background='var(--brand)';b1.style.height=h1+'px';b1.style.opacity='0.85';b1.innerHTML='<div class="tip">¥'+(x.v1/1000).toFixed(1)+'K</div>';w.appendChild(b2);w.appendChild(b1);c.appendChild(w);const lb=document.createElement('span');lb.textContent=x.l;l.appendChild(lb);});})();
+</script>
+</body>
+</html>
