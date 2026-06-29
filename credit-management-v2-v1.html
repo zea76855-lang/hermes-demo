@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Customer Credit Management 2.0 — RapidDirect</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --brand:#EA5540;--brand-dark:#d14330;--brand-light:#fef0ee;
+      --primary:#4f6ef7;--primary-dark:#3b52cc;--primary-light:#eef1fe;
+      --success:#22c55e;--success-light:#f0fdf4;
+      --warning:#f59e0b;--warning-light:#fffbeb;
+      --danger:#ef4444;--danger-light:#fef2f2;
+      --purple:#8b5cf6;--purple-light:#f5f3ff;
+      --teal:#14b8a6;--teal-light:#f0fdfa;
+      --bg:#f8f9fc;--card-bg:#fff;--text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+      --border:#e2e8f0;--border-light:#f1f5f9;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.04);--shadow:0 4px 12px rgba(0,0,0,.06);
+      --radius:12px;--radius-sm:8px;--radius-xs:6px;--tran:all .25s ease;
+    }
+    body{font-family:"PingFang SC","Microsoft YaHei","SF Pro Display",-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:13px;-webkit-font-smoothing:antialiased;}
+    .top-bar{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15);flex-wrap:wrap;gap:10px;}
+    .top-bar-left{display:flex;align-items:center;gap:12px;}
+    .top-bar h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .top-bar .badge{font-size:10px;background:var(--brand);padding:2px 8px;border-radius:10px;font-weight:600;}
+    .top-bar-right{display:flex;align-items:center;gap:12px;}
+    .lang-switch{display:flex;gap:2px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;}
+    .lang-switch button{padding:4px 10px;border:none;background:transparent;color:rgba(255,255,255,.6);font-size:10px;font-weight:600;cursor:pointer;transition:var(--tran);}
+    .lang-switch button.active{background:var(--brand);color:#fff;}
+    .lang-switch button:hover:not(.active){color:#fff;}
+    .tab-nav{display:flex;gap:2px;padding:10px 20px;background:#fff;border-bottom:2px solid var(--border-light);overflow-x:auto;}
+    .tab-btn{padding:10px 18px;border:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;font-size:12px;font-weight:600;background:transparent;color:var(--text2);transition:var(--tran);white-space:nowrap;position:relative;}
+    .tab-btn:hover{color:var(--brand);background:var(--brand-light);}
+    .tab-btn.on{color:var(--brand);background:var(--brand-light);}
+    .tab-btn.on::after{content:'';position:absolute;bottom:-12px;left:0;right:0;height:3px;background:var(--brand);border-radius:2px 2px 0 0;}
+  </style>
+</head>
+<body>
+  <div class="top-bar"><div class="top-bar-left"><h1>客户信用管理 2.0 V2</h1></div><div class="top-bar-right"><div class="lang-switch"><button class="active">中文</button><button>EN</button></div></div></div>
+  <div class="tab-nav"><button class="tab-btn on">概览</button><button class="tab-btn">申请</button><button class="tab-btn">审批</button><button class="tab-btn">催收</button></div>
+  <main style="padding:20px;max-width:1400px;margin:0 auto;">这里保留原始页面内容。</main>
+</body></html>
