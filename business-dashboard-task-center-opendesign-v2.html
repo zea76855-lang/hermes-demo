@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Business Dashboard Task Center - OpenDesign</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;--panel:#fff;--panel2:#fbfcfe;--text:#172033;--muted:#64748b;--line:#e3e9f3;
+      --brand:#2f6fed;--brand2:#ff6b5c;--ok:#1f9d55;--warn:#d97706;--bad:#c92a2a;--shadow:0 10px 24px rgba(15,23,42,.07);
+      --r:14px;--r2:10px
+    }
+    *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif}
+    a{color:inherit;text-decoration:none}
+    .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .side{background:linear-gradient(180deg,#0f172a 0%,#111827 100%);color:#e5eefc;padding:20px 16px;position:sticky;top:0;height:100vh;border-right:1px solid rgba(255,255,255,.07)}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#66a0ff);display:grid;place-items:center;font-weight:800;color:#fff}.brand h1{margin:0;font-size:15px;line-height:1.2}.brand p{margin:3px 0 0;font-size:12px;color:#9fb0cb}
+    .nav{display:grid;gap:8px;margin-top:14px}.nav button{all:unset;cursor:pointer;padding:10px 12px;border-radius:12px;border:1px solid transparent;color:#dbe6f5;font-size:13px;line-height:1.35}.nav button:hover{background:rgba(255,255,255,.06)}.nav button.active{background:rgba(47,111,237,.18);border-color:rgba(47,111,237,.32);color:#fff}.nav small{display:block;color:#8fa2c5;margin-top:3px;font-size:12px}
+    .foot{position:absolute;left:16px;right:16px;bottom:16px;color:#8ea2c4;font-size:12px;line-height:1.5}
+    .main{padding:18px;display:grid;grid-template-rows:auto auto 1fr;gap:14px}
+    .top{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+    .title h2{margin:0;font-size:19px}.title p{margin:6px 0 0;color:var(--muted);font-size:13px;max-width:760px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.select,.search{height:38px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 12px;font-size:14px;outline:none}.search{width:min(300px,100%)}.btn{height:38px;border:none;border-radius:12px;padding:0 14px;font-size:14px;cursor:pointer;background:#ebf2ff;color:#1d4ed8}.btn.primary{background:linear-gradient(135deg,var(--brand),#4f8cff);color:#fff}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+    .metric{padding:15px 16px;min-height:104px;position:relative;overflow:hidden}.metric .k{font-size:12px;color:var(--muted)}.metric .v{font-size:26px;font-weight:800;margin-top:8px;letter-spacing:-.02em}.metric .d{margin-top:8px;font-size:12px}.metric:after{content:'';position:absolute;right:-18px;bottom:-18px;width:108px;height:108px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(47,111,237,.22), rgba(47,111,237,.04) 56%, transparent 57%)}
+    .ok .d{color:var(--ok)} .warn .d{color:var(--warn)} .bad .d{color:var(--bad)}
+    .body{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;align-items:start}
+    .panel{padding:15px}
+    .panel h3{margin:0;font-size:15px}.panel .desc{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tab{padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#334155;font-size:12px;cursor:pointer}.tab.active{background:#eaf0ff;border-color:#bfd0ff;color:#1d4ed8;font-weight:700}
+    .overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+    .mini{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#fff,#fbfdff)}.mini .k{font-size:12px;color:var(--muted)}.mini .v{font-size:18px;font-weight:800;margin-top:6px}.mini .s{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+    .list{display:grid;gap:10px}.task{padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:.15s ease;display:grid;gap:6px}.task:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,23,42,.06)}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.name{font-weight:700}.meta{color:var(--muted);font-size:12px;line-height:1.45}.tags{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}.p0{background:#fee2e2;color:#991b1b}.p1{background:#ffedd5;color:#9a3412}.p2{background:#dbeafe;color:#1e3a8a}.gray{background:#eef2f7;color:#475569}
+    .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:10px}.tablewrap table{width:100%;border-collapse:collapse;min-width:680px;background:#fff}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;vertical-align:top}th{background:#f8fafc;color:#334155;white-space:nowrap}
+    .drawer{position:fixed;top:0;right:0;width:min(400px,92vw);height:100vh;background:#fff;border-left:1px solid var(--line);box-shadow:-12px 0 30px rgba(15,23,42,.12);transform:translateX(100%);transition:transform .22s ease;z-index:20;padding:16px;overflow:auto}.drawer.open{transform:translateX(0)}.drawer .close{position:sticky;top:0;float:right;border:none;background:#eef2ff;color:#1d4ed8;border-radius:10px;height:34px;padding:0 12px;cursor:pointer}.drawer h3{margin:0 0 8px;font-size:18px}.drawer .sub{color:var(--muted);font-size:13px;margin-bottom:14px}.box{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--panel2)}.box h4{margin:0 0 8px;font-size:13px;color:#334155}.kv{display:grid;grid-template-columns:82px 1fr;gap:8px;font-size:13px;line-height:1.5}.overlay{position:fixed;inset:0;background:rgba(15,23,42,.28);opacity:0;pointer-events:none;transition:.2s ease;z-index:10}.overlay.on{opacity:1;pointer-events:auto}
+    @media (max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.body{grid-template-columns:1fr}.app{grid-template-columns:1fr}.side{position:relative;height:auto}}
+    @media (max-width:720px){.main{padding:12px}.stats{grid-template-columns:1fr}.overview{grid-template-columns:1fr}.search{width:100%}}
+  </style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <button class="close" id="closeDrawer">关闭</button>
+  <h3 id="dTitle">任务详情</h3>
+  <div class="sub" id="dSub">查看触发规则、建议动作和业务影响</div>
+  <div class="box"><h4>基本信息</h4><div class="kv"><div>类型</div><div id="dType"></div><div>优先级</div><div id="dPri"></div><div>负责人</div><div id="dOwner"></div><div>时限</div><div id="dSla"></div></div></div>
+  <div class="box"><h4>触发规则</h4><div id="dRule"></div></div>
+  <div class="box"><h4>动作建议</h4><div id="dAction"></div></div>
+  <div class="box"><h4>业务影响</h4><div id="dImpact"></div></div>
+</aside>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">DB</div><div><h1>业务部驾驶舱</h1><p>OpenDesign / 任务中心</p></div></div>
+    <div class="nav" id="nav"></div>
+    <div class="foot">OpenDesign 风格原型 · 极简 / 卡片化 / 强层级</div>
+  </aside>
+  <main class="main">
+    <header class="top card">
+      <div class="title"><h2 id="pageTitle">共性经营驾驶舱</h2><p id="pageDesc">统一展示 AM / BD / IS / Leader 的核心经营指标和风险任务，先看结果摘要，再下钻到任务明细。</p></div>
+      <div class="filters">
+        <select class="select" id="roleFilter"></select>
+        <select class="select" id="periodFilter"><option>今日</option><option selected>本周</option><option>本月</option><option>本季</option></select>
+        <input class="search" id="searchInput" placeholder="搜索任务、指标、客户..." />
+        <button class="btn primary" id="resetBtn">重置</button>
+      </div>
+    </header>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="body">
+      <div class="card panel">
+        <h3>页面切换</h3>
+        <div class="tabs" id="tabs"></div>
+        <div class="desc" id="sectionDesc"></div>
+        <div id="sectionBody"></div>
+      </div>
+      <div class="card panel">
+        <h3>任务列表</h3>
+        <div class="desc" id="taskCount" style="margin-bottom:10px"></div>
+        <div class="list" id="taskList"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+const state={page:'common',role:'全部角色',search:''};
+const pages={
+common:{title:'共性经营驾驶舱',desc:'统一展示 AM / BD / IS / Leader 的核心经营指标和风险任务。',nav:'业绩、商机、询盘、客户、任务全局视图',metrics:[{k:'目标业绩',v:'¥12.8M',d:'+8.6% 环比',tone:'ok'},{k:'业绩完成率',v:'76%',d:'低于目标 24%',tone:'warn'},{k:'商机健康度',v:'4.1/5',d:'停滞商机 13 条',tone:'ok'},{k:'待办任务',v:'38',d:'逾期 7 条',tone:'bad'}],tabs:['业绩目标与达成','商机漏斗与转化','询盘处理与响应时效','客户健康度与分层','待办与团队管理','公海管理'],content:{'业绩目标与达成':'展示目标业绩、实际业绩、完成率、缺口、预测、毛利率和回款及时率，帮助管理者快速判断本期是否能追回目标。','商机漏斗与转化':'展示商机总金额、阶段分布、转化率、首次响应时效和卡顿预警，重点识别阶段停滞和转化掉队。','询盘处理与响应时效':'展示平台/非平台询盘、首次响应和客户触达广度，识别响应是否及时、触达是否充分。','客户健康度与分层':'展示 ABCD 分布、净增长、四象限、等级升降级和沉默客户，重点识别流失风险。','待办与团队管理':'展示待办总数、超时任务、闭环率和阻塞任务，用于团队排负载和清堵点。','公海管理':'展示公海认领和掉落客户，跟踪召回和激活。'}},
+AM:{title:'AM 个性化驾驶舱',desc:'老客经营、客户交接、转介绍和客户结构优化。',nav:'客户经营与存量提升',metrics:[{k:'A类客户数',v:'126',d:'+9 本周新增',tone:'ok'},{k:'转介绍客户',v:'18',d:'+3 本月',tone:'ok'},{k:'交接达标率',v:'62%',d:'低于目标 38%',tone:'warn'},{k:'活跃客户占比',v:'71%',d:'+4.2pp',tone:'ok'}],tabs:['老客经营','客户交接','转介绍','客户结构优化','活跃度与转化率对标'],content:{'老客经营':'围绕老客户转介绍、复购和交叉销售，识别高价值存量客户的增长机会。','客户交接':'跟踪移交达标客户转出数和转 AM 后表现，评估交接质量。','转介绍':'追踪老客户转介绍来源、成交金额和转化率，作为增长抓手。','客户结构优化':'对比 A/B/C/D 占比与绩优组结构差异，输出结构调整建议。','活跃度与转化率对标':'对比本人与 Top25% 成员的转化率、活跃客户占比和客户维护效率。'}},
+BD:{title:'BD 个性化驾驶舱',desc:'高价值询盘、新客开发、交接闭环和协同追踪。',nav:'新客开发与交接质量',metrics:[{k:'高价值询盘',v:'24',d:'>$5K 占比 41%',tone:'ok'},{k:'30天留存率',v:'48%',d:'低于目标 2pp',tone:'warn'},{k:'交接风险客户',v:'7',d:'沉默超 30 天',tone:'warn'},{k:'大额转化率',v:'23%',d:'+3.1pp',tone:'ok'}],tabs:['高价值询盘转化','新客开发','交接闭环','协同追踪'],content:{'高价值询盘转化':'查看 $5K+ 询盘转化趋势，定位环比下滑的高价值线索。','新客开发':'追踪新客获取、分配后成交和转化质量，判断开发效率。','交接闭环':'展示转 AM 后留存、签约和后续沉默情况，评估交接质量。','协同追踪':'识别移交后的投诉风险、沉默风险和跨岗位协同断层。'}},
+IS:{title:'IS 个性化驾驶舱',desc:'询盘转化、报价推进、渠道 ROI 和高价值商机。',nav:'线索首响与报价推进',metrics:[{k:'询盘→报价',v:'58%',d:'低于均值 12pp',tone:'warn'},{k:'报价→成交',v:'31%',d:'+2.4pp',tone:'ok'},{k:'24h未报价',v:'9',d:'高价值 4 条',tone:'ok'},{k:'渠道异常',v:'2',d:'连续零转化',tone:'warn'}],tabs:['询盘转化','报价推进','渠道 ROI','高价值商机','转 AM 交接清单'],content:{'询盘转化':'查看个人维度询盘→报价转化率，识别首棒转化能力短板。','报价推进':'跟踪报价后推进时长和成交情况，识别报价后的卡点。','渠道 ROI':'对比不同渠道的询盘质量与投入产出，排查异常渠道。','高价值商机':'查看 >$1K 商机的跟进和报价时效，优先推进高价值线索。','转 AM 交接清单':'对达标客户生成交接清单，保证转 AM 后可继续推进。'}},
+Tasks:{title:'任务中心',desc:'统一展示系统任务与人工任务，支持筛选、催办、转交、延期和关闭。',nav:'任务流转与闭环处理',metrics:[{k:'总任务数',v:'38',d:'P0 6 / P1 14',tone:'ok'},{k:'超时任务',v:'7',d:'>24h 3 条',tone:'warn'},{k:'闭环率',v:'74%',d:'+3.1pp',tone:'ok'},{k:'阻塞任务',v:'5',d:'>3 天',tone:'warn'}],tabs:['全部任务','P0 高优先级','P1 处理中','P2 待跟进','已超时'],content:{'全部任务':'统一看板，便于快速掌握团队任务分布。','P0 高优先级':'优先处理影响业绩、客户流失和服务失控的关键任务。','P1 处理中':'用于查看正在推进中的任务和当前责任人。','P2 待跟进':'用于查看次优先级任务和可延后处理项。','已超时':'集中处理超 SLA 未完成的任务，降低风险扩散。'}}
+};
+const tasks=[
+{title:'业绩完成率连续2周<60%',type:'经营结果类',pri:'P0',owner:'本人+Leader',sla:'立即',rule:'连续2周业绩完成率低于60%。',action:'生成“业绩改进计划”任务，填写差距原因、补救动作和预计回补金额。',impact:'直接影响本月目标追回和团队经营判断。',page:'common'},
+{title:'新询盘分配>4h未响应',type:'新客开发类',pri:'P0',owner:'IS/AM',sla:'4小时',rule:'新询盘分配后超过4小时仍未首次有效响应。',action:'派发“新询盘紧急响应”任务并抄送 Leader。',impact:'影响线索首响效率，容易造成首轮流失。',page:'common'},
+{title:'公海客户认领后30天无进展',type:'公海管理',pri:'P2',owner:'AM',sla:'30天',rule:'公海认领客户在30天内没有询盘或订单进展。',action:'派发“公海客户激活跟进”任务。',impact:'影响公海召回效率和沉默客户激活。',page:'common'},
+{title:'高价值询盘转化率环比下降>15%',type:'BD 个性化',pri:'P1',owner:'本人+Leader',sla:'当日',rule:'BD 个人维度高价值询盘（$5K+）转化率环比下降超过15%。',action:'发起“大额询盘转化复盘”任务。',impact:'直接影响新客开发质量和高价值订单获取。',page:'BD'},
+{title:'询盘→报价转化率低于均值50%',type:'IS 个性化',pri:'P1',owner:'本人',sla:'当日',rule:'IS 个人转化率低于团队均值50%。',action:'派发“询盘转化能力提升”任务。',impact:'影响首棒转化和整体询盘产能。',page:'IS'},
+{title:'BD→AM移交后客户沉默>30天',type:'协同类',pri:'P1',owner:'BD+AM+Leader',sla:'30天',rule:'客户移交后30天内无有效互动或成交。',action:'派发“客户交接断层处理”任务。',impact:'影响交接闭环和客户流失风险。',page:'common'}
+];
+const nav=document.getElementById('nav'),stats=document.getElementById('stats'),tabs=document.getElementById('tabs'),sectionDesc=document.getElementById('sectionDesc'),sectionBody=document.getElementById('sectionBody'),taskList=document.getElementById('taskList'),taskCount=document.getElementById('taskCount');
+const pageTitle=document.getElementById('pageTitle'),pageDesc=document.getElementById('pageDesc'),roleFilter=document.getElementById('roleFilter'),searchInput=document.getElementById('searchInput'),drawer=document.getElementById('drawer'),overlay=document.getElementById('overlay');
+['全部角色','AM','BD','IS','Leader'].forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;roleFilter.appendChild(o)});
+function renderNav(){nav.innerHTML='';Object.entries(pages).forEach(([k,p])=>{const b=document.createElement('button');b.className=k===state.page?'active':'';b.innerHTML=`<strong>${p.title}</strong><small>${p.nav}</small>`;b.onclick=()=>{state.page=k;renderAll()};nav.appendChild(b)})}
+function renderStats(){stats.innerHTML='';pages[state.page].metrics.forEach(m=>{const d=document.createElement('div');d.className=`card metric ${m.tone}`;d.innerHTML=`<div class='k'>${m.k}</div><div class='v'>${m.v}</div><div class='d'>${m.d}</div>`;stats.appendChild(d)})}
+function renderTabs(){tabs.innerHTML='';pages[state.page].tabs.forEach((t,i)=>{const b=document.createElement('button');b.className='tab'+(i===0?' active':'');b.textContent=t;b.onclick=()=>{[...tabs.children].forEach(x=>x.classList.remove('active'));b.classList.add('active');sectionDesc.textContent=pages[state.page].content[t];renderBody(t)};tabs.appendChild(b)});sectionDesc.textContent=pages[state.page].content[pages[state.page].tabs[0]];renderBody(pages[state.page].tabs[0])}
+function renderBody(active){sectionBody.innerHTML=`<div class='overview'><div class='mini'><div class='k'>本页关注点</div><div class='v'>${active}</div><div class='s'>可直接作为评审项</div></div><div class='mini'><div class='k'>联动任务</div><div class='v'>${state.page==='Tasks'?'全量':'自动生成'}</div><div class='s'>触发后进入任务中心</div></div><div class='mini'><div class='k'>页面目标</div><div class='v'>可钻取</div><div class='s'>先总览后明细</div></div></div>`}
+function filterTasks(){const q=searchInput.value.trim().toLowerCase();let list=tasks.filter(t=>state.page==='Tasks'||state.page==='common'?true:t.page===state.page);if(state.page==='common') list=list.filter(t=>t.page==='common'||t.type.includes('经营')||t.type.includes('协同')||t.type.includes('公海')||t.type.includes('客户维护')||t.type.includes('新客开发'));if(roleFilter.value!=='全部角色') list=list.filter(t=>t.owner.includes(roleFilter.value)||t.page===roleFilter.value);if(q) list=list.filter(t=>[t.title,t.type,t.owner,t.rule,t.action,t.impact].join(' ').toLowerCase().includes(q));return list}
+function renderTasks(){const list=filterTasks();taskCount.textContent=`${list.length} 条`;taskList.innerHTML='';if(!list.length){taskList.innerHTML='<div class="meta">没有匹配的任务。</div>';return}list.forEach(t=>{const e=document.createElement('div');e.className='task';e.innerHTML=`<div class='row'><div class='name'>${t.title}</div><span class='pill ${t.pri.toLowerCase()}'>${t.pri}</span></div><div class='meta'>${t.type} · 负责人：${t.owner} · SLA：${t.sla}</div><div class='tags'><span class='pill ${t.pri.toLowerCase()}'>${t.pri}</span><span class='pill gray'>${t.page==='common'?'共性':t.page}</span></div>`;e.onclick=()=>openDrawer(t);taskList.appendChild(e)})}
+function openDrawer(t){dTitle.textContent=t.title;dSub.textContent=`${t.type} · ${t.page==='common'?'共性':t.page} · 优先级 ${t.pri}`;dType.textContent=t.type;dPri.innerHTML=`<span class='pill ${t.pri.toLowerCase()}'>${t.pri}</span>`;dOwner.textContent=t.owner;dSla.textContent=t.sla;dRule.textContent=t.rule;dAction.textContent=t.action;dImpact.textContent=t.impact;drawer.classList.add('open');overlay.classList.add('on')}
+function renderAll(){pageTitle.textContent=pages[state.page].title;pageDesc.textContent=pages[state.page].desc;renderNav();renderStats();renderTabs();renderTasks()}
+roleFilter.onchange=renderTasks;searchInput.oninput=renderTasks;document.getElementById('resetBtn').onclick=()=>{roleFilter.value='全部角色';searchInput.value='';state.page='common';renderAll()};document.getElementById('closeDrawer').onclick=()=>{drawer.classList.remove('open');overlay.classList.remove('on')};overlay.onclick=()=>{drawer.classList.remove('open');overlay.classList.remove('on')};renderAll();
+</script>
+</body>
+</html>
