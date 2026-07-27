@@ -53,41 +53,53 @@
       </aside>
       <main class="preview">
         <div class="toolbar">
-          <div class="path" id="path">Submitted - 审核中</div>
+          <div>
+            <div class="path" id="path">Submitted - 审核中</div>
+            <div style="margin-top:4px; font-size:12px; color:var(--muted);" id="subject">Subject: Your Credit Application Is Under Review</div>
+          </div>
           <div class="actions">
-            <a class="open" id="openLink" href="2d786767bbbeae53.html?v=202607279" target="_blank">新窗口打开</a>
+            <a class="open" id="openLink" href="2d786767bbbeae53.html?v=202607280" target="_blank">新窗口打开</a>
             <a class="open" id="downloadLink" href="2d786767bbbeae53.html" download="credit-application-submitted.html">下载 HTML</a>
           </div>
         </div>
-        <iframe id="frame" src="2d786767bbbeae53.html?v=202607279" title="preview"></iframe>
+        <iframe id="frame" src="2d786767bbbeae53.html?v=202607280" title="preview"></iframe>
       </main>
     </div>
     <div class="hint">提示：右上角“下载 HTML”会下载当前预览的文件。</div>
+    <div class="email-subjects" style="margin-top:20px; background:#fff; border:1px solid var(--border); border-radius:16px; padding:18px 20px; box-shadow:0 10px 24px rgba(17,24,39,.05);">
+      <div style="font-weight:700; margin-bottom:12px;">邮件标题（Subject）</div>
+      <div style="display:grid; gap:12px;">
+        <div><div style="font-size:12px; color:var(--muted);">信用申请</div><div style="font-size:14px;">Your Credit Application Is Under Review</div><div style="font-size:14px;">Your Credit Application Has Been Approved</div><div style="font-size:14px;">Update on Your Credit Application</div></div>
+        <div><div style="font-size:12px; color:var(--muted);">邮件催收</div><div style="font-size:14px;">Upcoming Invoice #{{InvoiceNo}} Due in 5 Days</div><div style="font-size:14px;">Friendly Reminder: Invoice #{{InvoiceNo}} Payment Due</div><div style="font-size:14px;">Payment Reminder: Invoice #{{InvoiceNo}} Outstanding</div><div style="font-size:14px;">Important Notice: Invoice #{{InvoiceNo}} Past Due</div><div style="font-size:14px;">Account Review Notice: Invoice #{{InvoiceNo}} Outstanding</div></div>
+      </div>
+    </div>
   </div>
   <script>
     const buttons = document.querySelectorAll('.btn');
     const frame = document.getElementById('frame');
     const path = document.getElementById('path');
+    const subject = document.getElementById('subject');
     const openLink = document.getElementById('openLink');
     const downloadLink = document.getElementById('downloadLink');
     const map = {
-      '2d786767bbbeae53.html': { label: 'Submitted - 审核中', filename: 'credit-application-submitted.html' },
-      '2da1bc035b96441c.html': { label: 'Approved - 已批准', filename: 'credit-application-approved.html' },
-      '5202fc81861bfb05.html': { label: 'Declined - 已拒绝', filename: 'credit-application-declined.html' },
-      '01-d-5-upcoming-payment-reminder.html': { label: 'D-5 到期提醒邮件', filename: '01-d-5-upcoming-payment-reminder.html' },
-      '02-d-10-friendly-payment-reminder.html': { label: 'D+10 首次逾期提醒邮件', filename: '02-d-10-friendly-payment-reminder.html' },
-      '03-d-20-payment-follow-up.html': { label: 'D+20 正式催款邮件', filename: '03-d-20-payment-follow-up.html' },
-      '04-d-30-account-risk-reminder.html': { label: 'D+30 信用风险提醒邮件', filename: '04-d-30-account-risk-reminder.html' },
-      '05-d-60-account-review-notice.html': { label: 'D+60 账户风险升级邮件', filename: '05-d-60-account-review-notice.html' },
+      '2d786767bbbeae53.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
+      '2da1bc035b96441c.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
+      '5202fc81861bfb05.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
+      '01-d-5-upcoming-payment-reminder.html': { label: 'D-5 到期提醒邮件', subject: 'Upcoming Invoice #{{InvoiceNo}} Due in 5 Days', filename: '01-d-5-upcoming-payment-reminder.html' },
+      '02-d-10-friendly-payment-reminder.html': { label: 'D+10 首次逾期提醒邮件', subject: 'Friendly Reminder: Invoice #{{InvoiceNo}} Payment Due', filename: '02-d-10-friendly-payment-reminder.html' },
+      '03-d-20-payment-follow-up.html': { label: 'D+20 正式催款邮件', subject: 'Payment Reminder: Invoice #{{InvoiceNo}} Outstanding', filename: '03-d-20-payment-follow-up.html' },
+      '04-d-30-account-risk-reminder.html': { label: 'D+30 信用风险提醒邮件', subject: 'Important Notice: Invoice #{{InvoiceNo}} Past Due', filename: '04-d-30-account-risk-reminder.html' },
+      '05-d-60-account-review-notice.html': { label: 'D+60 账户风险升级邮件', subject: 'Account Review Notice: Invoice #{{InvoiceNo}} Outstanding', filename: '05-d-60-account-review-notice.html' },
     };
     function activate(btn) {
       buttons.forEach(x => x.classList.remove('active'));
       btn.classList.add('active');
       const src = btn.dataset.src;
       const meta = map[src];
-      const url = './' + src + '?v=202607279';
+      const url = './' + src + '?v=202607280';
       frame.src = url;
       path.textContent = meta.label;
+      subject.textContent = 'Subject: ' + meta.subject;
       openLink.href = url;
       downloadLink.href = './' + src + '?download=1';
       downloadLink.setAttribute('download', meta.filename);
