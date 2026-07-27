@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Credit Application Email Preview</title>
   <style>
-    :root { --bg:#f6f8fb; --card:#fff; --text:#111827; --muted:#6b7280; --brand:#f05a4e; --border:#e5e7eb; }
+    :root { --bg:#f6f8fb; --card:#fff; --text:#111827; --muted:#6b7280; --brand:#f05a4e; --border:#e5e7eb; --soft:#fff7f6; }
     * { box-sizing: border-box; }
     body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); }
     .wrap { max-width:1180px; margin:0 auto; padding:32px 20px 48px; }
@@ -17,13 +17,17 @@
     .sidebar { padding:16px; position:sticky; top:20px; height:fit-content; }
     .btn { display:block; width:100%; padding:14px 16px; margin-bottom:10px; border:1px solid var(--border); border-radius:12px; background:#fff; color:var(--text); text-decoration:none; font-weight:600; transition:.18s; }
     .group-title { font-size:12px; font-weight:700; letter-spacing:.02em; color:#374151; text-transform:uppercase; margin:0 0 10px; }
-    .btn:hover,.btn.active { border-color:var(--brand); color:var(--brand); background:#fff7f6; }
+    .btn:hover,.btn.active { border-color:var(--brand); color:var(--brand); background:var(--soft); }
     .meta { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); color:var(--muted); font-size:13px; line-height:1.7; }
-    .toolbar { display:flex; gap:10px; flex-wrap:wrap; padding:16px; border-bottom:1px solid var(--border); align-items:center; justify-content:space-between; }
-    .path { color:var(--muted); font-size:13px; word-break:break-all; }
-    .subject { margin-top:4px; font-size:12px; color:var(--muted); }
+    .toolbar { display:flex; gap:12px; flex-wrap:wrap; padding:16px; border-bottom:1px solid var(--border); align-items:flex-start; justify-content:space-between; }
+    .title-block { min-width:0; }
+    .path { color:var(--muted); font-size:13px; word-break:break-all; margin-bottom:8px; }
+    .subject-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .subject-badge { display:inline-flex; align-items:center; max-width:100%; padding:8px 12px; border-radius:999px; background:#fff1ef; color:#b42318; border:1px solid #f8c7c1; font-size:13px; font-weight:700; line-height:1.35; word-break:break-word; }
     .actions { display:flex; gap:10px; flex-wrap:wrap; }
-    .open { color:#fff; background:var(--brand); padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:600; }
+    .open,.copy { color:#fff; background:var(--brand); padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:600; border:0; cursor:pointer; }
+    .copy { background:#111827; }
+    .copy.done { background:#0f766e; }
     .mail-host { padding:0; overflow:visible; }
     .mail-frame { width:100%; border:0; display:block; background:#fff; border-radius:0 0 16px 16px; }
     @media (max-width:900px){ .grid{grid-template-columns:1fr;} .sidebar{position:static;} }
@@ -33,7 +37,7 @@
   <div class="wrap">
     <div>
       <h1>Credit Application Email Preview</h1>
-      <p class="sub">统一入口页：点击左侧切换 3 个邮件模板在线预览</p>
+      <p class="sub">统一入口页：点击左侧切换 8 个邮件模板在线预览</p>
       <div class="hint-top">提示：右上角“下载 HTML”会下载当前预览的文件。</div>
     </div>
 
@@ -60,12 +64,15 @@
 
       <main class="preview">
         <div class="toolbar">
-          <div>
+          <div class="title-block">
             <div class="path" id="path">Submitted - 审核中</div>
-            <div class="subject" id="subject">Subject: Your Credit Application Is Under Review</div>
+            <div class="subject-row">
+              <div class="subject-badge" id="subject">Subject: Your Credit Application Is Under Review</div>
+            </div>
           </div>
           <div class="actions">
-            <a class="open" id="openLink" href="2d786767bbbeae53.html?v=202607285" target="_blank">新窗口打开</a>
+            <a class="open" id="openLink" href="2d786767bbbeae53.html?v=202607286" target="_blank">新窗口打开</a>
+            <button class="copy" id="copyBtn" type="button">复制 Subject</button>
             <a class="open" id="downloadLink" href="2d786767bbbeae53.html" download="credit-application-submitted.html">下载 HTML</a>
           </div>
         </div>
@@ -80,8 +87,9 @@
     const subject = document.getElementById('subject');
     const openLink = document.getElementById('openLink');
     const downloadLink = document.getElementById('downloadLink');
+    const copyBtn = document.getElementById('copyBtn');
     const mailHost = document.getElementById('mailHost');
-    const cacheV = '202607285';
+    const cacheV = '202607286';
     const map = {
       '2d786767bbbeae53.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
       '2da1bc035b96441c.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
@@ -92,9 +100,8 @@
       '04-d-30-account-risk-reminder.html': { label: 'D+30 信用风险提醒邮件', subject: 'Important Notice: Invoice #{{InvoiceNo}} Past Due', filename: '04-d-30-account-risk-reminder.html' },
       '05-d-60-account-review-notice.html': { label: 'D+60 账户风险升级邮件', subject: 'Account Review Notice: Invoice #{{InvoiceNo}} Outstanding', filename: '05-d-60-account-review-notice.html' },
     };
-    async function loadMail(src) {
-      const res = await fetch('./' + src + '?v=' + cacheV, { cache: 'no-store' });
-      const html = await res.text();
+
+    function setBodyHtml(html) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const body = doc.body.cloneNode(true);
       body.style.margin = '0';
@@ -104,7 +111,14 @@
       mailHost.innerHTML = '';
       mailHost.appendChild(body);
     }
-    function activate(btn) {
+
+    async function loadMail(src) {
+      const res = await fetch('./' + src + '?v=' + cacheV, { cache: 'no-store' });
+      const html = await res.text();
+      setBodyHtml(html);
+    }
+
+    async function activate(btn) {
       buttons.forEach(x => x.classList.remove('active'));
       btn.classList.add('active');
       const src = btn.dataset.src;
@@ -115,9 +129,28 @@
       openLink.href = url;
       downloadLink.href = './' + src;
       downloadLink.setAttribute('download', meta.filename);
-      loadMail(src);
+      copyBtn.dataset.subject = meta.subject;
+      await loadMail(src);
     }
+
+    copyBtn.addEventListener('click', async () => {
+      const text = copyBtn.dataset.subject || '';
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = '已复制';
+        copyBtn.classList.add('done');
+        setTimeout(() => {
+          copyBtn.textContent = '复制 Subject';
+          copyBtn.classList.remove('done');
+        }, 1200);
+      } catch (e) {
+        copyBtn.textContent = '复制失败';
+        setTimeout(() => { copyBtn.textContent = '复制 Subject'; }, 1200);
+      }
+    });
+
     buttons.forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); activate(btn); }));
+    copyBtn.dataset.subject = map['2d786767bbbeae53.html'].subject;
     loadMail('2d786767bbbeae53.html');
   </script>
 </body>
