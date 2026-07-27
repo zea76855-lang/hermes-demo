@@ -50,7 +50,7 @@
           <div class="path" id="path">/2d786767bbbeae53.html</div>
           <a class="open" id="openLink" href="2d786767bbbeae53.html" target="_blank">新窗口打开</a>
         </div>
-        <iframe id="frame" src="./2d786767bbbeae53.html" title="preview"></iframe>
+        <iframe id="frame" src="./2d786767bbbeae53.html?v=202607272" title="preview"></iframe>
       </main>
     </div>
     <div class="hint">提示：如果 GitHub Pages 刚更新，可能需要几十秒到几分钟刷新缓存。</div>
@@ -65,9 +65,9 @@
       buttons.forEach(x => x.classList.remove('active'));
       btn.classList.add('active');
       const src = btn.dataset.src;
-      frame.src = './' + src;
+      frame.src = './' + src + '?v=202607272';
       path.textContent = '/' + src;
-      openLink.href = './' + src;
+      openLink.href = './' + src + '?v=202607272';
     }));
   </script>
 </body>
