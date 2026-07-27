@@ -7,32 +7,30 @@
   <style>
     :root { --bg:#f6f8fb; --card:#fff; --text:#111827; --muted:#6b7280; --brand:#f05a4e; --border:#e5e7eb; }
     * { box-sizing: border-box; }
-    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 48px; }
-    .hero { display:flex; gap:16px; align-items:end; justify-content:space-between; margin-bottom: 20px; }
-    h1 { margin:0; font-size: 28px; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:1180px; margin:0 auto; padding:32px 20px 48px; }
+    h1 { margin:0; font-size:28px; }
     .sub { margin:8px 0 0; color:var(--muted); }
-    .grid { display:grid; grid-template-columns: 280px 1fr; gap: 20px; }
-    .sidebar, .preview { background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 24px rgba(17,24,39,.05); }
-    .sidebar { padding: 16px; position: sticky; top: 20px; height: fit-content; }
+    .grid { display:grid; grid-template-columns:280px 1fr; gap:20px; margin-top:20px; }
+    .sidebar,.preview { background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 24px rgba(17,24,39,.05); }
+    .sidebar { padding:16px; position:sticky; top:20px; height:fit-content; }
     .btn { display:block; width:100%; padding:14px 16px; margin-bottom:10px; border:1px solid var(--border); border-radius:12px; background:#fff; color:var(--text); text-decoration:none; font-weight:600; transition:.18s; }
-    .btn:hover, .btn.active { border-color: var(--brand); color: var(--brand); background: #fff7f6; }
-    .meta { margin-top: 16px; padding-top: 14px; border-top:1px solid var(--border); color:var(--muted); font-size: 13px; line-height:1.7; }
-    .toolbar { display:flex; gap:10px; flex-wrap:wrap; padding: 16px; border-bottom:1px solid var(--border); align-items:center; justify-content:space-between; }
-    .toolbar .path { color:var(--muted); font-size: 13px; word-break: break-all; }
-    .open { color: #fff; background: var(--brand); padding: 10px 14px; border-radius: 10px; text-decoration:none; font-weight:600; }
-    iframe { width:100%; height: 860px; border:0; display:block; background:#fff; border-radius: 0 0 16px 16px; }
-    .hint { margin-top: 12px; color:var(--muted); font-size: 13px; }
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr;} .sidebar{position:static;} iframe{height: 760px;} }
+    .btn:hover,.btn.active { border-color:var(--brand); color:var(--brand); background:#fff7f6; }
+    .meta { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); color:var(--muted); font-size:13px; line-height:1.7; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; padding:16px; border-bottom:1px solid var(--border); align-items:center; justify-content:space-between; }
+    .path { color:var(--muted); font-size:13px; word-break:break-all; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .open { color:#fff; background:var(--brand); padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:600; }
+    iframe { width:100%; height:860px; border:0; display:block; background:#fff; border-radius:0 0 16px 16px; }
+    .hint { margin-top:12px; color:var(--muted); font-size:13px; }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr;} .sidebar{position:static;} iframe{height:760px;} }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="hero">
-      <div>
-        <h1>Credit Application Email Preview</h1>
-        <p class="sub">统一入口页：点击左侧切换 3 个邮件模板在线预览</p>
-      </div>
+    <div>
+      <h1>Credit Application Email Preview</h1>
+      <p class="sub">统一入口页：点击左侧切换 3 个邮件模板在线预览</p>
     </div>
     <div class="grid">
       <aside class="sidebar">
@@ -48,30 +46,41 @@
       <main class="preview">
         <div class="toolbar">
           <div class="path" id="path">Submitted - 审核中</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="open" id="openLink" href="2d786767bbbeae53.html" target="_blank">新窗口打开</a>
-            <a class="open" id="downloadLink" href="2d786767bbbeae53.html" download>下载 HTML</a>
+          <div class="actions">
+            <a class="open" id="openLink" href="2d786767bbbeae53.html?v=202607274" target="_blank">新窗口打开</a>
+            <a class="open" id="downloadLink" href="2d786767bbbeae53.html" download="credit-application-submitted.html">下载 HTML</a>
           </div>
         </div>
-        <iframe id="frame" src="./2d786767bbbeae53.html?v=202607272" title="preview"></iframe>
+        <iframe id="frame" src="2d786767bbbeae53.html?v=202607274" title="preview"></iframe>
       </main>
     </div>
-    <div class="hint">提示：如果 GitHub Pages 刚更新，可能需要几十秒到几分钟刷新缓存。</div>
+    <div class="hint">提示：右上角“下载 HTML”会下载当前预览的文件。</div>
   </div>
   <script>
     const buttons = document.querySelectorAll('.btn');
     const frame = document.getElementById('frame');
     const path = document.getElementById('path');
     const openLink = document.getElementById('openLink');
-    buttons.forEach(btn => btn.addEventListener('click', (e) => {
-      e.preventDefault();
+    const downloadLink = document.getElementById('downloadLink');
+    const map = {
+      '2d786767bbbeae53.html': { label: 'Submitted - 审核中', filename: 'credit-application-submitted.html' },
+      '2da1bc035b96441c.html': { label: 'Approved - 已批准', filename: 'credit-application-approved.html' },
+      '5202fc81861bfb05.html': { label: 'Declined - 已拒绝', filename: 'credit-application-declined.html' },
+    };
+    function activate(btn) {
       buttons.forEach(x => x.classList.remove('active'));
       btn.classList.add('active');
       const src = btn.dataset.src;
-      frame.src = './' + src + '?v=202607272';
-      path.textContent = '/' + src;
-      openLink.href = './' + src + '?v=202607272';
-    }));
+      const meta = map[src];
+      const url = './' + src + '?v=202607274';
+      frame.src = url;
+      path.textContent = meta.label;
+      openLink.href = url;
+      downloadLink.href = './' + src + '?download=1';
+      downloadLink.setAttribute('download', meta.filename);
+      downloadLink.textContent = '下载 HTML';
+    }
+    buttons.forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); activate(btn); }));
   </script>
 </body>
 </html>
