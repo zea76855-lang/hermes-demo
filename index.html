@@ -1,36 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hermes Demo</title>
+  <title>Credit Application Email Preview</title>
   <style>
-    body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f6f7f9;color:#1f2937}
-    .wrap{max-width:1100px;margin:0 auto;padding:48px 24px}
-    h1{margin:0 0 8px;font-size:28px}
-    p{margin:0 0 24px;color:#6b7280}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-    a{display:block;background:#fff;border:1px solid #e6e8ee;border-radius:12px;padding:20px;text-decoration:none;color:inherit;box-shadow:0 8px 24px rgba(31,41,55,.06)}
-    a:hover{border-color:#ff6b5c}
-    .t{font-weight:700;margin-bottom:8px}
-    .d{font-size:13px;color:#6b7280;line-height:1.6}
+    :root { --bg:#f6f8fb; --card:#fff; --text:#111827; --muted:#6b7280; --brand:#f05a4e; --border:#e5e7eb; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 48px; }
+    .hero { display:flex; gap:16px; align-items:end; justify-content:space-between; margin-bottom: 20px; }
+    h1 { margin:0; font-size: 28px; }
+    .sub { margin:8px 0 0; color:var(--muted); }
+    .grid { display:grid; grid-template-columns: 280px 1fr; gap: 20px; }
+    .sidebar, .preview { background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 24px rgba(17,24,39,.05); }
+    .sidebar { padding: 16px; position: sticky; top: 20px; height: fit-content; }
+    .btn { display:block; width:100%; padding:14px 16px; margin-bottom:10px; border:1px solid var(--border); border-radius:12px; background:#fff; color:var(--text); text-decoration:none; font-weight:600; transition:.18s; }
+    .btn:hover, .btn.active { border-color: var(--brand); color: var(--brand); background: #fff7f6; }
+    .meta { margin-top: 16px; padding-top: 14px; border-top:1px solid var(--border); color:var(--muted); font-size: 13px; line-height:1.7; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; padding: 16px; border-bottom:1px solid var(--border); align-items:center; justify-content:space-between; }
+    .toolbar .path { color:var(--muted); font-size: 13px; word-break: break-all; }
+    .open { color: #fff; background: var(--brand); padding: 10px 14px; border-radius: 10px; text-decoration:none; font-weight:600; }
+    iframe { width:100%; height: 860px; border:0; display:block; background:#fff; border-radius: 0 0 16px 16px; }
+    .hint { margin-top: 12px; color:var(--muted); font-size: 13px; }
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr;} .sidebar{position:static;} iframe{height: 760px;} }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Hermes Demo</h1>
-    <p>选择一个原型页面查看。</p>
-    <div class="grid">
-      <a href="./crm-360-view-v1.html"><div class="t">CRM 360 View</div><div class="d">客户 360° 视图原型，V1。</div></a>
-      <a href="./credit-management-2.0-dual-view-v1.html"><div class="t">客户信用管理 2.0</div><div class="d">客户端 / 后台端双端切换原型，V1。</div></a>
-      <a href="./credit-management-2.0-v2-v1.html"><div class="t">客户信用管理 2.0 V2</div><div class="d">旧版信用管理原型，V1。</div></a>
-      <a href="./cloudnova-crm-v1.html"><div class="t">Cloudnova CRM</div><div class="d">CRM 原型，V1。</div></a>
-      <a href="./ai-customer-service-v1.html"><div class="t">AI Customer Service</div><div class="d">AI 客服原型，V1。</div></a>
-      <a href="./ai-creation-v6-v1.html"><div class="t">AI Creation V6</div><div class="d">AI 创作页面，V1。</div></a>
-      <a href="./contact-list-v1.html"><div class="t">Contact List</div><div class="d">联系人列表页，V1。</div></a>
-      <a href="./company-list-v1.html"><div class="t">Company List</div><div class="d">公司列表页，V1。</div></a>
- 0e63ff8 (chore: version html entry pages)
+    <div class="hero">
+      <div>
+        <h1>Credit Application Email Preview</h1>
+        <p class="sub">统一入口页：点击左侧切换 3 个邮件模板在线预览</p>
+      </div>
     </div>
+    <div class="grid">
+      <aside class="sidebar">
+        <a class="btn active" href="#" data-src="2d786767bbbeae53.html">Submitted - 审核中</a>
+        <a class="btn" href="#" data-src="2da1bc035b96441c.html">Approved - 已批准</a>
+        <a class="btn" href="#" data-src="5202fc81861bfb05.html">Declined - 已拒绝</a>
+        <div class="meta">
+          <div><strong>在线入口：</strong></div>
+          <div>根目录首页：<a href="./index.html" target="_blank">index.html</a></div>
+          <div>文件均已部署到同一 Pages 目录。</div>
+        </div>
+      </aside>
+      <main class="preview">
+        <div class="toolbar">
+          <div class="path" id="path">/2d786767bbbeae53.html</div>
+          <a class="open" id="openLink" href="2d786767bbbeae53.html" target="_blank">新窗口打开</a>
+        </div>
+        <iframe id="frame" src="./2d786767bbbeae53.html" title="preview"></iframe>
+      </main>
+    </div>
+    <div class="hint">提示：如果 GitHub Pages 刚更新，可能需要几十秒到几分钟刷新缓存。</div>
   </div>
+  <script>
+    const buttons = document.querySelectorAll('.btn');
+    const frame = document.getElementById('frame');
+    const path = document.getElementById('path');
+    const openLink = document.getElementById('openLink');
+    buttons.forEach(btn => btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      buttons.forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      const src = btn.dataset.src;
+      frame.src = './' + src;
+      path.textContent = '/' + src;
+      openLink.href = './' + src;
+    }));
+  </script>
 </body>
 </html>
