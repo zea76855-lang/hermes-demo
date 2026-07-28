@@ -6,13 +6,13 @@
   <!--
   Template: Account Review Notice: Invoice Outstanding
   Trigger:  Automated payment reminder
-  Subject:  Urgent Notice: Invoice #{{InvoiceNo}} 60 Days Past Due
+  Subject:  Urgent Notice: Invoice #<strong>{{InvoiceNo}}</strong> 60 Days Past Due
   Button:  Pay Now  ->  {{Payment URL}}
   Merge fields (populate in ESP):
-  {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  {{DueDate}}  {{Payment URL}}
+  {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  <strong>{{DueDate}}</strong>  {{Payment URL}}
   https://www.linkedin.com/company/rapiddirect  https://www.youtube.com/c/RAPIDDIRECT  https://twitter.com/RAPIDDIRECT1
   https://www.instagram.com/rapiddirect  https://www.facebook.com/RapidDirectOfficial/ -->
-  <title>Urgent Notice: Invoice #{{InvoiceNo}} 60 Days Past Due</title>
+  <title>Urgent Notice: Invoice #<strong>{{InvoiceNo}}</strong> 60 Days Past Due</title>
   <style>
   @media only screen and (max-width: 600px) {
   .container { width: 100% !important; }
@@ -45,7 +45,7 @@
   <td class="px" style="padding:24px 40px 40px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1a1a1a; font-size:15px; line-height:1.6;">
 
   <p style="margin:0 0 16px;">Hi {{CustomerName}},</p>
-  <p style="margin:0 0 16px;">Invoice #{{InvoiceNo}} for {{Currency}} {{Amount}} is now 60 days past due.</p>
+  <p style="margin:0 0 16px;">Invoice #<strong>{{InvoiceNo}}</strong> for <strong>{{Currency}} {{Amount}}</strong> is now 60 days past due.</p>
   <p style="margin:0 0 16px;">Despite our previous reminders, the outstanding balance remains unpaid.</p>
   <p style="margin:0 0 24px;">Please arrange payment immediately or contact our Finance Team to discuss the payment status.</p>
   <p style="margin:0 0 24px;">Failure to resolve this overdue balance may result in further account actions, including a review of your credit terms and account status.</p>
@@ -63,11 +63,11 @@
   </tr>
   <tr>
   <td style="padding:6px 0; font-size:14px; color:#6b7280; border-top:1px solid #e5e7eb;">Amount Due</td>
-  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;">{{Currency}} {{Amount}}</td>
+  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;"><strong>{{Currency}} {{Amount}}</strong></td>
   </tr>
   <tr>
   <td style="padding:6px 0; font-size:14px; color:#6b7280; border-top:1px solid #e5e7eb;">Due Date</td>
-  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;">{{DueDate}}</td>
+  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;"><strong>{{DueDate}}</strong></td>
   </tr>
   </table>
   </td>
