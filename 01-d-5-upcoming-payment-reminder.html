@@ -6,13 +6,13 @@
   <!--
   Template: Upcoming Invoice Due in 5 Days
   Trigger:  Automated payment reminder
-  Subject:  Upcoming Invoice #{{InvoiceNo}} Due in 5 Days
+  Subject:  Upcoming Invoice #<strong>{{InvoiceNo}}</strong> Due in 5 Days
   Button:  View Invoice  ->  {{Invoice URL}}
   Merge fields (populate in ESP):
-  {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  {{DueDate}}  {{Invoice URL}}
+  {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  <strong>{{DueDate}}</strong>  {{Invoice URL}}
   https://www.linkedin.com/company/rapiddirect  https://www.youtube.com/c/RAPIDDIRECT  https://twitter.com/RAPIDDIRECT1
   https://www.instagram.com/rapiddirect  https://www.facebook.com/RapidDirectOfficial/ -->
-  <title>Upcoming Invoice #{{InvoiceNo}} Due in 5 Days</title>
+  <title>Upcoming Invoice #<strong>{{InvoiceNo}}</strong> Due in 5 Days</title>
   <style>
   @media only screen and (max-width: 600px) {
   .container { width: 100% !important; }
@@ -45,7 +45,7 @@
   <td class="px" style="padding:24px 40px 40px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1a1a1a; font-size:15px; line-height:1.6;">
 
   <p style="margin:0 0 16px;">Hi {{CustomerName}},</p>
-  <p style="margin:0 0 16px;">This is a friendly reminder that Invoice #{{InvoiceNo}} for {{Currency}} {{Amount}} is due on {{DueDate}}.</p>
+  <p style="margin:0 0 16px;">This is a friendly reminder that Invoice #<strong>{{InvoiceNo}}</strong> for <strong>{{Currency}} {{Amount}}</strong> is due on <strong>{{DueDate}}</strong>.</p>
   <p style="margin:0 0 24px;">Please arrange payment before the due date to ensure your account remains in good standing and your credit term continue without interruption.</p>
   <p style="margin:0 0 24px;">If payment has already been made, please disregard this reminder.</p>
   <p style="margin:0 0 24px;">Thank you for your prompt attention.</p>
@@ -61,11 +61,11 @@
   </tr>
   <tr>
   <td style="padding:6px 0; font-size:14px; color:#6b7280; border-top:1px solid #e5e7eb;">Amount Due</td>
-  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;">{{Currency}} {{Amount}}</td>
+  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;"><strong><strong>{{Currency}} {{Amount}}</strong></strong></td>
   </tr>
   <tr>
   <td style="padding:6px 0; font-size:14px; color:#6b7280; border-top:1px solid #e5e7eb;">Due Date</td>
-  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;">{{DueDate}}</td>
+  <td align="right" style="padding:6px 0; font-size:14px; font-weight:600; color:#1a1a1a; border-top:1px solid #e5e7eb;"><strong><strong>{{DueDate}}</strong></strong></td>
   </tr>
   </table>
   </td>
