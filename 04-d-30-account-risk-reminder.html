@@ -6,13 +6,13 @@
   <!--
   Template: Important Notice: Invoice Past Due
   Trigger:  Automated payment reminder
-  Subject:  Important Notice: Invoice #{{InvoiceNo}} Past Due
+  Subject:  Important Notice: Invoice #{{InvoiceNo}} 30 Days Past Due
   Button:  Pay Now  ->  {{Payment URL}}
   Merge fields (populate in ESP):
   {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  {{DueDate}}  {{Payment URL}}
   https://www.linkedin.com/company/rapiddirect  https://www.youtube.com/c/RAPIDDIRECT  https://twitter.com/RAPIDDIRECT1
   https://www.instagram.com/rapiddirect  https://www.facebook.com/RapidDirectOfficial/ -->
-  <title>Important Notice: Invoice #{{InvoiceNo}} Past Due</title>
+  <title>Important Notice: Invoice #{{InvoiceNo}} 30 Days Past Due</title>
   <style>
   @media only screen and (max-width: 600px) {
   .container { width: 100% !important; }
@@ -45,10 +45,16 @@
   <td class="px" style="padding:24px 40px 40px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1a1a1a; font-size:15px; line-height:1.6;">
 
   <p style="margin:0 0 16px;">Hi {{CustomerName}},</p>
-  <p style="margin:0 0 16px;">Invoice #{{InvoiceNo}} for <strong>{{Currency}} {{Amount}}</strong> is now <strong>30+ days past due</strong>.</p>
-  <p style="margin:0 0 24px;">Please arrange payment as soon as possible to avoid potential restrictions on your credit account, including changes to your credit terms and account privileges.</p>
-  <p style="margin:0 0 24px;">If payment has already been made, please provide the payment confirmation for our records.</p>
-  <p style="margin:0 0 24px;">If you have any questions regarding this invoice, please contact our Finance Team.</p>
+  <p style="margin:0 0 16px;">Invoice #{{InvoiceNo}} for {{Currency}} {{Amount}} is now 30 days past due.</p>
+  <p style="margin:0 0 28px;">Please arrange payment as soon as possible to avoid potential restrictions on your credit account, including changes to your credit terms and account privileges.</p>
+  <p style="margin:0 0 28px;">If payment has already been made, please provide the payment confirmation for our records.</p>
+  <p style="margin:0 0 28px;">If you have any questions regarding this invoice, please contact our Finance Team.</p>
+
+  <p style="margin:28px 0 0;">
+  Best regards,<br>
+  Finance Team<br>
+  RapidDirect
+  </p>
 
   <!-- Detail card -->
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#fafafa; border:1px solid #e5e7eb; border-radius:8px;">
