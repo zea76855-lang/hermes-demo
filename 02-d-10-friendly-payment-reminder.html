@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--
-  Template: Friendly Reminder: Invoice Payment Due
+  Template: Friendly Reminder: Invoice Past Due
   Trigger:  Automated payment reminder
-  Subject:  Friendly Reminder: Invoice #{{InvoiceNo}} Payment Due
+  Subject:  Friendly Reminder: Invoice #{{InvoiceNo}} Past Due
   Button:  Pay Now  ->  {{Payment URL}}
   Merge fields (populate in ESP):
   {{CustomerName}}  {{InvoiceNo}}  {{Currency}}  {{Amount}}  {{DueDate}}  {{Payment URL}}
   https://www.linkedin.com/company/rapiddirect  https://www.youtube.com/c/RAPIDDIRECT  https://twitter.com/RAPIDDIRECT1
   https://www.instagram.com/rapiddirect  https://www.facebook.com/RapidDirectOfficial/ -->
-  <title>Friendly Reminder: Invoice #{{InvoiceNo}} Payment Due</title>
+  <title>Friendly Reminder: Invoice #{{InvoiceNo}} Past Due</title>
   <style>
   @media only screen and (max-width: 600px) {
   .container { width: 100% !important; }
@@ -45,10 +45,10 @@
   <td class="px" style="padding:24px 40px 40px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1a1a1a; font-size:15px; line-height:1.6;">
 
   <p style="margin:0 0 16px;">Hi {{CustomerName}},</p>
-  <p style="margin:0 0 16px;">This is a reminder that Invoice #{{InvoiceNo}} for <strong>{{Currency}} {{Amount}}</strong>, which was due on <strong>{{DueDate}}</strong>, remains outstanding in our records.</p>
-  <p style="margin:0 0 24px;">Please arrange payment at your earliest convenience to keep your account in a good standing.</p>
-  <p style="margin:0 0 24px;">If payment has already been completed, please share the payment confirmation with us so we can update our records acoordingly.</p>
-  <p style="margin:0 0 24px;">Thank your for your promp attention.</p>
+  <p style="margin:0 0 16px;">This is a reminder that Invoice #{{InvoiceNo}} for {{Currency}} {{Amount}}, which was due on {{DueDate}}, remains outstanding in our records.</p>
+  <p style="margin:0 0 24px;">Please arrange payment at your earliest convenience to keep your account in good standing.</p>
+  <p style="margin:0 0 24px;">If payment has already been completed, please share the payment confirmation with us so we can update our records accordingly.</p>
+  <p style="margin:0 0 24px;">Thank you for your prompt attention.</p>
 
   <!-- Detail card -->
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#fafafa; border:1px solid #e5e7eb; border-radius:8px;">
