@@ -40,9 +40,9 @@
       <aside class="sidebar">
         <div class="group-title" style="font-size:12px;font-weight:700;letter-spacing:.02em;color:#374151;text-transform:uppercase;margin:0 0 10px;">信用申请</div>
         <a class="btn active" href="credit-application-open.html?v=202607314" data-src="credit-application-open.html" data-label="Open - 开通通知">Open - 开通通知</a>
-        <a class="btn" href="fa7be5ea850e4329.html?v=202607314" data-src="fa7be5ea850e4329.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
-        <a class="btn" href="3f5266c7bdd3b687.html?v=202607314" data-src="3f5266c7bdd3b687.html" data-label="Approved - 已批准">Approved - 已批准</a>
-        <a class="btn" href="265a05d28fdf88cd.html?v=202607314" data-src="265a05d28fdf88cd.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
+        <a class="btn" href="credit-application-submitted.html?v=202607316" data-src="credit-application-submitted.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
+        <a class="btn" href="credit-application-approved.html?v=202607316" data-src="credit-application-approved.html" data-label="Approved - 已批准">Approved - 已批准</a>
+        <a class="btn" href="credit-application-declined.html?v=202607316" data-src="credit-application-declined.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
         <div class="meta">
           <div><strong>在线入口：</strong></div>
           <div>本页面仅展示 4 个模板。</div>
@@ -70,9 +70,9 @@
   <script>
     const map = {
       'credit-application-open.html': { label: 'Open - 开通通知', subject: 'Your RapidDirect Credit Application Access Is Now Available', filename: 'credit-application-open.html' },
-      'fa7be5ea850e4329.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
-      '3f5266c7bdd3b687.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
-      '265a05d28fdf88cd.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
+      'credit-application-submitted.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
+      'credit-application-approved.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
+      'credit-application-declined.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
     };
     const buttons=document.querySelectorAll('.btn');
     const path=document.getElementById('path');
@@ -81,7 +81,7 @@
     const downloadLink=document.getElementById('downloadLink');
     const copyBtn=document.getElementById('copyBtn');
     const frame=document.getElementById('mailFrame');
-    const cacheV='202607314';
+    const cacheV='202607316';
     async function activate(btn){
       buttons.forEach(b=>b.classList.remove('active')); btn.classList.add('active');
       const src=btn.dataset.src; const meta=map[src]; const url='./'+src+'?v='+cacheV;
