@@ -39,10 +39,10 @@
     <div class="grid">
       <aside class="sidebar">
         <div class="group-title" style="font-size:12px;font-weight:700;letter-spacing:.02em;color:#374151;text-transform:uppercase;margin:0 0 10px;">信用申请</div>
-        <a class="btn active" href="credit-application-open.html?v=202607311" data-src="credit-application-open.html" data-label="Open - 开通通知">Open - 开通通知</a>
-        <a class="btn" href="2d786767bbbeae53.html?v=202607311" data-src="2d786767bbbeae53.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
-        <a class="btn" href="2da1bc035b96441c.html?v=202607311" data-src="2da1bc035b96441c.html" data-label="Approved - 已批准">Approved - 已批准</a>
-        <a class="btn" href="5202fc81861bfb05.html?v=202607311" data-src="5202fc81861bfb05.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
+        <a class="btn active" href="credit-application-open.html?v=202607314" data-src="credit-application-open.html" data-label="Open - 开通通知">Open - 开通通知</a>
+        <a class="btn" href="2d786767bbbeae53.html?v=202607314" data-src="2d786767bbbeae53.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
+        <a class="btn" href="2da1bc035b96441c.html?v=202607314" data-src="2da1bc035b96441c.html" data-label="Approved - 已批准">Approved - 已批准</a>
+        <a class="btn" href="5202fc81861bfb05.html?v=202607314" data-src="5202fc81861bfb05.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
         <div class="meta">
           <div><strong>在线入口：</strong></div>
           <div>本页面仅展示 4 个模板。</div>
@@ -56,13 +56,13 @@
             <div class="subject-row"><div class="subject-badge" id="subject">Subject: Your RapidDirect Credit Application Access Is Now Available</div></div>
           </div>
           <div class="actions">
-            <a class="open" id="openLink" href="credit-application-open.html?v=202607311" target="_blank">新窗口打开</a>
+            <a class="open" id="openLink" href="credit-application-open.html?v=202607314" target="_blank">新窗口打开</a>
             <button class="copy" id="copyBtn" type="button">复制 Subject</button>
             <a class="open" id="downloadLink" href="credit-application-open.html" download="credit-application-open.html">下载 HTML</a>
           </div>
         </div>
         <div class="mail-host" id="mailHost">
-          <iframe class="mail-frame" id="mailFrame" src="credit-application-open.html?v=202607311"></iframe>
+          <iframe class="mail-frame" id="mailFrame" src="credit-application-open.html?v=202607314"></iframe>
         </div>
       </main>
     </div>
@@ -70,9 +70,9 @@
   <script>
     const map = {
       'credit-application-open.html': { label: 'Open - 开通通知', subject: 'Your RapidDirect Credit Application Access Is Now Available', filename: 'credit-application-open.html' },
-      '2d786767bbbeae53.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
-      '2da1bc035b96441c.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
-      '5202fc81861bfb05.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
+      'fa7be5ea850e4329.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
+      '3f5266c7bdd3b687.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
+      '265a05d28fdf88cd.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
     };
     const buttons=document.querySelectorAll('.btn');
     const path=document.getElementById('path');
@@ -81,7 +81,7 @@
     const downloadLink=document.getElementById('downloadLink');
     const copyBtn=document.getElementById('copyBtn');
     const frame=document.getElementById('mailFrame');
-    const cacheV='202607311';
+    const cacheV='202607314';
     async function activate(btn){
       buttons.forEach(b=>b.classList.remove('active')); btn.classList.add('active');
       const src=btn.dataset.src; const meta=map[src]; const url='./'+src+'?v='+cacheV;
