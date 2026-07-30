@@ -44,10 +44,10 @@
     <div class="grid">
       <aside class="sidebar">
         <div class="group-title">信用申请邮件</div>
-        <a class="btn active" href="credit-application-open.html?v=202607325" data-src="credit-application-open.html" data-label="Open - 入口开放通知">Open - 入口开放通知</a>
-<a class="btn" href="credit-application-submitted.html?v=202607325" data-src="credit-application-submitted.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
-<a class="btn" href="credit-application-approved.html?v=202607325" data-src="credit-application-approved.html" data-label="Approved - 已批准">Approved - 已批准</a>
-<a class="btn" href="credit-application-declined.html?v=202607325" data-src="credit-application-declined.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
+        <a class="btn active" href="credit-application-open.html?v=202607326" data-src="credit-application-open.html" data-label="Open - 入口开放通知">Open - 入口开放通知</a>
+<a class="btn" href="credit-application-submitted.html?v=202607326" data-src="credit-application-submitted.html" data-label="Submitted - 审核中">Submitted - 审核中</a>
+<a class="btn" href="credit-application-approved.html?v=202607326" data-src="credit-application-approved.html" data-label="Approved - 已批准">Approved - 已批准</a>
+<a class="btn" href="credit-application-declined.html?v=202607326" data-src="credit-application-declined.html" data-label="Declined - 已拒绝">Declined - 已拒绝</a>
         <div class="meta">
           <div><strong>在线入口：</strong></div>
           <div>本页面仅展示 4 个模板。</div>
@@ -64,7 +64,7 @@
             </div>
           </div>
           <div class="actions">
-            <a class="open" id="openLink" href="credit-application-open.html?v=202607325" target="_blank">新窗口打开</a>
+            <a class="open" id="openLink" href="credit-application-open.html?v=202607326" target="_blank">新窗口打开</a>
             <button class="copy" id="copyBtn" type="button">复制 Subject</button>
             <a class="open" id="downloadLink" href="credit-application-open.html" download="credit-application-open.html">下载 HTML</a>
           </div>
@@ -82,13 +82,65 @@
     const downloadLink = document.getElementById('downloadLink');
     const copyBtn = document.getElementById('copyBtn');
     const mailHost = document.getElementById('mailHost');
-    const cacheV = '202607325';
+    const cacheV = '202607326';
     const map = {
       'credit-application-open.html': { label: 'Open - 入口开放通知', subject: 'Your RapidDirect Credit Application Access Is Now Available', filename: 'credit-application-open.html' },
       'credit-application-submitted.html': { label: 'Submitted - 审核中', subject: 'Your Credit Application Is Under Review', filename: 'credit-application-submitted.html' },
       'credit-application-approved.html': { label: 'Approved - 已批准', subject: 'Your Credit Application Has Been Approved', filename: 'credit-application-approved.html' },
       'credit-application-declined.html': { label: 'Declined - 已拒绝', subject: 'Update on Your Credit Application', filename: 'credit-application-declined.html' },
     };
+
+    function setBodyHtml(html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const body = doc.body.cloneNode(true);
+      body.style.margin = '0';
+      body.style.background = '#fff';
+      body.style.overflow = 'visible';
+      body.querySelectorAll('a').forEach(a => { a.target = '_blank'; });
+      mailHost.innerHTML = '';
+      mailHost.appendChild(body);
+    }
+
+    async function loadMail(src) {
+      const res = await fetch('./' + src + '?v=' + cacheV, { cache: 'no-store' });
+      const html = await res.text();
+      setBodyHtml(html);
+    }
+
+    async function activate(btn) {
+      buttons.forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      const src = btn.dataset.src;
+      const meta = map[src];
+      const url = './' + src + '?v=' + cacheV;
+      path.textContent = meta.label;
+      subject.textContent = 'Subject: ' + meta.subject;
+      openLink.href = url;
+      downloadLink.href = './' + src;
+      downloadLink.setAttribute('download', meta.filename);
+      copyBtn.dataset.subject = meta.subject;
+      await loadMail(src);
+    }
+
+    copyBtn.addEventListener('click', async () => {
+      const text = copyBtn.dataset.subject || '';
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = '已复制';
+        copyBtn.classList.add('done');
+        setTimeout(() => {
+          copyBtn.textContent = '复制 Subject';
+          copyBtn.classList.remove('done');
+        }, 1200);
+      } catch (e) {
+        copyBtn.textContent = '复制失败';
+        setTimeout(() => { copyBtn.textContent = '复制 Subject'; }, 1200);
+      }
+    });
+
+    buttons.forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); activate(btn); }));
+    copyBtn.dataset.subject = map['credit-application-open.html'].subject;
+    loadMail('credit-application-open.html');
   </script>
 </body>
 </html>
