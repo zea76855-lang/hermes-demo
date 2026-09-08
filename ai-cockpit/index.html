@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="tFlcPLjFRPmk7zeosTvyeG">
+<head data-page-node-id="Cajo0zk1UX4zKlgrpo8iBs">
+<meta charset="UTF-8" data-page-node-id="kJ5FwAA7GnkiNBUcofAwXu">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="oVgVJixYXQcIwRQ8dg1aZm">
+<title>AI 市场运营驾驶舱 · RapidDirect</title>
+<link rel="stylesheet" href="styles.css" data-page-node-id="A9W7xN1gOaHZqo5v65Ewgp">
+</head>
+<body data-page-node-id="iC0eowoyeSZHBEgToGrpaH">
+
+<header class="topbar" data-page-node-id="qh4OKLL0gljSZza8GckQPF">
+  <div class="brand" data-page-node-id="GBl485ZiO5aWcEdl8xpy8X">
+    <span class="logo" data-page-node-id="SPIDEXY9SpwE3arb4SERt4">RD</span>
+    <div class="brand-txt" data-page-node-id="lxE6wGNJM781jfdy2VtSL0">
+      <h1 data-page-node-id="FdeHSRKuAuRhmZ0VF9L9Qq">AI 市场运营驾驶舱</h1>
+      <p data-page-node-id="4GtmS9dtsGxv9VFfgLyfzp">RapidDirect · Market Operations Cockpit</p>
+    </div>
+  </div>
+  <div class="engine" id="engineBar" data-page-node-id="2GcO72hU9R2TUpUPHbIP8s">
+    <span class="dot" data-page-node-id="59gj5iso8wfaedkFohdHaa"></span>
+    <div class="engine-txt" data-page-node-id="nrSnrhApeFErHbWHkY1fLO">
+      <strong data-page-node-id="g0nIDaLSxNlHvDJD0HMgpW">AI 监控引擎运行中</strong>
+      <span id="engineMeta" data-page-node-id="i3XlgHbLeb0XvtJyxFAsGw">—</span>
+    </div>
+  </div>
+  <div class="controls" data-page-node-id="ZenEvqCOshaCHrhoZejMEG">
+    <div class="seg" id="periodSeg" data-page-node-id="6b1679pVmG7JCnPXgOOhzN">
+      <button data-p="day" class="on" data-page-node-id="CUvPcqhjK2DtwTwnJiKNsM">日</button>
+      <button data-p="week" data-page-node-id="GAhXviV6lgbKCKvobpaDlY">周</button>
+      <button data-p="month" data-page-node-id="6Md66ZHgVTtFpredbOkHI1">月</button>
+    </div>
+    <select id="platformSel" data-page-node-id="rd3PEypzm35vuutmGPgP8d">
+      <option value="all" data-page-node-id="DjDHiEluZJEYs8IpQyfmLj">全部平台</option>
+      <option value="官网" data-page-node-id="oaTHT1YaahU9ihVUBU8PyF">官网</option>
+      <option value="云平台" data-page-node-id="ZvckbvN945YA4l75V3Z5Mz">云平台</option>
+      <option value="AI造物" data-page-node-id="ntx9nI7qr54Rd8EFWcgqf0">AI 造物</option>
+    </select>
+    <button class="ic-btn" id="refreshBtn" title="重新采集" data-page-node-id="3ea7WledpfFuHVBmJKHuB9">
+      <svg viewBox="0 0 24 24" width="15" height="15" data-page-node-id="rBIKLedHctMcrbM6AlhT0g"><path d="M20 11A8 8 0 0 0 6.3 6.3L4 8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-page-node-id="WtONCLFlRiZ19E7KrNaA6h"/><path d="M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="j1cywvBAE8QK5F5mRr6gVu"/><path d="M4 13a8 8 0 0 0 13.7 4.7L20 15.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-page-node-id="kQ4ANcZqbooXWrXnGdfcJ0"/><path d="M20 20v-4.5h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="SgMs8QMe0WmRQ53B64G0uF"/></svg>
+    </button>
+    <span class="clock" id="clock" data-page-node-id="PQcxEhxueWs0hABRtHTAIs"></span>
+    <button class="ic-btn tc-btn" id="taskCenterBtn" title="任务中心" aria-label="任务中心">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <span class="tc-badge" id="taskBadge" hidden>0</span>
+    </button>
+  </div>
+</header>
+
+<main data-page-node-id="S8vlzzzGtas2Tg2Q4bB60g">
+
+  <!-- ══ HERO · 今日结论 ══ -->
+  <section class="hero" data-page-node-id="j813ATGA7zzuPOFfSiQls1">
+    <div class="hero-main" data-page-node-id="kZexcTlOQuXfCE42ldWijA">
+      <div id="heroRing" class="hero-ring" data-page-node-id="4sonY3QMjjPwfiAy0Nl9J5"></div>
+      <div class="hero-txt" data-page-node-id="G5pTjWWiGUHmV26HjSf11N">
+        <div class="kicker" data-page-node-id="g2qCddKcYBWIQduNJHnkz6"><span class="live" data-page-node-id="AwUy2QwtHQIGGYYMITZljD"></span>今日巡检结论 · <span id="heroTime" data-page-node-id="tJBLeLAaSzVJf3MHUL7v2q">—</span></div>
+        <h2 id="heroHead" data-page-node-id="cv0ZW6DZEUGMf75DBPCTVG">—</h2>
+        <p id="heroSub" data-page-node-id="sDqCKFPBapuVORdWuB3sXg">—</p>
+      </div>
+    </div>
+    <div class="hero-wall" id="heroStats" data-page-node-id="eMaChMLwHZGfiI6RmzL5sD"></div>
+  </section>
+
+  <!-- ══ 01 基础输出展示区 ══ -->
+  <section class="zone" id="zone-a" data-page-node-id="ySg303vgTbstEvkLnplcQa">
+    <div class="zh" data-page-node-id="WJCc8A5GEBsUADcCHV8rpm">
+      <span class="zn" data-page-node-id="7ao5fxaK8P8od8BXP1JLxJ">01</span>
+      <div class="zh-t" data-page-node-id="ybvujC52dKvn0XtwbJxz87">
+        <h2 data-page-node-id="IBdbG0NPk2GcWVBM0cLnAz">基础输出展示区</h2>
+        <p data-page-node-id="K7sJxqHGP64zVb81SK4TBO">北极星指标 · 覆盖流量 → 转化 → 经营 → 投放 → 留存</p>
+      </div>
+      <div class="zstat" id="zoneAStat" data-page-node-id="ruKf4TqUC9EzZ0REwDQxHR"></div>
+    </div>
+    <div class="kpi-wall" id="kpiGrid" data-page-node-id="by0qfVer7xBiUugakos6Ko"></div>
+    <div class="card" data-page-node-id="Iu2Sm0gAeTp0EED4JSBwA3">
+      <div class="card-h" data-page-node-id="kiMR3yY5iAueKt25sGf27s">
+        <h3 data-page-node-id="2xBinCJpLCqRXJkZTUF846">核心指标趋势</h3>
+        <div class="seg sm" id="trendSeg" data-page-node-id="g7stc2ieGJoVHaStGS5bhV"></div>
+      </div>
+      <div id="trendChart" class="chart" data-page-node-id="HUrPEP8XbP8N0DHlycdWlf"></div>
+      <div class="legend" id="trendLegend" data-page-node-id="JnyJouAnaB0fIWzdWyCAia"></div>
+    </div>
+  </section>
+
+  <!-- ══ 02 AI 实时监控区 ══ -->
+  <section class="zone" id="zone-b" data-page-node-id="fRmWBXn0VO4cGgcCYsZoaI">
+    <div class="zh" data-page-node-id="biL6xyTJRecxvFoc5cwV0B">
+      <span class="zn" data-page-node-id="rXFnrODjshu676A5LldPX2">02</span>
+      <div class="zh-t" data-page-node-id="tAdZhYvKoFG10lLTps99IW">
+        <h2 data-page-node-id="BRIbrscHQ18VFOwdvCWBxg">AI 实时监控区</h2>
+        <p data-page-node-id="OIQ4cLqdCpNgTbJbKOhfEZ">13 个运行场景持续巡检 · 异常自动识别、定位并给出动作</p>
+      </div>
+      <div class="zstat" id="zoneBStat" data-page-node-id="qiOOnDaGvQ7LtTYTL5IvxM"></div>
+    </div>
+
+    <div class="grid g-8-5" data-page-node-id="Bg0AbmYoTLLpAhyxWtVLZf">
+      <div class="card" data-page-node-id="xxUWV6qnHNaSHkAwomZpv4">
+        <div class="card-h" data-page-node-id="h2DD0lSbaGdJu3CwaEeG5L">
+          <h3 data-page-node-id="DgJaZDlKgMZfPpOeMZj6NZ">实时异常流</h3>
+          <div class="seg sm" id="alertSeg" data-page-node-id="pKyqh17DOBTKj75rF4Czww"></div>
+        </div>
+        <div id="alertStream" class="stream" data-page-node-id="XPXEIoa9yS14Oq3GiWQA68"></div>
+      </div>
+      <div class="card" data-page-node-id="yQgglBsKTvOqHeh6aEcAF3">
+        <div class="card-h" data-page-node-id="U1LnKoj15bWajy2fiGv6Cs">
+          <h3 data-page-node-id="WyZ6kstIDZ89CfKhkHwhrG">场景健康度</h3>
+          <span class="hint" id="mbActive" data-page-node-id="O5VExtfDgKlIE5jlaiAYFD">—</span>
+        </div>
+        <div id="sceneList" class="slist" data-page-node-id="uRTN5S5nEVkk1YDFq59dEf"></div>
+        <div class="sub-h" data-page-node-id="8dhLDc6wtzsaabNgsBJZrp">二期 · 待接入</div>
+        <div id="phase2Row" class="p2" data-page-node-id="FdNIGTZbJbLTskdfGHJhC0"></div>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="Jws5UQiCQL3TTLUa8Y3gOu">
+      <div class="card-h" data-page-node-id="UduAPbjOG7u59I9PB4T8Vr">
+        <h3 id="sceneDetailTitle" data-page-node-id="Ks91nBBx4ABmCQlxqhU0T0">—</h3>
+        <span class="hint" id="sceneDetailHint" data-page-node-id="ax2jKnp8TygIs5hA34Ise7">—</span>
+      </div>
+      <div id="sceneDetail" data-page-node-id="DJsAbItf8XZfSbbU8H4LLF"></div>
+    </div>
+  </section>
+
+  <!-- ══ 03 建议分析面板 ══ -->
+  <section class="zone" id="zone-c" data-page-node-id="jOT3PZ7xs2mAaRldtDsBBO">
+    <div class="zh" data-page-node-id="OUCLKdcnxWzmIAFfwNxmzJ">
+      <span class="zn" data-page-node-id="3yz1Ui7EzveclSjzmtRpHZ">03</span>
+      <div class="zh-t" data-page-node-id="z1YeVREt4xK180zjSBo1rH">
+        <h2 data-page-node-id="7D5pPSVeLFntAooGpWZwt2">建议分析面板</h2>
+        <p data-page-node-id="Y3xn9QBZ9zUJRNdjMhT49w">基于监控数据的智能建议与根因链深度分析</p>
+      </div>
+      <div class="zstat" id="zoneCStat" data-page-node-id="Npu637lby2FDTdauH09Qum"></div>
+    </div>
+    <div class="grid g-7-6" data-page-node-id="4lfbBB1GJGdDKaz2DBTvFJ">
+      <div class="card" data-page-node-id="JAIgzOAcXEh7yYmHTxODzu">
+        <div class="card-h" data-page-node-id="QKlV24Qu1eA2ZToNAIhibo">
+          <h3 data-page-node-id="MQEB9nup9digx28TaPxaH1">智能建议</h3>
+          <div class="seg sm" id="advSeg" data-page-node-id="hc3C6TJFyJr3Nw5OkTfl1x"></div>
+        </div>
+        <div id="adviceList" class="adv-list" data-page-node-id="z9BGHh3f0dZLFRBN9rHr7H"></div>
+      </div>
+      <div class="card" data-page-node-id="KEmV8xjPFpsHLRIvLCdD0G">
+        <div class="card-h" data-page-node-id="EYFjBDh6ErvHzfoGLVGlXa">
+          <h3 data-page-node-id="GB45LOlpqluKGtTBmHnth4">根因链 · 深度分析</h3>
+          <span class="hint" data-page-node-id="03NKH72smRkAOkoNyma7us">归因结论</span>
+        </div>
+        <div id="deepList" class="deep-list" data-page-node-id="B1pN2qeMpaXHFIpJFXDJ4O"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 04 深度分析下钻 ══ -->
+  <section class="zone" id="zone-d" data-page-node-id="WVxjpYZUe5MTgaBnRuUf0h">
+    <div class="zh" data-page-node-id="JW3Z6XuL8bGvNEJCOxi9Fl">
+      <span class="zn" data-page-node-id="aCOg1Ox5I04ZDi5mnfDWUh">04</span>
+      <div class="zh-t" data-page-node-id="iea11ZdLSmSK9ebGFfAbRL">
+        <h2 data-page-node-id="cKKjmXB2KE2DStbnP7G70u">深度分析下钻区</h2>
+        <p data-page-node-id="xBWLDd7e7VS7uU3XSnAl1S">按需展开 · 结构与画像 / 漏斗链路 / 渠道质量 / 客户与人员 / 指标总表</p>
+      </div>
+    </div>
+    <div class="tabs" id="tabsA" data-page-node-id="zEJccO0vRIs60OZotFtIlh">
+      <button data-t="overview" class="on" data-page-node-id="8cvYXnmDsERvroUS2F2laf">结构与画像</button>
+      <button data-t="funnel" data-page-node-id="heUYab30U8A8yBG5v9EfZH">转化漏斗下钻</button>
+      <button data-t="channel" data-page-node-id="uI7dvQomfdgDr7ZJp2ORQP">渠道质量与 ROI</button>
+      <button data-t="people" data-page-node-id="HZRZfJfG7ES4ecTZ8iHkyq">客户与人员效能</button>
+      <button data-t="table" data-page-node-id="1OlgPXMjuVuAGCCWx3MOxk">指标总表</button>
+    </div>
+
+    <div class="tabpane" id="pane-overview" data-page-node-id="dyHGKLWRLFXcblHqcOF1qV">
+      <div class="grid g-3" data-page-node-id="ggiSdlv3MfHq8In4wgl1yb">
+        <div class="card" data-page-node-id="1nJwh3AkGZsQPuHMdlwAC2">
+          <div class="card-h" data-page-node-id="tGJaCfIVv3ACrdHrGE3DBK"><h3 data-page-node-id="KIhuPqfn4NqtfDAkuatbzR">平台流量结构</h3><span class="hint" data-page-node-id="X0xnTmxZsbBoL63cI0Wjwm">UV · 占比</span></div>
+          <div id="trafficDonut" class="chart sm-chart" data-page-node-id="LwjCJJh6yf00zIFfWXiMAm"></div>
+          <div class="legend" id="trafficLegend" data-page-node-id="QJyZOkzKS6FEkmTXNduMNU"></div>
+        </div>
+        <div class="card" data-page-node-id="UJOBiOBwoYvSVs5UBo1o5i">
+          <div class="card-h" data-page-node-id="bHJOfgdqC0STRMxK5OXyjp">
+            <h3 data-page-node-id="S85sZ7FDc60lC4pyOjNODp">客户画像与结构</h3>
+            <div class="seg sm" id="profileSeg" data-page-node-id="a5Mdv4fs7tocMoGQCvyhFl">
+              <button data-k="region" class="on" data-page-node-id="VaI3id4pyr8jM0F2Ck08SB">地区</button>
+              <button data-k="industry" data-page-node-id="0SArHDu0Emr19W6FFeMu55">行业</button>
+              <button data-k="process" data-page-node-id="xZqrHMTfumhqLVhuOPqceT">加工需求</button>
+              <button data-k="scale" data-page-node-id="IkhTaF28FnGtojybOOGBwm">客户规模</button>
+            </div>
+            <button class="drill-mini" data-drill-customer title="下钻客户分析驾驶舱">下钻客户分析 →</button>
+          </div>
+          <div id="profileChart" class="chart sm-chart" data-page-node-id="sdcCtRkTvxmbeNbDA5nwez"></div>
+        </div>
+        <div class="card" data-page-node-id="n3hio5xzyrp03CBpc5GwKi">
+          <div class="card-h" data-page-node-id="AVC1T3g7Cw0b4Um9Is9dVx"><h3 data-page-node-id="TyzRVD7BeO3grYZzJVQZGt">各模块健康度</h3><span class="hint" data-page-node-id="1owdQR4n0QaLDCDTCdQAjy">按 P0 指标状态聚合</span></div>
+          <div id="moduleBars" class="bars" data-page-node-id="C7QHjyNNBnMAC2t7ABIEtd"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpane hide" id="pane-funnel" data-page-node-id="CDrPY03XCtvot9VuCqbubN">
+      <div class="card" data-page-node-id="FmCWT4OcS8pT08PeWKeNTe">
+        <div class="card-h" data-page-node-id="sGGTkMDzBa5OuZhwVla6l8">
+          <h3 id="funnelTitle" data-page-node-id="V0m8hrbvmfW2gluIe9XE7a">客户全链路转化漏斗</h3>
+          <div class="seg sm" id="funnelSeg" data-page-node-id="AHE4gTR7are26kxUk3HLuN"></div>
+        </div>
+        <div class="funnel-level" id="funnelLevel" data-page-node-id="8aWAGiMapFoPq3aWDqArZw"></div>
+        <div id="funnelBody" data-page-node-id="KqMVD9BDnqu7c1MdBxqAGz"></div>
+        <div id="funnelBranches" class="branches" data-page-node-id="EiwVmCe1bfgdu7I5rFCaAd"></div>
+      </div>
+    </div>
+
+    <div class="tabpane hide" id="pane-channel" data-page-node-id="SP6eQScA4iWQOetar5wplN">
+      <div class="card" data-page-node-id="4uHLx6EiYiQddB3zRYAWAG">
+        <div class="card-h" data-page-node-id="fWWr5TfQGWZddb7Cj7ierG"><h3 data-page-node-id="2ccHYeoMAMBqS0TiF79gu8">渠道质量总表</h3><span class="hint" data-page-node-id="P2AvEadfG2yuwozUSnl15K">点击表头排序</span></div>
+        <div class="tbl-wrap" data-page-node-id="MlnFBBvkPS2kfsaIxmHYZJ"><table class="tbl" id="channelTbl" data-page-node-id="3PQZPa5BEk7iJmZximGILE"></table></div>
+      </div>
+      <div class="grid g-2" data-page-node-id="kHgENhKolqmt1i20R4bEOH">
+        <div class="card" data-page-node-id="XiV708s0GBnoBznbZfmdgV">
+          <div class="card-h" data-page-node-id="CFdZQMLSrl5fkr0xMuVYKY"><h3 data-page-node-id="tNO3bDg2sydTc4f2028RAH">付费渠道 ROI 与 CAC</h3></div>
+          <div id="roiChart" class="chart" data-page-node-id="Il3uBZHvfAlcHlmNlQ7VVj"></div>
+        </div>
+        <div class="card" data-page-node-id="dmaErw6bDoFUzXouRsHcGn">
+          <div class="card-h" data-page-node-id="YldiRbPXuFYbiqsBDHpadx"><h3 data-page-node-id="T4EhKVvbaK9suO4pGImQqx">Sessions 渠道构成</h3></div>
+          <div id="chDonut" class="chart sm-chart" data-page-node-id="CLSRWbvED4JhpgC4XHnSiH"></div>
+          <div class="legend" id="chLegend" data-page-node-id="KzfdQHordaSI6cBRTX3ijO"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpane hide" id="pane-people" data-page-node-id="6ZryyW4bL4qJutmONZiBRo">
+      <div class="card drill-card" data-drill-customer>
+        <div class="drill-cta">
+          <span class="drill-ico">⤵</span>
+          <div class="drill-txt">
+            <b>进入客户分析驾驶舱</b>
+            <p>独立客户视角分析页 · 客户画像 / 价值分层 / 新客漏斗 / 人员效能，与主驾驶舱数据联动（平台 · 周期）。</p>
+          </div>
+          <span class="drill-go">下钻 →</span>
+        </div>
+      </div>
+      <div class="grid g-2" data-page-node-id="47KENyGfpHC0nh7ZYdRtGk">
+        <div class="card" data-page-node-id="jVDCWMaxbcCI1un2x6u6lA">
+          <div class="card-h" data-page-node-id="QCLCv3Y7PMjwzfmBF9obVF"><h3 data-page-node-id="GzfcnGGf9LcoTrfOCqe6KQ">业务员成交转化率</h3><span class="hint" data-page-node-id="4K42kuyyREpdZhDYHagRFK">按升序 · 低于均值 70% 标红</span></div>
+          <div id="salesChart" class="chart" data-page-node-id="wbPnVIkKANgyiKi2rolujy"></div>
+        </div>
+        <div class="card" data-page-node-id="G4sUqyaqU0IGi5thEdHwBC">
+          <div class="card-h" data-page-node-id="uPYiBMf5RaZBzw4q5CT2cz"><h3 data-page-node-id="XJdwSrUDAWvN5QdO6Hr4tV">工程师承接量与响应时长</h3></div>
+          <div id="engChart" class="chart" data-page-node-id="O8TRWYKY80OLoUdypRMrGx"></div>
+        </div>
+      </div>
+      <div class="card" data-page-node-id="ignWubcPqoTP9mlkZGN8wI">
+        <div class="card-h" data-page-node-id="nRBrsQTKr6KkWr8ROZFp33"><h3 data-page-node-id="97YgxLRAZgY5G2MA6zsZYU">人员效能明细</h3></div>
+        <div class="tbl-wrap" data-page-node-id="yvBgiCNHLlGqLI69K1CYCA"><table class="tbl" id="peopleTbl" data-page-node-id="zsqxARo4EDtTa6sPErZsyy"></table></div>
+      </div>
+    </div>
+
+    <div class="tabpane hide" id="pane-table" data-page-node-id="gvRa909tZ6sd9uXb77g4PC">
+      <div class="card" data-page-node-id="GuZq5K6bAsALQmZTGgaJjp">
+        <div class="card-h" data-page-node-id="cSU3Qr8jlbFBFFOxSMpEQ3">
+          <h3 data-page-node-id="dYkdLsrVIn9dykmFkBkqW3">指标总表</h3>
+          <div class="tbl-ctl" data-page-node-id="Gy1RkJyRk61LhAwE81ZAaB">
+            <div class="seg sm" id="prioSeg" data-page-node-id="bmpe3MAFcdMoCVoD18MwuS">
+              <button data-k="all" class="on" data-page-node-id="B0S3na3WErWDObe4aaZz69">全部</button>
+              <button data-k="P0 核心" data-page-node-id="gTOc1RAH2Yx0VpN29uMDHU">P0</button>
+              <button data-k="P1 诊断" data-page-node-id="fYYyDvvpdUvroj5koZa1aU">P1</button>
+              <button data-k="P2 观察" data-page-node-id="uiBdIKFJgdvoqbDADI125t">P2</button>
+            </div>
+            <input id="metricSearch" class="inp" type="search" placeholder="搜索指标 / 模块 / 场景" data-page-node-id="0wgXBsf5hxGECicWFEzUr7">
+          </div>
+        </div>
+        <div class="tbl-wrap tall" data-page-node-id="lZqKfpkXGn8y1bAIeXH9AA"><table class="tbl" id="metricTbl" data-page-node-id="ZBVpdB3Wa4sh9gccptVxU2"></table></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot" data-page-node-id="wPK8wrWaxwIDgLfFj6E4ZN">
+  <span id="footMeta" data-page-node-id="qxjztZ1R12CG96NNvBhds4">—</span>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="modal.js"></script>
+<script src="tasks.js"></script>
+</body>
+</html>

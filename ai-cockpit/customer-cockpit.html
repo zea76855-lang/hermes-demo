@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="DPSDKoYEmXMN9Q52EeWiOE">
+<head data-page-node-id="kNqVu2vMghLUsBD1rUKF4O">
+<meta charset="UTF-8" data-page-node-id="jv5njbwr3qYnErqrASmPie">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="UJ2UoDWJr31YlNSimWe89k">
+<title>客户分析驾驶舱 · RapidDirect</title>
+<link rel="stylesheet" href="styles.css" data-page-node-id="raKmaGslO2RbqIkvNXh3gD">
+<style>
+  /* 客户驾驶舱专属样式（复用 styles.css 的 .card/.card-h/.topbar 等布局） */
+  .ctx-chip { font-size: 12px; color: var(--tx3); background: var(--bg2); padding: 5px 10px; border-radius: 20px; }
+  .ctx-chip b { color: var(--pri, #3b6ef5); }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--tx2); text-decoration: none;
+    border: 1px solid var(--bd, #e6e9f0); padding: 6px 12px; border-radius: 8px; }
+  .back-btn:hover { border-color: var(--pri, #3b6ef5); color: var(--pri, #3b6ef5); }
+  .ckpi { background: var(--bg2); border: 1px solid var(--bd, #eef1f6); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .ckpi b { font-size: 24px; color: var(--tx1); font-weight: 700; }
+  .ckpi span { font-size: 13px; color: var(--tx2); }
+  .ckpi i { font-size: 11px; color: var(--tx3); font-style: normal; }
+  .c-hero { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .dc-t1 { font-size: 22px; font-weight: 700; fill: var(--tx1); }
+  .dc-t2 { font-size: 10px; fill: var(--tx3); }
+  .lg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--tx2); padding: 3px 0; }
+  .lg i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .lg span { flex: 1; }
+  .lg b { color: var(--tx1); }
+  .hrow { display: grid; grid-template-columns: 96px 1fr 92px; align-items: center; gap: 10px; padding: 7px 0; }
+  .hl { font-size: 12px; color: var(--tx2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hbar { height: 10px; background: var(--bg2); border-radius: 6px; overflow: hidden; }
+  .hbar i { display: block; height: 100%; border-radius: 6px; }
+  .hv { font-size: 12px; color: var(--tx1); text-align: right; white-space: nowrap; }
+  .hv .up, .hv .down { font-size: 11px; }
+  .fn { margin: 8px 0; }
+  .fn-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 120px;
+    background: linear-gradient(90deg, #3b6ef5, #7c5cff); color: #fff; padding: 10px 14px; border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(59,110,245,.18); }
+  .fn-name { font-size: 13px; font-weight: 600; }
+  .fn-val { font-size: 12px; opacity: .95; }
+  .fn-cr { font-size: 11px; color: var(--tx3); text-align: center; margin: 2px 0; }
+  .up { color: #ff4d4f; } .down { color: #1aa37a; }  /* 中国市场惯例：涨红跌绿，此处环比上升(恶化)标红 */
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; }
+  .pill.alert { background: #ffe9ea; color: #d33; }
+  .pill.watch { background: #fff3df; color: #c8821a; }
+  .pill.ok { background: #e6f7f0; color: #1aa37a; }
+  .pill.normal { background: #eef1f6; color: #8893a8; }
+  @media (max-width: 760px) { .c-hero { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body data-page-node-id="GwUWU8gD4A3L8P1VDd1biS">
+
+<header class="topbar" data-page-node-id="NhZD3npGNd7W35sp214RcF">
+  <div class="brand" data-page-node-id="E8takZ9bMujKw3AiVpnbEM">
+    <span class="logo" data-page-node-id="r0W5fOKuco1xfL4fFfMO4r">RD</span>
+    <div class="brand-txt" data-page-node-id="wk8q2feSgkIJJ0cMpm15We">
+      <h1 data-page-node-id="BHQJ4pAjpQ7mAdPmLHrpB3">客户分析驾驶舱</h1>
+      <p data-page-node-id="lmNchycwJ5Tyel8YBGBQqa">RapidDirect · Customer Analytics Cockpit</p>
+    </div>
+  </div>
+  <div class="controls" data-page-node-id="cS3CllxeAHcND6XJHpZNmP">
+    <span class="ctx-chip" id="ctxChip" data-page-node-id="tHAE9wVErZjAMrRy4uu4SJ">联动上下文 · —</span>
+    <a class="back-btn" href="index.html" data-page-node-id="KbxQnDxZeCCGt4J4PK21bq">← 返回主驾驶舱</a>
+  </div>
+</header>
+
+<main data-page-node-id="JRUBpFCGfWAtJtA5VqEgVh">
+
+  <!-- HERO · 客户健康概览 -->
+  <section class="hero" data-page-node-id="wWZRzV1EvTkX7fFyrJFp7M">
+    <div class="hero-main" data-page-node-id="4lzYdKDq6bkt8McRUSHTEE">
+      <div class="hero-txt" data-page-node-id="SQCHbqWSQvJm998K7vO5I5">
+        <div class="kicker" data-page-node-id="GqFUagxIAHN2YskFHcIA3f"><span class="live" data-page-node-id="h0uTgRtIzsAsR6LQJe7pmR"></span>客户视角 · 全局结论</div>
+        <h2 data-page-node-id="eMRiOLb7HRX5YFypPEC1LD">客户结构与转化全景</h2>
+        <p data-page-node-id="fPZREFW7DuDiT1sQflYv70">从客户画像、价值分层到新客转化漏斗与人员效能，支撑客户全生命周期运营决策。</p>
+      </div>
+    </div>
+    <div class="hero-wall c-hero" id="cHero" data-page-node-id="jYdJLTN5pnIgPTXnHsmKrZ"></div>
+  </section>
+
+  <!-- 客户结构与画像 -->
+  <section class="zone" data-page-node-id="v25MSNJPoILTM2nJxmGFbG">
+    <div class="zh" data-page-node-id="e8JwIOkAn0ASCnIJJOYEtS">
+      <span class="zn" data-page-node-id="z5on6fhh8lTGAzuRjRoCsR">01</span>
+      <div class="zh-t" data-page-node-id="LiM24mpQMVQB9VTaITzkLi"><h2 data-page-node-id="HD43Y8lyiquOS0U9AXsIJf">客户结构与画像</h2><p data-page-node-id="tpkjDQrHM13pyyTpVHdLwH">地区 / 行业 / 加工需求 / 客户规模分布</p></div>
+    </div>
+    <div class="grid g-2" data-page-node-id="44DigUCvAwMZE8IPAxj5T1">
+      <div class="card" data-page-node-id="ATkBtYXMDTZsYm0GWjucY3">
+        <div class="card-h" data-page-node-id="ye0xLYQSR86dAdJKYPPwaW"><h3 data-page-node-id="U2zgYDYjfHXEgqLSk9F4qk">客户分布占比</h3>
+          <div class="seg sm" id="profileSeg" data-page-node-id="euAfqSC0Dfm4HqNl7abX9B"></div>
+        </div>
+        <div id="profileChart" class="chart sm-chart" style="display:flex;justify-content:center" data-page-node-id="u841MVrKWOUEfKONjDA4D2"></div>
+      </div>
+      <div class="card" data-page-node-id="nnXbqfbnMuOJ7jabocXaej">
+        <div class="card-h" data-page-node-id="cUNE8NZRoWSy11on32WD7Q"><h3 data-page-node-id="i544lQDspwvCiSYDR1VuWR">维度明细</h3><span class="hint" data-page-node-id="ecaiaw1HW9QzGRMhImuZNP">占比 %</span></div>
+        <div class="legend" id="profileLegend" data-page-node-id="tQ26XVHSDuqVVaGuEFui8N"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户价值分层 -->
+  <section class="zone" data-page-node-id="pGOy4hjKE1xIC1cL4EWVLX">
+    <div class="zh" data-page-node-id="9uljeogD0Lz69ANHPMjlo2">
+      <span class="zn" data-page-node-id="hwOfvIRgnWMfItlhzZZeYR">02</span>
+      <div class="zh-t" data-page-node-id="hL3ZO2ZIs9wfjKcfdk3zvG"><h2 data-page-node-id="J1HsMeeR5lcepczeGFEFRI">客户价值分层（A/B/C）</h2><p data-page-node-id="KwVhg7rPkYa50tKXpnchGF">高价值 / 中价值 / 长尾客户结构</p></div>
+    </div>
+    <div class="card" data-page-node-id="AsUFIZJamdqcj0XSUzESvf">
+      <div class="card-h" data-page-node-id="OHAG8KRpLGbtY1iTFY6urm"><h3 data-page-node-id="OtdhpTv9xC2ucqs95lvet3">价值分层占比</h3><span class="hint" data-page-node-id="gH02Jt34uLVTgLLz8i34ye">A 类为高价值客户</span></div>
+      <div id="tierChart" class="bars" data-page-node-id="JAFAWORLHjcV2u4epLGJXZ"></div>
+    </div>
+  </section>
+
+  <!-- 新客转化漏斗 -->
+  <section class="zone" data-page-node-id="qXGS1CgFl4wtzEmkNqG6ks">
+    <div class="zh" data-page-node-id="3ZKBJkWjgzsvoH7SnmPAaz">
+      <span class="zn" data-page-node-id="TNX4iZL0BoJWLDkjit3egJ">03</span>
+      <div class="zh-t" data-page-node-id="SM2gh7MyWSJt7u9m95HNtN"><h2 data-page-node-id="6wqfhUO96EpfbdrpHVe6dO">新客转化漏斗</h2><p data-page-node-id="anQ1U0XPOIS31AJ1JnkYBm">访客 → 注册 → 上传图纸 → 报价 → 下单</p></div>
+    </div>
+    <div class="card" data-page-node-id="G4Ol4cTjGJHDQYTapI146N">
+      <div class="card-h" data-page-node-id="pjfpIvEUXxKtgDBNd30FFi"><h3 id="funnelTitle" data-page-node-id="D9YbqgYmiz0ym2fR2oVG3h">新客户转化漏斗</h3><span class="hint" data-page-node-id="xF9k87bQIGtNN9xJbaWOVG">环比（红涨绿跌）</span></div>
+      <div id="funnel" data-page-node-id="F14RFV9Bw9lnBZbbbKMsHO"></div>
+    </div>
+  </section>
+
+  <!-- 人员效能 -->
+  <section class="zone" data-page-node-id="WHOppJ2KBRFs5AAJdXXeTZ">
+    <div class="zh" data-page-node-id="DsqoQQFb2Fu6enSwbg5FlU">
+      <span class="zn" data-page-node-id="SaBzKUH08r0gYuwpXoFYLL">04</span>
+      <div class="zh-t" data-page-node-id="Ha8xXpcvF3dY4xbmELdNsL"><h2 data-page-node-id="KjSqkXBJma2JJGApHHEkgH">人员效能</h2><p data-page-node-id="R4NS5f2typMBv5x9HyO05K">业务员成交转化率 · 工程师承接量</p></div>
+    </div>
+    <div class="grid g-2" data-page-node-id="TOCvt3q9CPCrIR1cXaC5yM">
+      <div class="card" data-page-node-id="DMpx2a6Uj0IMFXXJCii25A">
+        <div class="card-h" data-page-node-id="LGnblTQnCtLAq2khKjwzQO"><h3 data-page-node-id="JApUXR8OQ2h2QHMJzNRonA">业务员成交转化率</h3><span class="hint" data-page-node-id="wZybld7BDiIKoKHAXGVMj6">低于均值 70% 标红</span></div>
+        <div id="salesChart" class="bars" data-page-node-id="PI6nk0uCLfEdrOdA4DWm8b"></div>
+      </div>
+      <div class="card" data-page-node-id="rq5ZKzZZdr0JrlsgQDHGxs">
+        <div class="card-h" data-page-node-id="K6cLumBDlhsZdSD7KiRjRD"><h3 data-page-node-id="sUvYHUoX9vmQVuXQDYVks5">工程师承接量与完成率</h3><span class="hint" data-page-node-id="IaYTVH7xO3gayLrf14HOaG">含响应时长</span></div>
+        <div id="engChart" class="bars" data-page-node-id="1ZZKINhMlCK9T5RhnqLZ8D"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户风险明细 -->
+  <section class="zone" data-page-node-id="iT46GcJENPbX4yBqyWku3F">
+    <div class="zh" data-page-node-id="qMHExTcAzHLtm5KQc1PnT9">
+      <span class="zn" data-page-node-id="AFrZ6p0h9StpXe4pPeg4Zf">05</span>
+      <div class="zh-t" data-page-node-id="T8fgJOPomsL5koHgCBZxpC"><h2 data-page-node-id="oMneDCnGiWNHNHrj01qDO3">客户风险明细</h2><p data-page-node-id="f6GXVnbGg8nT4RCHi7W3Ps">与客户相关指标的实时状态（随联动平台过滤）</p></div>
+    </div>
+    <div class="card" data-page-node-id="bCVcpMaL2BLtwp33x2WHnF">
+      <div class="card-h" data-page-node-id="4fYyYLUhXMndPcui1q4r2P"><h3 data-page-node-id="Za5W1VdD5ZYIkcoOKJ78ZR">客户指标监控</h3><span class="hint" data-page-node-id="uBwj0iX8HT1pTUeKWCZs43">点击行查看口径</span></div>
+      <div class="tbl-wrap tall" data-page-node-id="SstH23lQbNoMPZyS0rRGuJ"><div id="riskTbl" data-page-node-id="kCjHFadzHbR9mTt4Gzh3Xi"></div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot" data-page-node-id="lZktEOEgXKkqIMx7vwwRdM">
+  <span data-page-node-id="Qh7eWylmLspu9NzJgIlXga">客户分析驾驶舱 · 数据与主驾驶舱同源（DASHBOARD_DATA）· 平台 / 周期联动</span>
+</footer>
+
+<script src="data.js"></script>
+<script src="customer-app.js"></script>
+</body>
+</html>
